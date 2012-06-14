@@ -41,7 +41,7 @@ pre {white-space:pre-wrap;}
 
 /*=layout=*/
 body{background-color:#A7C0DC;}
-.wrapper{position:relative;height:100%;background:url(images/bg_wrapper.png) right bottom no-repeat fixed;}
+.wrapper{position:relative;height:100%;background:url(images/bg_wrapper.jpg) right bottom no-repeat fixed;}
 #header{position:fixed;right:0;top:0;width:330px;z-index:2;}
 #header hgroup{position:relative;top:-30px;opacity:0;overflow:hidden;background:rgba(255,255,255,0.8);box-shadow:inset -5px 1px  6px #A7C0DC;border-radius:0 0 0 5px;}
 #header hgroup.show{
