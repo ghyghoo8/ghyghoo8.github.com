@@ -43,14 +43,14 @@ pre {white-space:pre-wrap;}
 body{background-color:#A7C0DC;}
 .wrapper{position:relative;height:100%;background:url(images/bg_wrapper.png) right bottom no-repeat fixed;}
 #header{position:fixed;right:0;top:0;width:330px;z-index:2;}
-#header hgroup{position:relative;top:-120px;overflow:hidden;background:rgba(255,255,255,0.8);box-shadow:inset -5px 1px  6px #A7C0DC;border-radius:0 0 0 5px;}
+#header hgroup{position:relative;top:-30px;opacity:0;overflow:hidden;background:rgba(255,255,255,0.8);box-shadow:inset -5px 1px  6px #A7C0DC;border-radius:0 0 0 5px;}
 #header hgroup.show{
-    -webkit-transition: all 1s ease-in-out;
+    -webkit-transition: all 0.8s ease-in-out;
     -moz-transition: all 1s ease-in-out;
-    -o-transition: all 1s ease-in-out;
-    -ms-transition: all 1s ease-in-out;
-    transition: all 1s ease-in-out;
+    -o-transition: all 0.8s ease-in-out;
+    transition: all 0.8s ease-in-out;
     top:0;
+    opacity:1;
 }
 
 #logo{float:left;margin-right:10px;}
