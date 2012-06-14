@@ -1,5 +1,7 @@
 My blog on github.
 
+<http://ghyghoo8.github.com>
+
 h1. License
 
 The following directories and their contents are Copyright Dwight Spencer You may not reuse anything therein without my permission:
