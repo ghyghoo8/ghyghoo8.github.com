@@ -1,0 +1,77 @@
+/*=S Reset=*/
+/*
+html5doctor.com Reset Stylesheet
+v1.6.1
+Last Updated: 2010-09-17
+Author: Richard Clark - http://richclarkdesign.com
+Twitter: @rich_clark
+*/
+html, body, div, span, object, iframe, h1, h2, h3, h4, h5, h6, p, blockquote, pre, abbr, address, cite, code,
+del, dfn, em, img, ins, kbd, q, samp, small, strong, sub, sup, var, b, i, dl, dt, dd, ol, ul, li,
+fieldset, form, label, legend, table, caption, tbody, tfoot, thead, tr, th, td,
+article, aside, canvas, details, figcaption, figure, footer, header, hgroup, menu, nav, section, summary,
+time, mark, audio, video {margin:0;padding:0;border:0;outline:0;font-size:100%;vertical-align:baseline;background:transparent;}
+body {line-height:1;}
+article, aside, details, figcaption, figure,footer, header, hgroup, menu, nav, section {display:block;}
+nav ul {list-style:none;}
+blockquote, q {quotes:none;}
+blockquote:before, blockquote:after,q:before, q:after {content:'';content:none;}
+a {margin:0;padding:0;font-size:100%;vertical-align:baseline;background:transparent;}
+/*=S HTML5 */
+article, aside, details, figcaption, figure, footer, header, hgroup, nav, section {display:block;}
+audio, canvas, video {display:inline-block;*display:inline;*zoom:1;}
+audio:not([controls]) {display:none;}
+[hidden] {display:none;}
+/*=E HTML5 */
+em,i {font-style:normal;}
+h1,h2,h3,h4,h5,h6,strong {font-weight:700;font-size:100%;}
+label, input, select {vertical-align:middle;}
+img, button {background:none;border:0 none;vertical-align:middle;}
+ol,ul {list-style:none;}
+table,th,td,fieldset,legend {font-weight:400;border:0 none;border-collapse:collapse}
+pre {white-space:pre-wrap;}
+.txt, .txtarea {border: 1px solid #ddd;border-radius:3px;color: #333;font-size: 12px;line-height: 14px;outline: medium none;padding: 3px;}
+/*=E Reset=*/
+
+/*=S layout=*/
+.tc{text-align:center;}
+.f12{font-size:12px;}
+.f14{font-size:14px;}
+/*=E layout=*/
+
+/*=layout=*/
+body{background-color:#A7C0DC;}
+.wrapper{position:relative;height:100%;background:url(images/bg_wrapper.png) right bottom no-repeat fixed;}
+#header{position:fixed;right:0;top:0;width:330px;z-index:2;}
+#header hgroup{position:relative;top:-120px;overflow:hidden;background:rgba(255,255,255,0.8);box-shadow:inset -5px 1px  6px #A7C0DC;border-radius:0 0 0 5px;}
+#header hgroup.show{
+    -webkit-transition: all 1s ease-in-out;
+    -moz-transition: all 1s ease-in-out;
+    -o-transition: all 1s ease-in-out;
+    -ms-transition: all 1s ease-in-out;
+    transition: all 1s ease-in-out;
+    top:0;
+}
+
+#logo{float:left;margin-right:10px;}
+#logo img{width:120px;height:120px;border-radius:0 0 0 5px;}
+#description{padding:3px 5px 0 0;overflow:hidden;color:#666;font:400 16px/1.5 "Microsoft YaHei";text-shadow:1px 1px 2px #A7C0DC;}
+#contact{position:absolute;right:5px;bottom:5px;}
+#contact a img{width:16px;}
+#contact a{text-decoration:none;}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
