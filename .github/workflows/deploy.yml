@@ -60,10 +60,9 @@ jobs:
 
       - name: Install dependencies
         run: |
-          npm install hexo-cli -g
           npm install
 
       - name: Deploy hexo
         run: |
-          hexo clean
-          hexo deploy
+          rmdir .deploy_git/themes
+          npm run deploy
