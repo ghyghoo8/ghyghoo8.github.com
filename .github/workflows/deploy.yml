@@ -63,6 +63,8 @@ jobs:
           npm install
 
       - name: Deploy hexo
+        env: 
+          GITHUB_TOKEN: ${{secrets.GITHUB_TOKEN}}
         run: |
           rm -rf .deploy_git
           npm run deploy
