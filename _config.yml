@@ -103,5 +103,5 @@ theme: next
 ## Docs: https://hexo.io/docs/one-command-deployment
 deploy:
   type: git
-  repo: git@github.com:ghyghoo8/ghyghoo8.github.io.git
+  repo: https://github.com/ghyghoo8/ghyghoo8.github.io.git
   branch: gh-pages
