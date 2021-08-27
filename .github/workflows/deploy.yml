@@ -64,4 +64,5 @@ jobs:
 
       - name: Deploy hexo
         run: |
+          rm -rf .deploy_git
           npm run deploy
