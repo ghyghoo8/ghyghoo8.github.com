@@ -104,4 +104,5 @@ theme: next
 deploy:
   type: git
   repo: https://github.com/ghyghoo8/ghyghoo8.github.com.git
+  token: $GITHUB_TOKEN
   branch: gh-pages
