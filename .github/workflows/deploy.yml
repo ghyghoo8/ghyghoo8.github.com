@@ -8,8 +8,8 @@ on:
 env:
   GIT_USER: ghyghoo8
   GIT_EMAIL: ghyghoo8@qq.com
-  # THEME_REPO: ghyghoo8/hexo-theme-concise
-  # THEME_BRANCH: master
+  THEME_REPO: hexojs/hexo-theme-landscape
+  THEME_BRANCH: master
   DEPLOY_REPO: ghyghoo8/ghyghoo8.github.com
   DEPLOY_BRANCH: master
 
