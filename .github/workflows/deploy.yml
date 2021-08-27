@@ -64,5 +64,5 @@ jobs:
 
       - name: Deploy hexo
         run: |
-          rmdir .deploy_git/themes
+          sudo rmdir .deploy_git
           npm run deploy
