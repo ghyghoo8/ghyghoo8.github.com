@@ -877,3 +877,18 @@ vendors:
   mediumzoom: //cdn.jsdelivr.net/npm/medium-zoom@1/dist/medium-zoom.min.js
   lazyload: //cdn.jsdelivr.net/npm/lozad@1/dist/lozad.min.js
   quicklink: //cdn.jsdelivr.net/npm/quicklink@1/dist/quicklink.umd.js
+
+# 评论配置
+gitment:
+  enable: true
+  mint: true
+  count: true
+  lazy: false
+  cleanly: true
+  language:
+  github_user: ghyghoo8
+  github_repo: https://github.com/ghyghoo8/g8-blog-commit
+  client_id: 39b09dc343585fd17c7d
+  client_secret: 2f3dfa2522edbebc6a32cb0c76f1ca1797cb8e30
+  proxy_gateway:
+  redirect_protocol:
