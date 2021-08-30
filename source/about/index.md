@@ -1,6 +1,8 @@
 ---
 title: about
 date: 2021-08-30 12:00:36
+type: "about"
+comments: false
 ---
 
 <h3>LOOK HERE 👀 <img align="right" src="https://visitor-badge.glitch.me/badge?page_id=ghyghoo8.visitor-blog" /></h3>
