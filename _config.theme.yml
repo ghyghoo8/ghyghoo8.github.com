@@ -388,8 +388,8 @@ bookmark:
 
 # `Follow me on GitHub` banner in the top-right corner.
 github_banner:
-  enable: false
-  permalink: https://github.com/yourname
+  enable: true
+  permalink: https://github.com/ghyghoo8
   title: Follow me on GitHub
 
 
@@ -565,7 +565,7 @@ comments:
   style: tabs
   # Choose a comment system to be displayed by default.
   # Available values: changyan | disqus | disqusjs | gitalk | livere | valine
-  active:
+  active: livere
   # Setting `true` means remembering the comment system selected by the visitor.
   storage: true
   # Lazyload all comment systems.
@@ -881,17 +881,17 @@ vendors:
   _internal: lib
 
   # Internal version: 3.1.0
-  # anime: //cdn.jsdelivr.net/npm/animejs@3.1.0/lib/anime.min.js
-  anime:
+  anime: //cdn.jsdelivr.net/npm/animejs@3.1.0/lib/anime.min.js
+  # anime:
 
   # Internal version: 5.13.0
-  # fontawesome: //cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@5/css/all.min.css
+  fontawesome: //cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@5/css/all.min.css
   # fontawesome: //cdnjs.cloudflare.com/ajax/libs/font-awesome/5.13.0/css/all.min.css
-  fontawesome:
+  # fontawesome:
 
   # MathJax
-  # mathjax: //cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js
-  mathjax:
+  mathjax: //cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js
+  # mathjax:
 
   # KaTeX
   # katex: //cdn.jsdelivr.net/npm/katex@0/dist/katex.min.css
@@ -903,8 +903,8 @@ vendors:
   copy_tex_css:
 
   # Internal version: 0.2.8
-  # pjax: //cdn.jsdelivr.net/gh/theme-next/theme-next-pjax@0/pjax.min.js
-  pjax:
+  pjax: //cdn.jsdelivr.net/gh/theme-next/theme-next-pjax@0/pjax.min.js
+  # pjax:
 
   # FancyBox
   # jquery: //cdn.jsdelivr.net/npm/jquery@3/dist/jquery.min.js
@@ -919,14 +919,14 @@ vendors:
   mediumzoom:
 
   # Lazyload
-  # lazyload: //cdn.jsdelivr.net/npm/lozad@1/dist/lozad.min.js
+  lazyload: //cdn.jsdelivr.net/npm/lozad@1/dist/lozad.min.js
   # lazyload: //cdnjs.cloudflare.com/ajax/libs/lozad.js/1.14.0/lozad.min.js
-  lazyload:
+  # lazyload:
 
   # Pangu
-  # pangu: //cdn.jsdelivr.net/npm/pangu@4/dist/browser/pangu.min.js
+  pangu: //cdn.jsdelivr.net/npm/pangu@4/dist/browser/pangu.min.js
   # pangu: //cdnjs.cloudflare.com/ajax/libs/pangu/4.0.7/pangu.min.js
-  pangu:
+  # pangu:
 
   # Quicklink
   # quicklink: //cdn.jsdelivr.net/npm/quicklink@1/dist/quicklink.umd.js
