@@ -8,7 +8,7 @@ on:
 env:
   GIT_USER: ghyghoo8
   GIT_EMAIL: ghyghoo8@qq.com
-  THEME_REPO: next-theme/hexo-theme-next
+  THEME_REPO: theme-next/hexo-theme-next
   THEME_BRANCH: master
   DEPLOY_REPO: ghyghoo8/ghyghoo8.github.com
   DEPLOY_BRANCH: master
