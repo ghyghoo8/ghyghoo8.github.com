@@ -123,7 +123,7 @@ menu:
   #schedule: /schedule/ || fa fa-calendar
   #sitemap: /sitemap.xml || fa fa-sitemap
   #commonweal: /404/ || fa fa-heartbeat
-  guestbook: /guestbook || fa fa-home
+  guestbook: /guestbook || fa fa-commenting-o
 
 # Enable / Disable menu icons / item badges.
 menu_settings:
