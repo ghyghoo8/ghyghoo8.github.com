@@ -870,15 +870,25 @@ images: images
 #   # Dependencies for `plugins: local`: https://github.com/next-theme/plugins
 #   plugins: jsdelivr
 
-# vendors:
-#   # 主题样式为 minimal 时，显示侧边栏信息会用到。
-#   anime: //cdn.jsdelivr.net/npm/animejs@3.1.0/lib/anime.min.js
-#   # 图标。（比如侧边栏的 social links）——如果不用 icon，那就不必引
-#   fontawesome: //cdn.jsdelivr.net/npm/font-awesome@4/css/font-awesome.min.css
-#   pjax: //cdn.jsdelivr.net/gh/theme-next/theme-next-pjax@0/pjax.min.js
-#   mediumzoom: //cdn.jsdelivr.net/npm/medium-zoom@1/dist/medium-zoom.min.js
-#   lazyload: //cdn.jsdelivr.net/npm/lozad@1/dist/lozad.min.js
-#   quicklink: //cdn.jsdelivr.net/npm/quicklink@1/dist/quicklink.umd.js
+vendors:
+  # Internal path prefix.
+  _internal: lib
+  # 主题样式为 minimal 时，显示侧边栏信息会用到。
+  anime: //cdn.jsdelivr.net/npm/animejs@3.1.0/lib/anime.min.js
+  # 图标。（比如侧边栏的 social links）——如果不用 icon，那就不必引
+  fontawesome: //cdn.jsdelivr.net/npm/font-awesome@4/css/font-awesome.min.css
+  pjax: //cdn.jsdelivr.net/gh/theme-next/theme-next-pjax@0/pjax.min.js
+  mediumzoom: //cdn.jsdelivr.net/npm/medium-zoom@1/dist/medium-zoom.min.js
+  lazyload: //cdn.jsdelivr.net/npm/lozad@1/dist/lozad.min.js
+  quicklink: //cdn.jsdelivr.net/npm/quicklink@1/dist/quicklink.umd.js
+  mermaid: //cdn.jsdelivr.net/npm/mermaid@8/dist/mermaid.min.js
+  # Internal version: 1.2.1
+  velocity: //cdn.jsdelivr.net/npm/velocity-animate@1/velocity.min.js
+  # velocity: //cdnjs.cloudflare.com/ajax/libs/velocity/1.2.1/velocity.min.js
+  velocity_ui: //cdn.jsdelivr.net/npm/velocity-animate@1/velocity.ui.min.js
+  # velocity_ui: //cdnjs.cloudflare.com/ajax/libs/velocity/1.2.1/velocity.ui.min.js
+  canvas_ribbon: //cdn.jsdelivr.net/gh/theme-next/theme-next-canvas-ribbon@1/canvas-ribbon.js
+
 
 # 评论配置
 gitment:
