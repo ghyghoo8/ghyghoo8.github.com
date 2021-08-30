@@ -887,7 +887,7 @@ gitment:
   cleanly: true
   language:
   github_user: ghyghoo8
-  github_repo: https://github.com/ghyghoo8/g8-blog-commit
+  github_repo: ghyghoo8.github.io
   client_id: 39b09dc343585fd17c7d
   client_secret: 2f3dfa2522edbebc6a32cb0c76f1ca1797cb8e30
   proxy_gateway:
