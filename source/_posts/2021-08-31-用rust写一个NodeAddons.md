@@ -269,7 +269,7 @@ app.listen(PORT);
   * package.json
 
 
-```native/src/lib.rs ```👇
+**native/src/lib.rs**👇
 ```rust
 extern crate neon;
 
