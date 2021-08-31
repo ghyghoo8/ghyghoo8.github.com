@@ -253,11 +253,11 @@ app.listen(PORT);
 
 #### neon简单教程
  * npm install neon-cli —global
- * neon new <projectname>
+ * neon new ```<projectname>```
  * root—-> neon build
   * 生成 native/index.node——> const nativeTools = require('./lib/fw/native');
 
-创建的项目<projectname>目录结构：
+创建的项目```<projectname>```目录结构：
 
 * lib
   * index.js
