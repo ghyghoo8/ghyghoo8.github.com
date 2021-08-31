@@ -1,6 +1,8 @@
 ---
 title: 用Rust写一个node-addons
 date: 2021-08-31
+categories: 
+- web
 tags:
   - rust
   - node
