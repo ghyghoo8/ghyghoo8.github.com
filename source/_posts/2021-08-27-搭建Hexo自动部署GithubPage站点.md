@@ -33,12 +33,10 @@ tags:
   * 点击仓库菜单```Settings```->```Pages```
   * **注意：Github 仅能使用一个同名仓库的代码托管一个静态站点**
 ![logo](../imgs/a/github-pages.png)
-* 在本地仓库生成公钥私钥
-  * ```ssh-keygen -t rsa  -C "$(git config user.name)" -f github-deploy-key```
+* 在页面```https://github.com/settings/tokens```创建 **Personal access tokens**
+  ![token](../imgs/a/token.png)
 * 添加仓库变量
-  * 设置HEXO_DEPLOY_PUB，value 是上步生成的 github-deploy-key.pub 文件内容
-  ![pub](../imgs/a/pub.jpg)
-  * 设置HEXO_DEPLOY_PRI，value 是上步生成的 github-deploy-key 文件内容
+  * 设置```HEXO_DEPLOY_PRI```, value 是上步生成的 ```BLOG_DEPLOY_TOKEN``` 的值
   ![pri](../imgs/a/pri.jpg)
 * 添加 workflow, 文件路径为```root/.github/workflows/deploy.yml```
 ```yml
