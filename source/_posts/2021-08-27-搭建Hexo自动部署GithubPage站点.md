@@ -32,12 +32,12 @@ tags:
 * 将该仓库设置为静态站点托管。
   * 点击仓库菜单```Settings```->```Pages```
   * **注意：Github 仅能使用一个同名仓库的代码托管一个静态站点**
-![logo](../imgs/a/github-pages.png)
+![logo](/imgs/a/github-pages.png)
 * 在页面```https://github.com/settings/tokens```创建 **Personal access tokens**
-  ![token](../imgs/a/token.png)
+  ![token](/imgs/a/token.png)
 * 添加仓库变量
   * 设置```HEXO_DEPLOY_PRI```, value 是上步生成的 ```BLOG_DEPLOY_TOKEN``` 的值
-  ![pri](../imgs/a/pri.jpg)
+  ![pri](/imgs/a/pri.jpg)
 * 添加 workflow, 文件路径为```root/.github/workflows/deploy.yml```
 ```yml
 
@@ -129,7 +129,7 @@ deploy:
 ```
 
 * 提交到github后，就能触发仓库Actions
-![ci](../imgs/a/ci.png)
+![ci](/imgs/a/ci.png)
 
 
 #### 参考
