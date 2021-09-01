@@ -116,7 +116,7 @@ jobs:
 
 ```
 
-* 在```_config.yml``文件配置下新增配置，支持github自动部署
+* 在```_config.yml```文件配置下新增配置，支持github自动部署
 ```
 # Deployment
 ## Docs: https://hexo.io/docs/one-command-deployment
