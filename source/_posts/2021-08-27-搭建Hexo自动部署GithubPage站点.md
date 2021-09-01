@@ -129,7 +129,7 @@ deploy:
 ```
 
 * 提交到github后，就能触发仓库Actions
-![ci](../imgs/a/ci.jpg)
+![ci](../imgs/a/ci.png)
 
 
 #### 参考
