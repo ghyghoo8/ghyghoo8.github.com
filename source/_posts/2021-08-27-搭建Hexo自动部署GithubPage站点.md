@@ -128,3 +128,10 @@ deploy:
 
 ```
 
+* 提交到github后，就能触发仓库Actions
+![ci](../imgs/a/ci.jpg)
+
+
+#### 参考
+* https://segmentfault.com/a/1190000017986794
+* https://timemachine.icu/posts/1eb3f811/
