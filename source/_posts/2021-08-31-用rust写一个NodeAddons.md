@@ -314,3 +314,4 @@ register_module!(mut cx, {
 * 官方blog：https://blog.rust-lang.org/
 * Cargo文档：https://doc.rust-lang.org/cargo/
 * Demo仓库😁：https://github.com/ghyghoo8/rust-learn
+* node转rust：https://candle.dev/blog/javascript-to-rust/javascript-to-rust-day-1-rustup/
