@@ -989,7 +989,8 @@ vendors:
 
   # Internal version: 1.0.0
   # canvas_ribbon: //cdn.jsdelivr.net/gh/theme-next/theme-next-canvas-ribbon@1/canvas-ribbon.js
-  canvas_ribbon:
+  # canvas_ribbon:
+  canvas_ribbon: /js/chatbase.js
 
 # Assets
 css: css
@@ -999,9 +1000,3 @@ images: images
 ## Sitemap
 sitemap:
   path: sitemap.xml
-
-
-## inject
-inject:
-  bottom:
-  - <script src="https://www.chatbase.co/embed.min.js" chatbotId="z322nJiXx5sA8wPuwGyAM" domain="www.chatbase.co" defer></script>
