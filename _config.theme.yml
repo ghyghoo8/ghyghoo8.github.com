@@ -999,3 +999,9 @@ images: images
 ## Sitemap
 sitemap:
   path: sitemap.xml
+
+
+## inject
+inject:
+  bottom:
+  - <script src="https://www.chatbase.co/embed.min.js" chatbotId="z322nJiXx5sA8wPuwGyAM" domain="www.chatbase.co" defer></script>
