@@ -219,7 +219,7 @@ toc:
 # A button to open designated chat widget in sidebar.
 # Firstly, you need enable the chat service you want to activate its sidebar button.
 chat:
-  enable: false
+  enable: true
   #service: chatra
   #service: tidio
   icon: fa fa-comment # Icon name in Font Awesome, set false to disable icon.
@@ -989,8 +989,10 @@ vendors:
 
   # Internal version: 1.0.0
   # canvas_ribbon: //cdn.jsdelivr.net/gh/theme-next/theme-next-canvas-ribbon@1/canvas-ribbon.js
-  # canvas_ribbon:
-  canvas_ribbon: /js/chatbase.js
+  canvas_ribbon:
+
+  # chat
+  chat: /js/chatbase.js
 
 # Assets
 css: css
