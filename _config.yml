@@ -97,9 +97,7 @@ baidushare:
 
 # Include / Exclude file(s)
 ## include:/exclude: options only apply to the 'source/' folder
-include: 
-  # Include 'source/scripts/*'.
-  - "scripts/*"
+include:
 exclude:
 ignore:
 
@@ -132,3 +130,5 @@ feed:
   autodiscovery: true
   template:
   
+scripts:
+  - scripts/injector.js
