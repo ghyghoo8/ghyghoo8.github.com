@@ -1,12 +1,10 @@
 (function () {
-  window.embeddedChatbotConfig = {
-    chatbotId: "z322nJiXx5sA8wPuwGyAM",
-    domain: "www.chatbase.co"
+  window.difyChatbotConfig = {
+    token: 'C5e3qHCcAulMHOuD'
   }
-    
+  
   let script = document.createElement('script');
-  script.src = 'https://www.chatbase.co/embed.min.js';
-  script.setAttribute('chatbotId', 'z322nJiXx5sA8wPuwGyAM')
-  script.setAttribute('domain', 'www.chatbase.co')
+  script.src = 'https://udify.app/embed.min.js';
+  script.setAttribute('id', 'C5e3qHCcAulMHOuD')
   document.body.appendChild(script);
 })()
