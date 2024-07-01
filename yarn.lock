@@ -784,10 +784,10 @@ hexo-util@^3.0.1, hexo-util@^3.3.0:
     prismjs "^1.29.0"
     strip-indent "^3.0.0"
 
-hexo@^7.2.0:
-  version "7.2.0"
-  resolved "https://registry.yarnpkg.com/hexo/-/hexo-7.2.0.tgz#0c2b0eeb3f16c557638b6dbd5956a425460d7d0f"
-  integrity sha512-RYIzl7jfG0i2jH/k5IZg4C1anyHfmKHNUsBKIn9LU0V3iQ0WQrwuOLFDJwaZDenqmzHYJhAVCGAkrBDfF/IlVg==
+hexo@^7.3.0:
+  version "7.3.0"
+  resolved "https://registry.yarnpkg.com/hexo/-/hexo-7.3.0.tgz#a9a487874c5ed71c22e91e32dd5d825709a1474f"
+  integrity sha512-dOe8mzBKrvjubW5oBmyhcnQDpC+M2xmAMLae5K+o+SkHxyvAhShkS2VQZoTsOLIJKY6xilv7dzCjCvE7ol/NHQ==
   dependencies:
     abbrev "^2.0.0"
     archy "^1.0.0"
@@ -1164,19 +1164,10 @@ normalize-path@^3.0.0, normalize-path@~3.0.0:
   resolved "https://registry.yarnpkg.com/normalize-path/-/normalize-path-3.0.0.tgz#0dcd69ff23a1c9b11fd0978316644a0388216a65"
   integrity sha512-6eZs5Ls3WtCisHWp9S2GUy8dqkpGi4BVSz3GaqiE6ezub0512ESztXUwUB6C6IKbQkY2Pnb/mD4WYojCRwcwLA==
 
-nunjucks@^3.0.0:
+nunjucks@^3.0.0, nunjucks@^3.1.6, nunjucks@^3.2.3:
   version "3.2.4"
   resolved "https://registry.npmmirror.com/nunjucks/-/nunjucks-3.2.4.tgz#f0878eef528ce7b0aa35d67cc6898635fd74649e"
   integrity sha512-26XRV6BhkgK0VOxfbU5cQI+ICFUtMLixv1noZn1tGU38kQH5A5nmmbk/O45xdyBhD1esk47nKrY0mvQpZIhRjQ==
-  dependencies:
-    a-sync-waterfall "^1.0.0"
-    asap "^2.0.3"
-    commander "^5.1.0"
-
-nunjucks@^3.1.6, nunjucks@^3.2.3:
-  version "3.2.3"
-  resolved "https://registry.yarnpkg.com/nunjucks/-/nunjucks-3.2.3.tgz#1b33615247290e94e28263b5d855ece765648a31"
-  integrity sha512-psb6xjLj47+fE76JdZwskvwG4MYsQKXUtMsPh6U0YMvmyjRtKRFcxnlXGWglNybtNTNVmGdp94K62/+NjF5FDQ==
   dependencies:
     a-sync-waterfall "^1.0.0"
     asap "^2.0.3"
