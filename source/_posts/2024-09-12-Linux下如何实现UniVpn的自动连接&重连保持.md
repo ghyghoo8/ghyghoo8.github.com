@@ -29,13 +29,11 @@ tags:
 安装 `expect` 
 ```
 apt install expect
-
 ```
 
 然后，编写一个 `expect` 脚本（例如 univpn_run.sh），用于监控并自动重连 VPN。
 
 ```bash
-
 #!/bin/bash
 while true 
 do
@@ -73,14 +71,12 @@ EOF
 sleep 2
 done
 
-
 ```
 
 #### 编写 `ping` 探测脚本
 接下来，编写一个用于检测网络连通性的 `ping` 脚本（例如 testping.sh）。该脚本会定期检测 VPN 连接是否正常，若检测到连接中断，则会触发自动重连。
 
 ```bash
-
 #!/bin/bash
 while true
 do
@@ -100,15 +96,12 @@ do
 sleep 20   #每20秒ping一次
 done
 
-
-
 ```
 
 #### 执行自动重连
 最后，执行以下命令运行自动重连脚本：
 
 ```bash
-
 chmod +x univpn_run.sh testping.sh &  ./univpn_run.sh
 
 ```
@@ -121,7 +114,6 @@ chmod +x univpn_run.sh testping.sh &  ./univpn_run.sh
 此外，若重启网络服务后某些依赖网络的服务（如 Docker）出现问题，您可以在脚本中加入这些服务的重启命令。
 
 ```bash
-
 #!/bin/bash
 
 # crontab设置： 30分钟执行一次检查
@@ -147,7 +139,6 @@ if [[ "$RESULT" != "" ]]; then
 
 fi
 exit 0
-
 
 ```
 
