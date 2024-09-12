@@ -1,0 +1,605 @@
+<?xml version="1.0" encoding="utf-8"?>
+<feed xmlns="http://www.w3.org/2005/Atom">
+  <title>G8空间</title>
+  <icon>https://ghyghoo8.github.io/icon.png</icon>
+  <subtitle>ghyghoo8的沉淀小碎</subtitle>
+  <link href="https://ghyghoo8.github.io/atom.xml" rel="self"/>
+  
+  <link href="https://ghyghoo8.github.io/"/>
+  <updated>2024-09-12T09:34:25.086Z</updated>
+  <id>https://ghyghoo8.github.io/</id>
+  
+  <author>
+    <name>ghyghoo8</name>
+    
+  </author>
+  
+  <generator uri="https://hexo.io/">Hexo</generator>
+  
+  <entry>
+    <title>Linux下如何实现UniVpn的自动连接/重连保持</title>
+    <link href="https://ghyghoo8.github.io/2024/09/12/2024-09-12-Linux%E4%B8%8B%E5%A6%82%E4%BD%95%E5%AE%9E%E7%8E%B0UniVpn%E7%9A%84%E8%87%AA%E5%8A%A8%E8%BF%9E%E6%8E%A5&amp;%E9%87%8D%E8%BF%9E%E4%BF%9D%E6%8C%81/"/>
+    <id>https://ghyghoo8.github.io/2024/09/12/2024-09-12-Linux%E4%B8%8B%E5%A6%82%E4%BD%95%E5%AE%9E%E7%8E%B0UniVpn%E7%9A%84%E8%87%AA%E5%8A%A8%E8%BF%9E%E6%8E%A5&amp;%E9%87%8D%E8%BF%9E%E4%BF%9D%E6%8C%81/</id>
+    <published>2024-09-11T16:00:00.000Z</published>
+    <updated>2024-09-12T09:34:25.086Z</updated>
+    
+    
+      
+      
+        
+        
+    <summary type="html">&lt;hr&gt;
+&lt;p&gt;在使用 &lt;span class=&quot;exturl&quot; data-url=&quot;aHR0cHM6Ly93d3cubGVhZ3NvZnQuY29tL2RvYy9hcnRpY2xlLzEwMzE5Ny5odG1s&quot;&gt;UniVpn&lt;i class=&quot;fa</summary>
+        
+      
+    
+    
+    
+    <category term="运维" scheme="https://ghyghoo8.github.io/categories/%E8%BF%90%E7%BB%B4/"/>
+    
+    
+    <category term="新手教程" scheme="https://ghyghoo8.github.io/tags/%E6%96%B0%E6%89%8B%E6%95%99%E7%A8%8B/"/>
+    
+    <category term="UniVpn" scheme="https://ghyghoo8.github.io/tags/UniVpn/"/>
+    
+    <category term="shell" scheme="https://ghyghoo8.github.io/tags/shell/"/>
+    
+    <category term="linux" scheme="https://ghyghoo8.github.io/tags/linux/"/>
+    
+  </entry>
+  
+  <entry>
+    <title>【译】快速学习CNN(卷积神经网络)</title>
+    <link href="https://ghyghoo8.github.io/2024/07/10/2024-07-10-%E5%BF%AB%E9%80%9F%E5%AD%A6%E4%B9%A0CNN(%E5%8D%B7%E7%A7%AF%E7%A5%9E%E7%BB%8F%E7%BD%91%E7%BB%9C)/"/>
+    <id>https://ghyghoo8.github.io/2024/07/10/2024-07-10-%E5%BF%AB%E9%80%9F%E5%AD%A6%E4%B9%A0CNN(%E5%8D%B7%E7%A7%AF%E7%A5%9E%E7%BB%8F%E7%BD%91%E7%BB%9C)/</id>
+    <published>2024-07-09T16:00:00.000Z</published>
+    <updated>2024-09-12T09:34:25.086Z</updated>
+    
+    
+      
+      
+        
+        
+    <summary type="html">&lt;hr&gt;
+&lt;h2 id=&quot;CNN-是什么？&quot;&gt;&lt;a href=&quot;#CNN-是什么？&quot; class=&quot;headerlink&quot; title=&quot;CNN 是什么？&quot;&gt;&lt;/a&gt;CNN</summary>
+        
+      
+    
+    
+    
+    <category term="llm" scheme="https://ghyghoo8.github.io/categories/llm/"/>
+    
+    
+    <category term="入门" scheme="https://ghyghoo8.github.io/tags/%E5%85%A5%E9%97%A8/"/>
+    
+    <category term="新手教程" scheme="https://ghyghoo8.github.io/tags/%E6%96%B0%E6%89%8B%E6%95%99%E7%A8%8B/"/>
+    
+    <category term="学习" scheme="https://ghyghoo8.github.io/tags/%E5%AD%A6%E4%B9%A0/"/>
+    
+    <category term="CNN" scheme="https://ghyghoo8.github.io/tags/CNN/"/>
+    
+  </entry>
+  
+  <entry>
+    <title>Hexo全局Inject自定义JS脚本</title>
+    <link href="https://ghyghoo8.github.io/2024/06/07/2024-06-07-Hexo%E5%85%A8%E5%B1%80inject%E8%87%AA%E5%AE%9A%E4%B9%89JS%E8%84%9A%E6%9C%AC/"/>
+    <id>https://ghyghoo8.github.io/2024/06/07/2024-06-07-Hexo%E5%85%A8%E5%B1%80inject%E8%87%AA%E5%AE%9A%E4%B9%89JS%E8%84%9A%E6%9C%AC/</id>
+    <published>2024-06-06T16:00:00.000Z</published>
+    <updated>2024-09-12T09:34:25.086Z</updated>
+    
+    
+      
+      
+        
+        
+    <summary type="html">&lt;hr&gt;
+&lt;h3 id=&quot;在Hexo中注入JS脚本&quot;&gt;&lt;a href=&quot;#在Hexo中注入JS脚本&quot; class=&quot;headerlink&quot;</summary>
+        
+      
+    
+    
+    
+    <category term="theme" scheme="https://ghyghoo8.github.io/categories/theme/"/>
+    
+    
+    <category term="hexo" scheme="https://ghyghoo8.github.io/tags/hexo/"/>
+    
+    <category term="新手教程" scheme="https://ghyghoo8.github.io/tags/%E6%96%B0%E6%89%8B%E6%95%99%E7%A8%8B/"/>
+    
+    <category term="inject js file" scheme="https://ghyghoo8.github.io/tags/inject-js-file/"/>
+    
+  </entry>
+  
+  <entry>
+    <title>Ollama - 定制化私有大模型</title>
+    <link href="https://ghyghoo8.github.io/2024/05/22/2024-05-22-Ollama%E5%AE%9A%E5%88%B6%E5%8C%96%E7%A7%81%E6%9C%89%E5%A4%A7%E6%A8%A1%E5%9E%8B/"/>
+    <id>https://ghyghoo8.github.io/2024/05/22/2024-05-22-Ollama%E5%AE%9A%E5%88%B6%E5%8C%96%E7%A7%81%E6%9C%89%E5%A4%A7%E6%A8%A1%E5%9E%8B/</id>
+    <published>2024-05-21T16:00:00.000Z</published>
+    <updated>2024-09-12T09:34:25.086Z</updated>
+    
+    
+      
+      
+        
+        
+    <summary type="html">&lt;hr&gt;
+&lt;h3 id=&quot;拥有自己的私有大模型&quot;&gt;&lt;a href=&quot;#拥有自己的私有大模型&quot; class=&quot;headerlink&quot; title=&quot;拥有自己的私有大模型&quot;&gt;&lt;/a&gt;拥有自己的私有大模型&lt;/h3&gt;&lt;p&gt;在本教程中，我们将探索如何使用 Ollama 提供的</summary>
+        
+      
+    
+    
+    
+    <category term="llm" scheme="https://ghyghoo8.github.io/categories/llm/"/>
+    
+    
+    <category term="ollama" scheme="https://ghyghoo8.github.io/tags/ollama/"/>
+    
+    <category term="入门" scheme="https://ghyghoo8.github.io/tags/%E5%85%A5%E9%97%A8/"/>
+    
+    <category term="新手教程" scheme="https://ghyghoo8.github.io/tags/%E6%96%B0%E6%89%8B%E6%95%99%E7%A8%8B/"/>
+    
+    <category term="手册" scheme="https://ghyghoo8.github.io/tags/%E6%89%8B%E5%86%8C/"/>
+    
+    <category term="微调" scheme="https://ghyghoo8.github.io/tags/%E5%BE%AE%E8%B0%83/"/>
+    
+    <category term="量化" scheme="https://ghyghoo8.github.io/tags/%E9%87%8F%E5%8C%96/"/>
+    
+    <category term="定制化" scheme="https://ghyghoo8.github.io/tags/%E5%AE%9A%E5%88%B6%E5%8C%96/"/>
+    
+  </entry>
+  
+  <entry>
+    <title>ComfyUI - 新手教程</title>
+    <link href="https://ghyghoo8.github.io/2024/03/06/2024-03-06-ComfyUI-%E6%96%B0%E6%89%8B%E6%95%99%E7%A8%8B/"/>
+    <id>https://ghyghoo8.github.io/2024/03/06/2024-03-06-ComfyUI-%E6%96%B0%E6%89%8B%E6%95%99%E7%A8%8B/</id>
+    <published>2024-03-05T16:00:00.000Z</published>
+    <updated>2024-09-12T09:34:25.086Z</updated>
+    
+    
+      
+      
+        
+        
+    <summary type="html">&lt;hr&gt;
+&lt;h3 id=&quot;ComfyUI新手教程：入门指南&quot;&gt;&lt;a href=&quot;#ComfyUI新手教程：入门指南&quot; class=&quot;headerlink&quot; title=&quot;ComfyUI新手教程：入门指南&quot;&gt;&lt;/a&gt;ComfyUI新手教程：入门指南&lt;/h3&gt;&lt;h4</summary>
+        
+      
+    
+    
+    
+    <category term="llm" scheme="https://ghyghoo8.github.io/categories/llm/"/>
+    
+    
+    <category term="ai" scheme="https://ghyghoo8.github.io/tags/ai/"/>
+    
+    <category term="入门" scheme="https://ghyghoo8.github.io/tags/%E5%85%A5%E9%97%A8/"/>
+    
+    <category term="stable diffusion" scheme="https://ghyghoo8.github.io/tags/stable-diffusion/"/>
+    
+    <category term="comfyui" scheme="https://ghyghoo8.github.io/tags/comfyui/"/>
+    
+    <category term="新手教程" scheme="https://ghyghoo8.github.io/tags/%E6%96%B0%E6%89%8B%E6%95%99%E7%A8%8B/"/>
+    
+    <category term="手册" scheme="https://ghyghoo8.github.io/tags/%E6%89%8B%E5%86%8C/"/>
+    
+  </entry>
+  
+  <entry>
+    <title>深度学习和大模型的基础认知</title>
+    <link href="https://ghyghoo8.github.io/2024/02/20/2024-02-20-%E6%B7%B1%E5%BA%A6%E5%AD%A6%E4%B9%A0%E5%92%8C%E5%A4%A7%E6%A8%A1%E5%9E%8B%E7%9A%84%E5%9F%BA%E7%A1%80%E8%AE%A4%E7%9F%A5/"/>
+    <id>https://ghyghoo8.github.io/2024/02/20/2024-02-20-%E6%B7%B1%E5%BA%A6%E5%AD%A6%E4%B9%A0%E5%92%8C%E5%A4%A7%E6%A8%A1%E5%9E%8B%E7%9A%84%E5%9F%BA%E7%A1%80%E8%AE%A4%E7%9F%A5/</id>
+    <published>2024-02-19T16:00:00.000Z</published>
+    <updated>2024-09-12T09:34:25.086Z</updated>
+    
+    
+      
+      
+        
+        
+    <summary type="html">&lt;hr&gt;
+&lt;p&gt;在当今技术领域，大家谈论的时候常常涉及到“大模型”，对于很多新手来说，这个概念可能还比较模糊。为了让大家更好地参与讨论，让我们一起来了解一些关于深度学习和大模型的基础知识。&lt;/p&gt;
+&lt;h2 id=&quot;什么是机器学习？&quot;&gt;&lt;a href=&quot;#什么是机器学习？&quot;</summary>
+        
+      
+    
+    
+    
+    <category term="llm" scheme="https://ghyghoo8.github.io/categories/llm/"/>
+    
+    
+    <category term="大模型部署" scheme="https://ghyghoo8.github.io/tags/%E5%A4%A7%E6%A8%A1%E5%9E%8B%E9%83%A8%E7%BD%B2/"/>
+    
+    <category term="ai" scheme="https://ghyghoo8.github.io/tags/ai/"/>
+    
+    <category term="base" scheme="https://ghyghoo8.github.io/tags/base/"/>
+    
+  </entry>
+  
+  <entry>
+    <title>探索RAG工程：开启大规模语言模型与知识检索的革新之旅</title>
+    <link href="https://ghyghoo8.github.io/2024/01/08/2024-01-08-%E6%8E%A2%E7%B4%A2RAG%E5%B7%A5%E7%A8%8B%EF%BC%9A%E5%BC%80%E5%90%AF%E5%A4%A7%E8%A7%84%E6%A8%A1%E8%AF%AD%E8%A8%80%E6%A8%A1%E5%9E%8B%E4%B8%8E%E7%9F%A5%E8%AF%86%E6%A3%80%E7%B4%A2%E7%9A%84%E9%9D%A9%E6%96%B0%E4%B9%8B%E6%97%85/"/>
+    <id>https://ghyghoo8.github.io/2024/01/08/2024-01-08-%E6%8E%A2%E7%B4%A2RAG%E5%B7%A5%E7%A8%8B%EF%BC%9A%E5%BC%80%E5%90%AF%E5%A4%A7%E8%A7%84%E6%A8%A1%E8%AF%AD%E8%A8%80%E6%A8%A1%E5%9E%8B%E4%B8%8E%E7%9F%A5%E8%AF%86%E6%A3%80%E7%B4%A2%E7%9A%84%E9%9D%A9%E6%96%B0%E4%B9%8B%E6%97%85/</id>
+    <published>2024-01-07T16:00:00.000Z</published>
+    <updated>2024-09-12T09:34:25.086Z</updated>
+    
+    
+      
+      
+        
+        
+    <summary type="html">&lt;hr&gt;
+&lt;h3 id=&quot;引言&quot;&gt;&lt;a href=&quot;#引言&quot; class=&quot;headerlink&quot;</summary>
+        
+      
+    
+    
+    
+    <category term="llm" scheme="https://ghyghoo8.github.io/categories/llm/"/>
+    
+    
+    <category term="大模型部署" scheme="https://ghyghoo8.github.io/tags/%E5%A4%A7%E6%A8%A1%E5%9E%8B%E9%83%A8%E7%BD%B2/"/>
+    
+    <category term="ai" scheme="https://ghyghoo8.github.io/tags/ai/"/>
+    
+    <category term="RAG" scheme="https://ghyghoo8.github.io/tags/RAG/"/>
+    
+  </entry>
+  
+  <entry>
+    <title>拥抱本地大模型：Ollama 简明易用指南</title>
+    <link href="https://ghyghoo8.github.io/2023/12/26/2023-12-26-Ollama%20%E7%AE%80%E6%98%8E%E6%98%93%E7%94%A8%E6%8C%87%E5%8D%97/"/>
+    <id>https://ghyghoo8.github.io/2023/12/26/2023-12-26-Ollama%20%E7%AE%80%E6%98%8E%E6%98%93%E7%94%A8%E6%8C%87%E5%8D%97/</id>
+    <published>2023-12-25T16:00:00.000Z</published>
+    <updated>2024-09-12T09:34:25.086Z</updated>
+    
+    
+      
+      
+        
+        
+    <summary type="html">&lt;hr&gt;
+&lt;h3 id=&quot;引言&quot;&gt;&lt;a href=&quot;#引言&quot; class=&quot;headerlink&quot; title=&quot;引言&quot;&gt;&lt;/a&gt;引言&lt;/h3&gt;&lt;p&gt;在过去的几个季度里，大语言模型（LLM）的平民化运动一直在快速发展，从最初的 Meta 发布 Llama 2</summary>
+        
+      
+    
+    
+    
+    <category term="llm" scheme="https://ghyghoo8.github.io/categories/llm/"/>
+    
+    
+    <category term="大模型部署" scheme="https://ghyghoo8.github.io/tags/%E5%A4%A7%E6%A8%A1%E5%9E%8B%E9%83%A8%E7%BD%B2/"/>
+    
+    <category term="ai" scheme="https://ghyghoo8.github.io/tags/ai/"/>
+    
+    <category term="ollama" scheme="https://ghyghoo8.github.io/tags/ollama/"/>
+    
+    <category term="教程" scheme="https://ghyghoo8.github.io/tags/%E6%95%99%E7%A8%8B/"/>
+    
+    <category term="指南" scheme="https://ghyghoo8.github.io/tags/%E6%8C%87%E5%8D%97/"/>
+    
+    <category term="入门" scheme="https://ghyghoo8.github.io/tags/%E5%85%A5%E9%97%A8/"/>
+    
+  </entry>
+  
+  <entry>
+    <title>CSS3实现语音声波</title>
+    <link href="https://ghyghoo8.github.io/2023/12/04/2023-12-04-css3%E5%AE%9E%E7%8E%B0%E8%AF%AD%E9%9F%B3%E5%A3%B0%E6%B3%A2/"/>
+    <id>https://ghyghoo8.github.io/2023/12/04/2023-12-04-css3%E5%AE%9E%E7%8E%B0%E8%AF%AD%E9%9F%B3%E5%A3%B0%E6%B3%A2/</id>
+    <published>2023-12-03T16:00:00.000Z</published>
+    <updated>2024-09-12T09:34:25.086Z</updated>
+    
+    
+      
+      
+        
+        
+    <summary type="html">&lt;hr&gt;
+&lt;p&gt;RT。&lt;/p&gt;
+&lt;p&gt;项目需求中实现的一个css3样式写的语音录入效果。&lt;/p&gt;
+&lt;p&gt;&lt;img src=&quot;/imgs/a/wave.jpg&quot; alt=&quot;wave&quot;&gt;&lt;/p&gt;
+&lt;p&gt;&lt;img src=&quot;/imgs/a/wave2.jpg&quot;</summary>
+        
+      
+    
+    
+    
+    <category term="web" scheme="https://ghyghoo8.github.io/categories/web/"/>
+    
+    
+    <category term="css3" scheme="https://ghyghoo8.github.io/tags/css3/"/>
+    
+  </entry>
+  
+  <entry>
+    <title>前端项目代码格式化指南</title>
+    <link href="https://ghyghoo8.github.io/2023/09/02/2023-09-02-%E5%89%8D%E7%AB%AF%E9%A1%B9%E7%9B%AE%E4%BB%A3%E7%A0%81%E6%A0%BC%E5%BC%8F%E5%8C%96%E6%8C%87%E5%8D%97/"/>
+    <id>https://ghyghoo8.github.io/2023/09/02/2023-09-02-%E5%89%8D%E7%AB%AF%E9%A1%B9%E7%9B%AE%E4%BB%A3%E7%A0%81%E6%A0%BC%E5%BC%8F%E5%8C%96%E6%8C%87%E5%8D%97/</id>
+    <published>2023-09-01T16:00:00.000Z</published>
+    <updated>2024-09-12T09:34:25.086Z</updated>
+    
+    
+      
+      
+        
+        
+    <summary type="html">&lt;h2 id=&quot;Vue技术栈-配置&quot;&gt;&lt;a href=&quot;#Vue技术栈-配置&quot; class=&quot;headerlink&quot; title=&quot;Vue技术栈&amp;amp;配置&quot;&gt;&lt;/a&gt;Vue技术栈&amp;amp;配置&lt;/h2&gt;&lt;ul&gt;
+&lt;li&gt;eslint + prettier +</summary>
+        
+      
+    
+    
+    
+    <category term="工程化" scheme="https://ghyghoo8.github.io/categories/%E5%B7%A5%E7%A8%8B%E5%8C%96/"/>
+    
+    
+  </entry>
+  
+  <entry>
+    <title>团队管理的一些思考🤔</title>
+    <link href="https://ghyghoo8.github.io/2023/01/30/2021-08-30-%E5%85%B3%E4%BA%8E%E5%9B%A2%E9%98%9F%E7%AE%A1%E7%90%86/"/>
+    <id>https://ghyghoo8.github.io/2023/01/30/2021-08-30-%E5%85%B3%E4%BA%8E%E5%9B%A2%E9%98%9F%E7%AE%A1%E7%90%86/</id>
+    <published>2023-01-29T16:00:00.000Z</published>
+    <updated>2023-01-29T16:00:00.000Z</updated>
+    
+    
+      
+      
+        
+        
+    <summary type="html">&lt;h4 id=&quot;先引用一句名言：人用制度管，事用流程管&quot;&gt;&lt;a href=&quot;#先引用一句名言：人用制度管，事用流程管&quot; class=&quot;headerlink&quot;</summary>
+        
+      
+    
+    
+    
+    <category term="team" scheme="https://ghyghoo8.github.io/categories/team/"/>
+    
+    
+    <category term="manager" scheme="https://ghyghoo8.github.io/tags/manager/"/>
+    
+  </entry>
+  
+  <entry>
+    <title>刷算法题-卷起来</title>
+    <link href="https://ghyghoo8.github.io/2022/12/30/2022-12-30-%E3%80%90%E5%AD%A6%E4%B9%A0%E3%80%91%E4%B8%80%E5%A4%A9%E4%B8%80%E9%81%93%E7%AE%97%E6%B3%95%E9%A2%98/"/>
+    <id>https://ghyghoo8.github.io/2022/12/30/2022-12-30-%E3%80%90%E5%AD%A6%E4%B9%A0%E3%80%91%E4%B8%80%E5%A4%A9%E4%B8%80%E9%81%93%E7%AE%97%E6%B3%95%E9%A2%98/</id>
+    <published>2022-12-29T16:00:00.000Z</published>
+    <updated>2024-09-12T09:34:25.086Z</updated>
+    
+    
+      
+      
+        
+        
+    <summary type="html">&lt;p&gt;RT。&lt;/p&gt;
+&lt;p&gt;大环境不景气，为了生活，必须好好学习了 📚📖&lt;/p&gt;
+&lt;h3 id=&quot;一天一道算法题&quot;&gt;&lt;a href=&quot;#一天一道算法题&quot; class=&quot;headerlink&quot;</summary>
+        
+      
+    
+    
+    
+    <category term="学习" scheme="https://ghyghoo8.github.io/categories/%E5%AD%A6%E4%B9%A0/"/>
+    
+    
+  </entry>
+  
+  <entry>
+    <title>沉淀一些cg经验教训</title>
+    <link href="https://ghyghoo8.github.io/2021/12/07/2021-12-07-%E6%B2%89%E6%B7%80%E4%B8%80%E4%BA%9Bcg%E7%BB%8F%E9%AA%8C%E6%95%99%E8%AE%AD/"/>
+    <id>https://ghyghoo8.github.io/2021/12/07/2021-12-07-%E6%B2%89%E6%B7%80%E4%B8%80%E4%BA%9Bcg%E7%BB%8F%E9%AA%8C%E6%95%99%E8%AE%AD/</id>
+    <published>2021-12-06T16:00:00.000Z</published>
+    <updated>2024-09-12T09:34:25.086Z</updated>
+    
+    
+      
+      
+        
+        
+    <summary type="html">&lt;p&gt;2023-10-11&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;&lt;p&gt;记录一些必须要&lt;strong&gt;关注&lt;/strong&gt;的选股指标&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;量能，交易量，换手率&lt;/li&gt;
+&lt;li&gt;市场主线，热度，参与度&lt;/li&gt;
+&lt;li&gt;MACD线&lt;/li&gt;
+&lt;li&gt;近七日成交量趋势&lt;</summary>
+        
+      
+    
+    
+    
+    <category term="投资" scheme="https://ghyghoo8.github.io/categories/%E6%8A%95%E8%B5%84/"/>
+    
+    
+  </entry>
+  
+  <entry>
+    <title>读《置身事内》及沉淀小结</title>
+    <link href="https://ghyghoo8.github.io/2021/10/13/2021-10-13-%E5%9C%A8%E8%AF%BB%E4%B8%80%E6%9C%AC%E4%B9%A6%E3%80%8A%E7%BD%AE%E8%BA%AB%E4%BA%8B%E5%86%85%E3%80%8B/"/>
+    <id>https://ghyghoo8.github.io/2021/10/13/2021-10-13-%E5%9C%A8%E8%AF%BB%E4%B8%80%E6%9C%AC%E4%B9%A6%E3%80%8A%E7%BD%AE%E8%BA%AB%E4%BA%8B%E5%86%85%E3%80%8B/</id>
+    <published>2021-10-12T16:00:00.000Z</published>
+    <updated>2024-09-12T09:34:25.086Z</updated>
+    
+    
+      
+      
+        
+        
+    <summary type="html">&lt;h3 id=&quot;为什么要读这本书？&quot;&gt;&lt;a href=&quot;#为什么要读这本书？&quot; class=&quot;headerlink&quot; title=&quot;为什么要读这本书？&quot;&gt;&lt;/a&gt;为什么要读这本书？&lt;/h3&gt;&lt;p&gt;从业十余载，其中从事技术管理工作已有4+年，佛系股龄5+年 👉👉</summary>
+        
+      
+    
+    
+    
+    <category term="投资" scheme="https://ghyghoo8.github.io/categories/%E6%8A%95%E8%B5%84/"/>
+    
+    
+  </entry>
+  
+  <entry>
+    <title>低代码平台的设计思考</title>
+    <link href="https://ghyghoo8.github.io/2021/09/02/2021-09-02-%E4%BD%8E%E4%BB%A3%E7%A0%81%E5%B9%B3%E5%8F%B0%E7%9A%84%E8%AE%BE%E8%AE%A1%E6%80%9D%E8%80%83/"/>
+    <id>https://ghyghoo8.github.io/2021/09/02/2021-09-02-%E4%BD%8E%E4%BB%A3%E7%A0%81%E5%B9%B3%E5%8F%B0%E7%9A%84%E8%AE%BE%E8%AE%A1%E6%80%9D%E8%80%83/</id>
+    <published>2021-09-01T16:00:00.000Z</published>
+    <updated>2024-09-12T09:34:25.086Z</updated>
+    
+    
+      
+      
+        
+        
+    <summary type="html">&lt;h3 id=&quot;如何设计一个低代码可视化搭建平台？&quot;&gt;&lt;a href=&quot;#如何设计一个低代码可视化搭建平台？&quot; class=&quot;headerlink&quot;</summary>
+        
+      
+    
+    
+    
+    
+    <category term="web" scheme="https://ghyghoo8.github.io/tags/web/"/>
+    
+    <category term="架构" scheme="https://ghyghoo8.github.io/tags/%E6%9E%B6%E6%9E%84/"/>
+    
+    <category term="低代码" scheme="https://ghyghoo8.github.io/tags/%E4%BD%8E%E4%BB%A3%E7%A0%81/"/>
+    
+  </entry>
+  
+  <entry>
+    <title>搭建Hexo自动部署GithubPage站点</title>
+    <link href="https://ghyghoo8.github.io/2021/09/01/2021-08-27-%E6%90%AD%E5%BB%BAHexo%E8%87%AA%E5%8A%A8%E9%83%A8%E7%BD%B2GithubPage%E7%AB%99%E7%82%B9/"/>
+    <id>https://ghyghoo8.github.io/2021/09/01/2021-08-27-%E6%90%AD%E5%BB%BAHexo%E8%87%AA%E5%8A%A8%E9%83%A8%E7%BD%B2GithubPage%E7%AB%99%E7%82%B9/</id>
+    <published>2021-08-31T16:00:00.000Z</published>
+    <updated>2024-09-12T09:34:25.082Z</updated>
+    
+    
+      
+      
+        
+        
+    <summary type="html">&lt;h4 id=&quot;hexo操作&quot;&gt;&lt;a href=&quot;#hexo操作&quot; class=&quot;headerlink&quot; title=&quot;hexo操作&quot;&gt;&lt;/a&gt;hexo操作&lt;/h4&gt;&lt;ul&gt;
+&lt;li&gt;安装hexo：&lt;ul&gt;
+&lt;li&gt;&lt;code&gt;npm install -g</summary>
+        
+      
+    
+    
+    
+    <category term="web" scheme="https://ghyghoo8.github.io/categories/web/"/>
+    
+    
+    <category term="hexo" scheme="https://ghyghoo8.github.io/tags/hexo/"/>
+    
+    <category term="github" scheme="https://ghyghoo8.github.io/tags/github/"/>
+    
+    <category term="actions" scheme="https://ghyghoo8.github.io/tags/actions/"/>
+    
+    <category term="workflows" scheme="https://ghyghoo8.github.io/tags/workflows/"/>
+    
+  </entry>
+  
+  <entry>
+    <title>以前端角度去学习并掌握DDD-领域驱动设计</title>
+    <link href="https://ghyghoo8.github.io/2021/09/01/2021-09-01-%E6%8E%8C%E6%8F%A1DDD%E9%A2%86%E5%9F%9F%E9%A9%B1%E5%8A%A8%E8%AE%BE%E8%AE%A1%20copy/"/>
+    <id>https://ghyghoo8.github.io/2021/09/01/2021-09-01-%E6%8E%8C%E6%8F%A1DDD%E9%A2%86%E5%9F%9F%E9%A9%B1%E5%8A%A8%E8%AE%BE%E8%AE%A1%20copy/</id>
+    <published>2021-08-31T16:00:00.000Z</published>
+    <updated>2024-09-12T09:34:25.086Z</updated>
+    
+    
+      
+      
+        
+        
+    <summary type="html">&lt;h3 id=&quot;Domain-Driven-Design，DDD&quot;&gt;&lt;a href=&quot;#Domain-Driven-Design，DDD&quot; class=&quot;headerlink&quot; title=&quot;Domain-Driven Design，DDD&quot;&gt;&lt;/a&gt;Domain-Driven</summary>
+        
+      
+    
+    
+    
+    
+    <category term="web" scheme="https://ghyghoo8.github.io/tags/web/"/>
+    
+    <category term="DDD" scheme="https://ghyghoo8.github.io/tags/DDD/"/>
+    
+    <category term="架构" scheme="https://ghyghoo8.github.io/tags/%E6%9E%B6%E6%9E%84/"/>
+    
+  </entry>
+  
+  <entry>
+    <title>如何使用sentry的release功能</title>
+    <link href="https://ghyghoo8.github.io/2021/08/31/2021-08-31-%E5%A6%82%E4%BD%95%E4%BD%BF%E7%94%A8sentry%E7%9A%84release%E5%8A%9F%E8%83%BD/"/>
+    <id>https://ghyghoo8.github.io/2021/08/31/2021-08-31-%E5%A6%82%E4%BD%95%E4%BD%BF%E7%94%A8sentry%E7%9A%84release%E5%8A%9F%E8%83%BD/</id>
+    <published>2021-08-30T16:00:00.000Z</published>
+    <updated>2024-09-12T09:34:25.082Z</updated>
+    
+    
+      
+      
+        
+        
+    <summary type="html">&lt;h3 id=&quot;关于接入Sentry后，不影响chunk的hash值的解决方案&quot;&gt;&lt;a href=&quot;#关于接入Sentry后，不影响chunk的hash值的解决方案&quot; class=&quot;headerlink&quot;</summary>
+        
+      
+    
+    
+    
+    
+    <category term="sentry" scheme="https://ghyghoo8.github.io/tags/sentry/"/>
+    
+    <category term="web" scheme="https://ghyghoo8.github.io/tags/web/"/>
+    
+    <category term="webpack" scheme="https://ghyghoo8.github.io/tags/webpack/"/>
+    
+  </entry>
+  
+  <entry>
+    <title>用Rust写一个node-addons</title>
+    <link href="https://ghyghoo8.github.io/2021/08/31/2021-08-31-%E7%94%A8rust%E5%86%99%E4%B8%80%E4%B8%AANodeAddons/"/>
+    <id>https://ghyghoo8.github.io/2021/08/31/2021-08-31-%E7%94%A8rust%E5%86%99%E4%B8%80%E4%B8%AANodeAddons/</id>
+    <published>2021-08-30T16:00:00.000Z</published>
+    <updated>2024-09-12T09:34:25.086Z</updated>
+    
+    
+      
+      
+        
+        
+    <summary type="html">&lt;h3 id=&quot;Rust是什么？&quot;&gt;&lt;a href=&quot;#Rust是什么？&quot; class=&quot;headerlink&quot; title=&quot;Rust是什么？&quot;&gt;&lt;/a&gt;Rust是什么？&lt;/h3&gt;&lt;p&gt;Rust</summary>
+        
+      
+    
+    
+    
+    <category term="web" scheme="https://ghyghoo8.github.io/categories/web/"/>
+    
+    
+    <category term="web" scheme="https://ghyghoo8.github.io/tags/web/"/>
+    
+    <category term="rust" scheme="https://ghyghoo8.github.io/tags/rust/"/>
+    
+    <category term="node" scheme="https://ghyghoo8.github.io/tags/node/"/>
+    
+  </entry>
+  
+  <entry>
+    <title>cc</title>
+    <link href="https://ghyghoo8.github.io/2021/08/27/2021-08-27-cc/"/>
+    <id>https://ghyghoo8.github.io/2021/08/27/2021-08-27-cc/</id>
+    <published>2021-08-26T16:00:00.000Z</published>
+    <updated>2024-09-12T09:34:25.082Z</updated>
+    
+    
+      
+      
+        
+        
+    <summary type="html">&lt;h2 id=&quot;test&quot;&gt;&lt;a href=&quot;#test&quot; class=&quot;headerlink&quot; title=&quot;test&quot;&gt;&lt;/a&gt;test&lt;/h2&gt;&lt;p&gt;建个blog&lt;/p&gt;
+&lt;p&gt;&lt;img src=&quot;/imgs/IMG_0001.PNG&quot;</summary>
+        
+      
+    
+    
+    
+    
+  </entry>
+  
+</feed>
