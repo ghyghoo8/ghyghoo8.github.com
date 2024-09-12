@@ -17,7 +17,7 @@ tags:
 以 UniVpn 为例，我们将通过以下步骤实现自动重连：
 
 #### 启动 VPN 客户端
-首先，在 shell 命令行中运行以下命令来启动 SecoClient，并创建一个 VPN 连接：
+首先，在 shell 命令行中运行以下命令来启动 `UniVpn`，并创建一个 VPN 连接：
 
 ```bash
 /usr/local/UniVPN/serviceclient/UniVPNCS
