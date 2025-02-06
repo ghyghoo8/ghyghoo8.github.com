@@ -63,21 +63,21 @@ jobs:
     strategy:
       matrix:
         os: [ubuntu-latest]
-        node_version: [14.x]
+        node_version: [18.x]
 
     steps:
       - name: Checkout
-        uses: actions/checkout@v2
+        uses: actions/checkout@v3
 
       - name: Checkout theme repo
-        uses: actions/checkout@v2
+        uses: actions/checkout@v3
         with:
           repository: ${{ env.THEME_REPO }}
           ref: ${{ env.THEME_BRANCH }}
           path: themes/next
 
       - name: Checkout deploy repo
-        uses: actions/checkout@v2
+        uses: actions/checkout@v3
         with:
           repository: ${{ env.DEPLOY_REPO }}
           ref: ${{ env.DEPLOY_BRANCH }}
@@ -87,6 +87,7 @@ jobs:
         uses: actions/setup-node@v1
         with:
           node-version: ${{ matrix.node_version }}
+          cache: 'yarn' # Or 'npm' or 'pnpm'
 
       - name: Configuration environment
         env:
@@ -103,14 +104,14 @@ jobs:
 
       - name: Install dependencies
         run: |
-          npm install
+          yarn install
 
       - name: Deploy hexo
         env: 
           GITHUB_TOKEN: ${{secrets.HEXO_DEPLOY_PRI}}
         run: |
           rm -rf .deploy_git
-          npm run deploy
+          yarn deploy
 
 ```
 
