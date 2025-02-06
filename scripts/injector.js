@@ -6,7 +6,8 @@ hexo.extend.injector.register('body_end', () => {
     '<div id="sakana-widget"></div>',
     `<script>
       function initSakanaWidget() {
-        new SakanaWidget().mount('#sakana-widget');
+        // 默认自走模式
+        new SakanaWidget().mount('#sakana-widget').triggetAutoMode();
       }
     </script>`,
     `<script
@@ -20,6 +21,7 @@ hexo.extend.injector.register('body_end', () => {
 // google adsense
 hexo.extend.injector.register('head_end', () => {
   return ['<script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-7923526446101866" crossorigin="anonymous"></script>',
-  '<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/sakana-widget@2.7.0/lib/sakana.min.css" />'
+    '<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/sakana-widget@2.7.0/lib/sakana.min.css" />',
+  `<style>#sakana-widget{position:fixed;bottom:0;left:0;}</style>`
   ].join('')
 });
