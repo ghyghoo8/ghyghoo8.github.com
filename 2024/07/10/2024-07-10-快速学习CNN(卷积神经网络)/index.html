@@ -1,0 +1,524 @@
+<!DOCTYPE html>
+<html lang="zh-Hans">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
+<meta name="theme-color" content="#222">
+<meta name="generator" content="Hexo 7.3.0">
+  <link rel="apple-touch-icon" sizes="180x180" href="/imgs/logo.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/imgs/32.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/imgs/16.png">
+  <link rel="mask-icon" href="/imgs/logo.png" color="#222">
+  <meta name="google-site-verification" content="dJfRF5_6EbT_bJo2wTKbSXTDmNaOTqDGRDMcU6ylduk">
+
+<link rel="stylesheet" href="/css/main.css">
+
+
+<link rel="stylesheet" href="//cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@5/css/all.min.css">
+
+<script id="hexo-configurations">
+    var NexT = window.NexT || {};
+    var CONFIG = {"hostname":"ghyghoo8.github.io","root":"/","scheme":"Pisces","version":"7.8.0","exturl":true,"sidebar":{"position":"left","display":"post","padding":18,"offset":12,"onmobile":false},"copycode":{"enable":false,"show_result":false,"style":null},"back2top":{"enable":true,"sidebar":false,"scrollpercent":false},"bookmark":{"enable":false,"color":"#222","save":"auto"},"fancybox":false,"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":"livere","storage":true,"lazyload":false,"nav":null,"activeClass":"livere"},"algolia":{"hits":{"per_page":10},"labels":{"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}},"localsearch":{"enable":false,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}}};
+  </script>
+
+  <meta name="description" content="CNN 是什么？在机器学习中，分类器将类标签分配给数据点。例如，图像分类器为图像中存在的对象产生一个类标签（例如鸟、飞机）。卷积神经网络（CNN）是一种类型的分类器，擅长解决这个问题！ CNN是一种神经网络：用于识别数据中的模式的算法。神经网络通常由一组神经元组成，这些神经元组织成层，每层都有自己可学习的权重和偏差。让我们将CNN分解为多个基本构建模块。  一个张量可以被视为一个n维矩阵。在上述">
+<meta property="og:type" content="article">
+<meta property="og:title" content="【译】快速学习CNN(卷积神经网络)">
+<meta property="og:url" content="https://ghyghoo8.github.io/2024/07/10/2024-07-10-%E5%BF%AB%E9%80%9F%E5%AD%A6%E4%B9%A0CNN(%E5%8D%B7%E7%A7%AF%E7%A5%9E%E7%BB%8F%E7%BD%91%E7%BB%9C)/index.html">
+<meta property="og:site_name" content="G8空间">
+<meta property="og:description" content="CNN 是什么？在机器学习中，分类器将类标签分配给数据点。例如，图像分类器为图像中存在的对象产生一个类标签（例如鸟、飞机）。卷积神经网络（CNN）是一种类型的分类器，擅长解决这个问题！ CNN是一种神经网络：用于识别数据中的模式的算法。神经网络通常由一组神经元组成，这些神经元组织成层，每层都有自己可学习的权重和偏差。让我们将CNN分解为多个基本构建模块。  一个张量可以被视为一个n维矩阵。在上述">
+<meta property="og:locale">
+<meta property="og:image" content="https://poloclub.github.io/cnn-explainer/assets/figures/network_details.png">
+<meta property="og:image" content="https://poloclub.github.io/cnn-explainer/assets/figures/convlayer_overview_demo.gif">
+<meta property="og:image" content="https://poloclub.github.io/cnn-explainer/assets/figures/convlayer_detailedview_demo.gif">
+<meta property="og:image" content="https://ghyghoo8.github.io/imgs/a/models/c.jpg">
+<meta property="og:image" content="https://poloclub.github.io/cnn-explainer/assets/figures/relu_graph.png">
+<meta property="og:image" content="https://ghyghoo8.github.io/imgs/a/models/d.jpg">
+<meta property="og:image" content="https://poloclub.github.io/cnn-explainer/assets/figures/softmax_animation.gif">
+<meta property="article:published_time" content="2024-07-09T16:00:00.000Z">
+<meta property="article:modified_time" content="2025-03-15T07:37:17.099Z">
+<meta property="article:author" content="ghyghoo8">
+<meta property="article:tag" content="入门">
+<meta property="article:tag" content="新手教程">
+<meta property="article:tag" content="学习">
+<meta property="article:tag" content="CNN">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="https://poloclub.github.io/cnn-explainer/assets/figures/network_details.png">
+
+<link rel="canonical" href="https://ghyghoo8.github.io/2024/07/10/2024-07-10-%E5%BF%AB%E9%80%9F%E5%AD%A6%E4%B9%A0CNN(%E5%8D%B7%E7%A7%AF%E7%A5%9E%E7%BB%8F%E7%BD%91%E7%BB%9C)/">
+
+
+<script id="page-configurations">
+  // https://hexo.io/docs/variables.html
+  CONFIG.page = {
+    sidebar: "",
+    isHome : false,
+    isPost : true,
+    lang   : 'zh-Hans'
+  };
+</script>
+
+  <title>【译】快速学习CNN(卷积神经网络) | G8空间</title>
+  
+
+
+
+
+
+
+  <noscript>
+  <style>
+  .use-motion .brand,
+  .use-motion .menu-item,
+  .sidebar-inner,
+  .use-motion .post-block,
+  .use-motion .pagination,
+  .use-motion .comments,
+  .use-motion .post-header,
+  .use-motion .post-body,
+  .use-motion .collection-header { opacity: initial; }
+
+  .use-motion .site-title,
+  .use-motion .site-subtitle {
+    opacity: initial;
+    top: initial;
+  }
+
+  .use-motion .logo-line-before i { left: initial; }
+  .use-motion .logo-line-after i { right: initial; }
+  </style>
+</noscript>
+
+<!-- hexo injector head_end start --><script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-7923526446101866" crossorigin="anonymous"></script><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/sakana-widget@2.7.0/lib/sakana.min.css" /><style>#sakana-widget{position:fixed;bottom:0;left:0;}</style><!-- hexo injector head_end end --><link rel="alternate" href="/atom.xml" title="G8空间" type="application/atom+xml">
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage">
+  <div class="container use-motion">
+    <div class="headband"></div>
+
+    <header class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="Toggle navigation bar">
+      <span class="toggle-line toggle-line-first"></span>
+      <span class="toggle-line toggle-line-middle"></span>
+      <span class="toggle-line toggle-line-last"></span>
+    </div>
+  </div>
+
+  <div class="site-meta custom-logo">
+
+    <a href="/" class="brand" rel="start">
+      <span class="logo-line-before"><i></i></span>
+      <h1 class="site-title">G8空间</h1>
+      <span class="logo-line-after"><i></i></span>
+    </a>
+      <p class="site-subtitle" itemprop="description">ghyghoo8的沉淀小碎</p>
+      <a>
+        <img class="custom-logo-image" src="/imgs/IMG_0001.PNG" alt="G8空间">
+      </a>
+  </div>
+
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger">
+    </div>
+  </div>
+</div>
+
+
+
+
+<nav class="site-nav">
+  <ul id="menu" class="main-menu menu">
+        <li class="menu-item menu-item-home">
+
+    <a href="/" rel="section"><i class="fa fa-home fa-fw"></i>Home</a>
+
+  </li>
+        <li class="menu-item menu-item-about">
+
+    <a href="/about/" rel="section"><i class="fa fa-user fa-fw"></i>About</a>
+
+  </li>
+        <li class="menu-item menu-item-tags">
+
+    <a href="/tags/" rel="section"><i class="fa fa-tags fa-fw"></i>Tags</a>
+
+  </li>
+        <li class="menu-item menu-item-categories">
+
+    <a href="/categories/" rel="section"><i class="fa fa-th fa-fw"></i>Categories</a>
+
+  </li>
+        <li class="menu-item menu-item-archives">
+
+    <a href="/archives/" rel="section"><i class="fa fa-archive fa-fw"></i>Archives</a>
+
+  </li>
+        <li class="menu-item menu-item-guestbook">
+
+    <a href="/guestbook" rel="section"><i class="fa fa-comment fa-fw"></i>guestbook</a>
+
+  </li>
+  </ul>
+</nav>
+
+
+
+
+</div>
+    </header>
+
+    
+  <div class="back-to-top">
+    <i class="fa fa-arrow-up"></i>
+    <span>0%</span>
+  </div>
+
+  <span class="exturl github-corner" data-url="aHR0cHM6Ly9naXRodWIuY29tL2doeWdob284" title="Follow me on GitHub" aria-label="Follow me on GitHub"><svg width="80" height="80" viewBox="0 0 250 250" aria-hidden="true"><path d="M0,0 L115,115 L130,115 L142,142 L250,250 L250,0 Z"></path><path d="M128.3,109.0 C113.8,99.7 119.0,89.6 119.0,89.6 C122.0,82.7 120.5,78.6 120.5,78.6 C119.2,72.0 123.4,76.3 123.4,76.3 C127.3,80.9 125.5,87.3 125.5,87.3 C122.9,97.6 130.6,101.9 134.4,103.2" fill="currentColor" style="transform-origin: 130px 106px;" class="octo-arm"></path><path d="M115.0,115.0 C114.9,115.1 118.7,116.5 119.8,115.4 L133.7,101.6 C136.9,99.2 139.9,98.4 142.2,98.6 C133.8,88.0 127.5,74.4 143.8,58.0 C148.5,53.4 154.0,51.2 159.7,51.0 C160.3,49.4 163.2,43.6 171.4,40.1 C171.4,40.1 176.1,42.5 178.8,56.2 C183.1,58.6 187.2,61.8 190.9,65.4 C194.5,69.0 197.7,73.2 200.1,77.6 C213.8,80.2 216.3,84.9 216.3,84.9 C212.7,93.1 206.9,96.0 205.4,96.6 C205.1,102.4 203.0,107.8 198.3,112.5 C181.9,128.9 168.3,122.5 157.7,114.1 C157.9,116.9 156.7,120.9 152.7,124.9 L141.0,136.5 C139.8,137.7 141.6,141.9 141.8,141.8 Z" fill="currentColor" class="octo-body"></path></svg></span>
+
+
+    <main class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          
+
+          <div class="content post posts-expand">
+            
+
+    
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-Hans">
+    <link itemprop="mainEntityOfPage" href="https://ghyghoo8.github.io/2024/07/10/2024-07-10-%E5%BF%AB%E9%80%9F%E5%AD%A6%E4%B9%A0CNN(%E5%8D%B7%E7%A7%AF%E7%A5%9E%E7%BB%8F%E7%BD%91%E7%BB%9C)/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar.gif">
+      <meta itemprop="name" content="ghyghoo8">
+      <meta itemprop="description" content="碎了一地...o(*￣︶￣*)o...">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="G8空间">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          【译】快速学习CNN(卷积神经网络)
+        </h1>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-calendar"></i>
+              </span>
+              <span class="post-meta-item-text">Posted on</span>
+
+              <time title="Created: 2024-07-10 00:00:00" itemprop="dateCreated datePublished" datetime="2024-07-10T00:00:00+08:00">2024-07-10</time>
+            </span>
+              <span class="post-meta-item">
+                <span class="post-meta-item-icon">
+                  <i class="far fa-calendar-check"></i>
+                </span>
+                <span class="post-meta-item-text">Edited on</span>
+                <time title="Modified: 2025-03-15 15:37:17" itemprop="dateModified" datetime="2025-03-15T15:37:17+08:00">2025-03-15</time>
+              </span>
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-folder"></i>
+              </span>
+              <span class="post-meta-item-text">In</span>
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/llm/" itemprop="url" rel="index"><span itemprop="name">llm</span></a>
+                </span>
+            </span>
+
+          
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+        <hr>
+<h2 id="CNN-是什么？"><a href="#CNN-是什么？" class="headerlink" title="CNN 是什么？"></a>CNN 是什么？</h2><p>在机器学习中，分类器将类标签分配给数据点。例如，图像分类器为图像中存在的对象产生一个类标签（例如鸟、飞机）。卷积神经网络（CNN）是一种类型的分类器，擅长解决这个问题！</p>
+<p>CNN是一种神经网络：用于识别数据中的模式的算法。神经网络通常由一组神经元组成，这些神经元组织成层，每层都有自己可学习的权重和偏差。让我们将CNN分解为多个基本构建模块。</p>
+<ol>
+<li>一个<strong>张量</strong>可以被视为一个n维矩阵。在上述CNN中，张量将是三维的，除了输出层。</li>
+<li>一个<strong>神经元</strong>可以被视为一个接受多个输入并产生单个输出的函数。神经元的输出在上面被表示为红色→蓝色的激活图。<br>一个层简单地是具有相同操作的神经元的集合，包括相同的超参数。</li>
+<li>一个<strong>层</strong>简单地是具有相同操作的神经元的集合，包括相同的超参数。</li>
+<li><strong>核权重和偏差</strong>，虽然对每个神经元都是独特的，但在训练阶段进行调整，并且允许分类器适应所提供的问题和数据集。它们在可视化中使用黄色→绿色的差异颜色刻度进行编码。具体的值可以通过点击神经元或悬停在卷积弹性解释视图中的<strong>核&#x2F;偏差</strong>上来查看交互式公式视图中的。</li>
+<li>CNN表达了一个<strong>可微分的评分函数</strong>，这在输出层的可视化中表示为<strong>类别得分</strong>。</li>
+</ol>
+<p>如果您之前学习过神经网络，这些术语可能听起来很熟悉。那么CNN有何不同之处呢？CNN利用一种特殊类型的层，恰当地称为卷积层，使它们能够很好地学习图像和类似图像的数据。关于图像数据，CNN可用于许多不同的计算机视觉任务，<span class="exturl" data-url="aHR0cDovL2lqY3NpdC5jb20vZG9jcy9Wb2x1bWUlMjA3L3ZvbDdpc3N1ZTUvaWpjc2l0MjAxNjA3MDUwMTQucGRm">如图像处理、分类、分割和目标检测<i class="fa fa-external-link-alt"></i></span>。</p>
+<p>在<span class="exturl" data-url="aHR0cHM6Ly9wb2xvY2x1Yi5naXRodWIuaW8vY25uLWV4cGxhaW5lci8=">CNN Explainer<i class="fa fa-external-link-alt"></i></span>中，您可以看到一个简单的CNN如何用于图像分类。由于网络的简单性，其性能并不完美，但这没关系！CNN Explainer中使用的网络架构Tiny VGG包含了如今最先进的CNN中使用的许多相同层和操作，但规模较小。这样，入门将会更容易理解。</p>
+<h2 id="每个网络层都有什么作用？"><a href="#每个网络层都有什么作用？" class="headerlink" title="每个网络层都有什么作用？"></a>每个网络层都有什么作用？</h2><p>让我们逐层了解网络中的每一层。在阅读时，可以随意与<span class="exturl" data-url="aHR0cHM6Ly9wb2xvY2x1Yi5naXRodWIuaW8vY25uLWV4cGxhaW5lci8=">可视化工具-CNN Explainer<i class="fa fa-external-link-alt"></i></span>进行交互，点击和悬停在不同部分。</p>
+<h3 id="输入层-Input-Layer"><a href="#输入层-Input-Layer" class="headerlink" title="输入层(Input Layer)"></a>输入层(Input Layer)</h3><p>输入层（最左边的层）代表CNN中的输入图像。因为我们使用RGB图像作为输入，输入层有三个通道，分别对应红色、绿色和蓝色通道，在这个层中显示。当您点击上面的网络详情图标<img src="https://poloclub.github.io/cnn-explainer/assets/figures/network_details.png" width="100">时，使用颜色标尺显示详细信息（在这一层和其他层上）。</p>
+<h3 id="卷积层-Convolutional-Layers"><a href="#卷积层-Convolutional-Layers" class="headerlink" title="卷积层(Convolutional Layers)"></a>卷积层(Convolutional Layers)</h3><p>卷积层是CNN的基础，因为它们包含了学习到的卷积核（权重），这些卷积核可以提取出区分不同图像的特征，这正是我们进行分类所需要的！当您与卷积层交互时，您会注意到前一层和卷积层之间的联系。每个连接代表一个独特的卷积核，用于卷积操作以生成当前卷积神经元的输出或激活图。</p>
+<p>卷积神经元执行一个逐元素的点积运算，使用一个独特的卷积核和前一层对应的神经元的输出。这将产生与独特卷积核数量相同的中间结果。卷积神经元是所有中间结果与学习到的偏置求和的结果。</p>
+<p>例如，让我们看一下上面Tiny VGG架构中的第一个卷积层。注意这一层有10个神经元，但前一层只有3个神经元。在Tiny VGG架构中，卷积层是全连接的，意味着每个神经元与前一层的每个神经元都有连接。关注第一个卷积层中最上面的卷积神经元的输出，当我们悬停在激活图上时，我们可以看到有3个独特的卷积核。</p>
+<p><img src="https://poloclub.github.io/cnn-explainer/assets/figures/convlayer_overview_demo.gif"><br><code>Figure 1. As you hover over the activation map of the topmost node from the first convolutional layer, you can see that 3 kernels were applied to yield this activation map. After clicking this activation map, you can see the convolution operation occuring with each unique kernel.</code></p>
+<p>这些核的大小是由网络架构的设计者指定的超参数。为了产生卷积神经元（激活图）的输出，我们必须对上一层的输出和网络学习的唯一核进行逐元素点积运算。在TinyVGG中，点积运算使用1的步幅，这意味着每个点积中核都会移动1个像素，但这是网络架构设计者可以调整以更好地适应其数据集的超参数。我们必须对所有3个核执行此操作，这将产生3个中间结果。</p>
+<p><img src="https://poloclub.github.io/cnn-explainer/assets/figures/convlayer_detailedview_demo.gif"><br><code>Figure 2. The kernel being applied to yield the topmost intermediate result for the discussed activation map.</code></p>
+<p>然后，执行元素级求和，其中包含所有3个中间结果以及网络学习的偏差。之后，生成的二维张量将是在上述界面中查看的第一个卷积层中最顶层神经元的激活图。必须应用相同的操作来生成每个神经元的激活图。</p>
+<p>通过一些简单的数学运算，我们可以推断出在第一个卷积层中有3 x 10 &#x3D; 30个独特的大小为3x3的卷积核。卷积层与前一层之间的连接是在构建网络架构时的设计决策，这将影响每个卷积层中的卷积核数量。</p>
+<h3 id="了解超参数-Hyperparameters"><a href="#了解超参数-Hyperparameters" class="headerlink" title="了解超参数(Hyperparameters)"></a>了解超参数(Hyperparameters)</h3><p><img src="/imgs/a/models/c.jpg" alt="Hyperparameters"></p>
+<ol>
+<li><p><strong>填充(Padding)</strong> 通常在卷积核超出激活图时是必要的。填充可以保护激活图边缘的数据，提高性能，并有助于保持输入的空间大小，使架构设计师能够构建更深、性能更高的网络。存在许多填充技术，但最常用的方法是零填充，因为它具有性能好、简单和计算效率高的特点。该技术涉及在输入的边缘对称地添加零。这种方法被许多高性能的CNN（卷积神经网络）如AlexNet所采用。</p>
+</li>
+<li><p><strong>卷积核大小(Kernel size)</strong> ，通常也称为滤波器大小，指的是在输入上滑动窗口的尺寸。选择这个超参数对图像分类任务有巨大影响。例如，小卷积核尺寸能够从输入中提取包含高度局部特征的大量信息。正如您在上面的可视化中所看到的，较小的卷积核尺寸还导致层维度的减小，从而允许更深的架构。相反，大卷积核尺寸提取较少信息，导致层维度更快地减小，通常导致性能更差。大卷积核更适合提取较大的特征。最终，选择适当的卷积核大小将取决于您的任务和数据集，但一般来说，较小的卷积核大小能够提高图像分类任务的性能，因为架构设计者能够将更多层叠加在一起，以学习更复杂的特征！</p>
+</li>
+<li><p><strong>步幅(Stride)</strong> 表示卷积核每次应移动多少像素。例如，如上所述的卷积层示例中，Tiny VGG在其卷积层中使用步幅1，这意味着对输入的3x3窗口执行点积以产生输出值，然后每次后续操作都向右移动一个像素。步幅对CNN的影响类似于卷积核大小。随着步幅减小，学到的特征更多，因为提取更多数据，这也导致更大的输出层。相反，随着步幅增加，这导致特征提取受限，并且输出层尺寸更小。架构设计者的责任之一是确保在实现CNN时卷积核对输入进行对称滑动。使用上面的超参数可视化来改变各种输入&#x2F;卷积核维度上的步幅，以理解这个约束！</p>
+</li>
+</ol>
+<h3 id="激活函数-Activation-Functions"><a href="#激活函数-Activation-Functions" class="headerlink" title="激活函数(Activation Functions)"></a>激活函数(Activation Functions)</h3><h4 id="ReLU"><a href="#ReLU" class="headerlink" title="ReLU"></a>ReLU</h4><p>神经网络在现代技术中非常普遍——因为它们非常准确！如今性能最高的CNN由大量层组成，能够学习更多特征。这些开创性的CNN能够实现如此巨大的准确性，部分原因是它们的非线性特性。ReLU将非线性引入模型中，这是非常必要的。非线性对于产生非线性决策边界是必要的，这样输出就不能被写成输入的线性组合。如果没有非线性激活函数，深度CNN架构将退化为一个等效的卷积层，性能远不如现在。ReLU激活函数被专门用作非线性激活函数，而不是其他非线性函数，比如Sigmoid，因为经验观察表明使用ReLU的CNN训练速度更快。</p>
+<p>ReLU 激活函数是一种<code>one-to-one</code>的数学运算：<br><img src="https://poloclub.github.io/cnn-explainer/assets/figures/relu_graph.png"><br><code>Figure 3. The ReLU activation function graphed, which disregards all negative data.</code></p>
+<p>该激活函数是对输入张量中的每个值逐元素应用的。例如，如果在值2.24上应用ReLU，则结果将是2.24，因为2.24大于0。您可以通过点击上面网络中的ReLU神经元来观察此激活函数的应用。在上述网络架构中的每个卷积层之后执行修正线性激活函数（ReLU）。注意此层对网络中各个神经元的激活图的影响！</p>
+<h4 id="Softmax"><a href="#Softmax" class="headerlink" title="Softmax"></a>Softmax</h4><p><img src="/imgs/a/models/d.jpg" alt="Softmax"></p>
+<p>一个softmax操作起到了关键作用：确保CNN的输出总和为1。因此，softmax操作对于将模型输出缩放为概率非常有用。单击最后一层可以看到网络中的softmax操作。注意，展开后的logits没有在0到1之间进行缩放。为了直观地显示每个logit（未缩放的标量值）的影响，它们使用浅橙色到深橙色的颜色比例进行编码。经过softmax函数处理后，每个类现在对应适当的概率！</p>
+<p>也许你会想到标准归一化和softmax之间的区别——毕竟，它们都将logits重新缩放到0到1之间。请记住，反向传播是训练神经网络的关键方面——我们希望正确答案具有最大的“信号”。通过使用softmax，我们实际上是在“近似”argmax，同时获得了可微性。重新缩放不会使最大值比其他logits显著地更高，而softmax会。简而言之，softmax是一个“更柔和”的argmax。<br><img src="https://poloclub.github.io/cnn-explainer/assets/figures/softmax_animation.gif"><br><code>Figure 4. The Softmax Interactive Formula View allows a user to interact with both the color encoded logits and formula to understand how the prediction scores after the flatten layer are normalized to yield classification scores.</code></p>
+<h3 id="池化层-Pooling-Layers"><a href="#池化层-Pooling-Layers" class="headerlink" title="池化层(Pooling Layers)"></a>池化层(Pooling Layers)</h3><p>不同的CNN架构中有许多种类型的池化层，但它们都旨在逐渐减少网络的空间范围，从而减少网络的参数和整体计算。上面的Tiny VGG架构中使用的池化类型是最大池化。</p>
+<p>最大池化操作在架构设计过程中需要选择核大小和步幅长度。一旦选择了，该操作会在输入上滑动指定步幅的核，而仅选择每个核切片中的最大值，以产生输出的值。可以通过点击上面网络中的池化神经元来查看该过程。</p>
+<p>在上述的Tiny VGG架构中，池化层使用2x2的核和步幅为2。这种具体规格的操作导致了75%的激活被丢弃。通过丢弃这么多数值，Tiny VGG更具计算效率，并避免过拟合。</p>
+<h3 id="展平层-Flatten-Layer"><a href="#展平层-Flatten-Layer" class="headerlink" title="展平层(Flatten Layer)"></a>展平层(Flatten Layer)</h3><p>该层将网络中的三维层转换为一维向量，以适应用于分类的全连接层的输入。例如，一个5x5x2张量将被转换为大小为50的向量。网络的先前卷积层从输入图像中提取特征，但现在是对这些特征进行分类的时候了。我们使用softmax函数对这些特征进行分类，这需要一个一维输入。这就是为什么需要展平层。可以通过单击任何输出类来查看这一层。</p>
+<h2 id="资料来源"><a href="#资料来源" class="headerlink" title="资料来源"></a>资料来源</h2><ul>
+<li><span class="exturl" data-url="aHR0cHM6Ly9wb2xvY2x1Yi5naXRodWIuaW8vY25uLWV4cGxhaW5lci8=">https://poloclub.github.io/cnn-explainer/<i class="fa fa-external-link-alt"></i></span></li>
+<li>视频教学</li>
+</ul>
+<iframe width="640" height="360" src="https://www.youtube.com/embed/HnWIHWFbuUQ" title="Demo Video &quot;CNN Explainer: Learning Convolutional Neural Networks with Interactive Visualization&quot;" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" referrerpolicy="strict-origin-when-cross-origin" allowfullscreen></iframe>
+    </div>
+
+    
+    
+    
+
+      <footer class="post-footer">
+          <div class="post-tags">
+              <a href="/tags/%E5%85%A5%E9%97%A8/" rel="tag"># 入门</a>
+              <a href="/tags/%E6%96%B0%E6%89%8B%E6%95%99%E7%A8%8B/" rel="tag"># 新手教程</a>
+              <a href="/tags/%E5%AD%A6%E4%B9%A0/" rel="tag"># 学习</a>
+              <a href="/tags/CNN/" rel="tag"># CNN</a>
+          </div>
+
+        
+
+
+        
+    <div class="post-nav">
+      <div class="post-nav-item">
+    <a href="/2024/06/07/2024-06-07-Hexo%E5%85%A8%E5%B1%80inject%E8%87%AA%E5%AE%9A%E4%B9%89JS%E8%84%9A%E6%9C%AC/" rel="prev" title="Hexo全局Inject自定义JS脚本">
+      <i class="fa fa-chevron-left"></i> Hexo全局Inject自定义JS脚本
+    </a></div>
+      <div class="post-nav-item">
+    <a href="/2024/09/12/2024-09-12-Linux%E4%B8%8B%E5%A6%82%E4%BD%95%E5%AE%9E%E7%8E%B0UniVpn%E7%9A%84%E8%87%AA%E5%8A%A8%E8%BF%9E%E6%8E%A5&%E9%87%8D%E8%BF%9E%E4%BF%9D%E6%8C%81/" rel="next" title="Linux下如何实现UniVpn的自动连接/重连保持">
+      Linux下如何实现UniVpn的自动连接/重连保持 <i class="fa fa-chevron-right"></i>
+    </a></div>
+    </div>
+      </footer>
+    
+  </article>
+  
+  
+  
+
+
+
+          </div>
+          
+    
+  <div class="comments">
+    <div id="lv-container" data-id="city" data-uid="MTAyMC81NDA1OS8zMDUzMQ=="></div>
+  </div>
+  
+
+<script>
+  window.addEventListener('tabs:register', () => {
+    let { activeClass } = CONFIG.comments;
+    if (CONFIG.comments.storage) {
+      activeClass = localStorage.getItem('comments_active') || activeClass;
+    }
+    if (activeClass) {
+      let activeTab = document.querySelector(`a[href="#comment-${activeClass}"]`);
+      if (activeTab) {
+        activeTab.click();
+      }
+    }
+  });
+  if (CONFIG.comments.storage) {
+    window.addEventListener('tabs:click', event => {
+      if (!event.target.matches('.tabs-comment .tab-content .tab-pane')) return;
+      let commentClass = event.target.classList[1];
+      localStorage.setItem('comments_active', commentClass);
+    });
+  }
+</script>
+
+        </div>
+          
+  
+  <div class="toggle sidebar-toggle">
+    <span class="toggle-line toggle-line-first"></span>
+    <span class="toggle-line toggle-line-middle"></span>
+    <span class="toggle-line toggle-line-last"></span>
+  </div>
+
+  <aside class="sidebar">
+    <div class="sidebar-inner">
+
+      <ul class="sidebar-nav motion-element">
+        <li class="sidebar-nav-toc">
+          Table of Contents
+        </li>
+        <li class="sidebar-nav-overview">
+          Overview
+        </li>
+      </ul>
+
+      <!--noindex-->
+      <div class="post-toc-wrap sidebar-panel">
+          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#CNN-%E6%98%AF%E4%BB%80%E4%B9%88%EF%BC%9F"><span class="nav-number">1.</span> <span class="nav-text">CNN 是什么？</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E6%AF%8F%E4%B8%AA%E7%BD%91%E7%BB%9C%E5%B1%82%E9%83%BD%E6%9C%89%E4%BB%80%E4%B9%88%E4%BD%9C%E7%94%A8%EF%BC%9F"><span class="nav-number">2.</span> <span class="nav-text">每个网络层都有什么作用？</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E8%BE%93%E5%85%A5%E5%B1%82-Input-Layer"><span class="nav-number">2.1.</span> <span class="nav-text">输入层(Input Layer)</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%8D%B7%E7%A7%AF%E5%B1%82-Convolutional-Layers"><span class="nav-number">2.2.</span> <span class="nav-text">卷积层(Convolutional Layers)</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E4%BA%86%E8%A7%A3%E8%B6%85%E5%8F%82%E6%95%B0-Hyperparameters"><span class="nav-number">2.3.</span> <span class="nav-text">了解超参数(Hyperparameters)</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E6%BF%80%E6%B4%BB%E5%87%BD%E6%95%B0-Activation-Functions"><span class="nav-number">2.4.</span> <span class="nav-text">激活函数(Activation Functions)</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#ReLU"><span class="nav-number">2.4.1.</span> <span class="nav-text">ReLU</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#Softmax"><span class="nav-number">2.4.2.</span> <span class="nav-text">Softmax</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E6%B1%A0%E5%8C%96%E5%B1%82-Pooling-Layers"><span class="nav-number">2.5.</span> <span class="nav-text">池化层(Pooling Layers)</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%B1%95%E5%B9%B3%E5%B1%82-Flatten-Layer"><span class="nav-number">2.6.</span> <span class="nav-text">展平层(Flatten Layer)</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E8%B5%84%E6%96%99%E6%9D%A5%E6%BA%90"><span class="nav-number">3.</span> <span class="nav-text">资料来源</span></a></li></ol></div>
+      </div>
+      <!--/noindex-->
+
+      <div class="site-overview-wrap sidebar-panel">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+  <p class="site-author-name" itemprop="name">ghyghoo8</p>
+  <div class="site-description" itemprop="description">碎了一地...o(*￣︶￣*)o...</div>
+</div>
+<div class="site-state-wrap motion-element">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+          <a href="/archives/">
+        
+          <span class="site-state-item-count">22</span>
+          <span class="site-state-item-name">posts</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-categories">
+            <a href="/categories/">
+          
+        <span class="site-state-item-count">8</span>
+        <span class="site-state-item-name">categories</span></a>
+      </div>
+      <div class="site-state-item site-state-tags">
+            <a href="/tags/">
+          
+        <span class="site-state-item-count">37</span>
+        <span class="site-state-item-name">tags</span></a>
+      </div>
+  </nav>
+</div>
+
+
+
+      </div>
+
+    </div>
+  </aside>
+  <div id="sidebar-dimmer"></div>
+
+
+      </div>
+    </main>
+
+    <footer class="footer">
+      <div class="footer-inner">
+        
+
+        
+
+<div class="copyright">
+  
+  &copy; 
+  <span itemprop="copyrightYear">2025</span>
+  <span class="with-love">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">ghyghoo8</span>
+</div>
+  <div class="powered-by">Powered by <span class="exturl theme-link" data-url="aHR0cHM6Ly9oZXhvLmlv">Hexo</span> & <span class="exturl theme-link" data-url="aHR0cHM6Ly9waXNjZXMudGhlbWUtbmV4dC5vcmc=">NexT.Pisces</span>
+  </div>
+
+        
+
+
+
+
+
+
+
+
+      </div>
+    </footer>
+  </div>
+
+  
+  <script src="//cdn.jsdelivr.net/npm/animejs@3.1.0/lib/anime.min.js"></script>
+  <script src="/lib/velocity/velocity.min.js"></script>
+  <script src="/lib/velocity/velocity.ui.min.js"></script>
+
+<script src="/js/utils.js"></script>
+
+<script src="/js/motion.js"></script>
+
+
+<script src="/js/schemes/pisces.js"></script>
+
+
+<script src="/js/next-boot.js"></script>
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+  
+
+<script>
+NexT.utils.loadComments(document.querySelector('#lv-container'), () => {
+  window.livereOptions = {
+    refer: location.pathname.replace(CONFIG.root, '').replace('index.html', '')
+  };
+  (function(d, s) {
+    var j, e = d.getElementsByTagName(s)[0];
+    if (typeof LivereTower === 'function') { return; }
+    j = d.createElement(s);
+    j.src = 'https://cdn-city.livere.com/js/embed.dist.js';
+    j.async = true;
+    e.parentNode.insertBefore(j, e);
+  })(document, 'script');
+});
+</script>
+
+<!-- hexo injector body_end start -->
+<script src="/js/bot.js"></script>
+<div id="sakana-widget"></div><script>
+      function initSakanaWidget() {
+        // 默认自走模式
+        new SakanaWidget().mount('#sakana-widget').triggetAutoMode();
+      }
+    </script><script
+      async
+      onload="initSakanaWidget()"
+      src="https://cdn.jsdelivr.net/npm/sakana-widget@2.7.0/lib/sakana.min.js"
+    ></script><!-- hexo injector body_end end --></body>
+</html>

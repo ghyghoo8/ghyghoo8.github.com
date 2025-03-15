@@ -1,0 +1,576 @@
+<!DOCTYPE html>
+<html lang="zh-Hans">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
+<meta name="theme-color" content="#222">
+<meta name="generator" content="Hexo 7.3.0">
+  <link rel="apple-touch-icon" sizes="180x180" href="/imgs/logo.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/imgs/32.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/imgs/16.png">
+  <link rel="mask-icon" href="/imgs/logo.png" color="#222">
+  <meta name="google-site-verification" content="dJfRF5_6EbT_bJo2wTKbSXTDmNaOTqDGRDMcU6ylduk">
+
+<link rel="stylesheet" href="/css/main.css">
+
+
+<link rel="stylesheet" href="//cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@5/css/all.min.css">
+
+<script id="hexo-configurations">
+    var NexT = window.NexT || {};
+    var CONFIG = {"hostname":"ghyghoo8.github.io","root":"/","scheme":"Pisces","version":"7.8.0","exturl":true,"sidebar":{"position":"left","display":"post","padding":18,"offset":12,"onmobile":false},"copycode":{"enable":false,"show_result":false,"style":null},"back2top":{"enable":true,"sidebar":false,"scrollpercent":false},"bookmark":{"enable":false,"color":"#222","save":"auto"},"fancybox":false,"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":"livere","storage":true,"lazyload":false,"nav":null,"activeClass":"livere"},"algolia":{"hits":{"per_page":10},"labels":{"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}},"localsearch":{"enable":false,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}}};
+  </script>
+
+  <meta name="description" content="Supabase作为开源的后端即服务（BaaS）平台，支持开发者快速构建应用，同时提供灵活的自建部署选项。   本文将基于官方Docker部署教程，结合实践经验，详细说明自部署流程与注意事项。 环境准备 安装Docker与Docker Compose确保系统已安装Docker及Docker Compose工具。  12docker --versiondocker compose version">
+<meta property="og:type" content="article">
+<meta property="og:title" content="手把手自建Supabase服务-墙内">
+<meta property="og:url" content="https://ghyghoo8.github.io/2025/03/14/2025-03-14-%E6%89%8B%E6%8A%8A%E6%89%8B%E8%87%AA%E5%BB%BASupabase%E6%9C%8D%E5%8A%A1-%E5%A2%99%E5%86%85/index.html">
+<meta property="og:site_name" content="G8空间">
+<meta property="og:description" content="Supabase作为开源的后端即服务（BaaS）平台，支持开发者快速构建应用，同时提供灵活的自建部署选项。   本文将基于官方Docker部署教程，结合实践经验，详细说明自部署流程与注意事项。 环境准备 安装Docker与Docker Compose确保系统已安装Docker及Docker Compose工具。  12docker --versiondocker compose version">
+<meta property="og:locale">
+<meta property="og:image" content="https://ghyghoo8.github.io/imgs/supa-1.png">
+<meta property="og:image" content="https://ghyghoo8.github.io/imgs/supa-2.png">
+<meta property="article:published_time" content="2025-03-13T16:00:00.000Z">
+<meta property="article:modified_time" content="2025-03-15T07:37:17.099Z">
+<meta property="article:author" content="ghyghoo8">
+<meta property="article:tag" content="新手教程">
+<meta property="article:tag" content="linux">
+<meta property="article:tag" content="docker">
+<meta property="article:tag" content="supabase">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="https://ghyghoo8.github.io/imgs/supa-1.png">
+
+<link rel="canonical" href="https://ghyghoo8.github.io/2025/03/14/2025-03-14-%E6%89%8B%E6%8A%8A%E6%89%8B%E8%87%AA%E5%BB%BASupabase%E6%9C%8D%E5%8A%A1-%E5%A2%99%E5%86%85/">
+
+
+<script id="page-configurations">
+  // https://hexo.io/docs/variables.html
+  CONFIG.page = {
+    sidebar: "",
+    isHome : false,
+    isPost : true,
+    lang   : 'zh-Hans'
+  };
+</script>
+
+  <title>手把手自建Supabase服务-墙内 | G8空间</title>
+  
+
+
+
+
+
+
+  <noscript>
+  <style>
+  .use-motion .brand,
+  .use-motion .menu-item,
+  .sidebar-inner,
+  .use-motion .post-block,
+  .use-motion .pagination,
+  .use-motion .comments,
+  .use-motion .post-header,
+  .use-motion .post-body,
+  .use-motion .collection-header { opacity: initial; }
+
+  .use-motion .site-title,
+  .use-motion .site-subtitle {
+    opacity: initial;
+    top: initial;
+  }
+
+  .use-motion .logo-line-before i { left: initial; }
+  .use-motion .logo-line-after i { right: initial; }
+  </style>
+</noscript>
+
+<!-- hexo injector head_end start --><script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-7923526446101866" crossorigin="anonymous"></script><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/sakana-widget@2.7.0/lib/sakana.min.css" /><style>#sakana-widget{position:fixed;bottom:0;left:0;}</style><!-- hexo injector head_end end --><link rel="alternate" href="/atom.xml" title="G8空间" type="application/atom+xml">
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage">
+  <div class="container use-motion">
+    <div class="headband"></div>
+
+    <header class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="Toggle navigation bar">
+      <span class="toggle-line toggle-line-first"></span>
+      <span class="toggle-line toggle-line-middle"></span>
+      <span class="toggle-line toggle-line-last"></span>
+    </div>
+  </div>
+
+  <div class="site-meta custom-logo">
+
+    <a href="/" class="brand" rel="start">
+      <span class="logo-line-before"><i></i></span>
+      <h1 class="site-title">G8空间</h1>
+      <span class="logo-line-after"><i></i></span>
+    </a>
+      <p class="site-subtitle" itemprop="description">ghyghoo8的沉淀小碎</p>
+      <a>
+        <img class="custom-logo-image" src="/imgs/IMG_0001.PNG" alt="G8空间">
+      </a>
+  </div>
+
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger">
+    </div>
+  </div>
+</div>
+
+
+
+
+<nav class="site-nav">
+  <ul id="menu" class="main-menu menu">
+        <li class="menu-item menu-item-home">
+
+    <a href="/" rel="section"><i class="fa fa-home fa-fw"></i>Home</a>
+
+  </li>
+        <li class="menu-item menu-item-about">
+
+    <a href="/about/" rel="section"><i class="fa fa-user fa-fw"></i>About</a>
+
+  </li>
+        <li class="menu-item menu-item-tags">
+
+    <a href="/tags/" rel="section"><i class="fa fa-tags fa-fw"></i>Tags</a>
+
+  </li>
+        <li class="menu-item menu-item-categories">
+
+    <a href="/categories/" rel="section"><i class="fa fa-th fa-fw"></i>Categories</a>
+
+  </li>
+        <li class="menu-item menu-item-archives">
+
+    <a href="/archives/" rel="section"><i class="fa fa-archive fa-fw"></i>Archives</a>
+
+  </li>
+        <li class="menu-item menu-item-guestbook">
+
+    <a href="/guestbook" rel="section"><i class="fa fa-comment fa-fw"></i>guestbook</a>
+
+  </li>
+  </ul>
+</nav>
+
+
+
+
+</div>
+    </header>
+
+    
+  <div class="back-to-top">
+    <i class="fa fa-arrow-up"></i>
+    <span>0%</span>
+  </div>
+
+  <span class="exturl github-corner" data-url="aHR0cHM6Ly9naXRodWIuY29tL2doeWdob284" title="Follow me on GitHub" aria-label="Follow me on GitHub"><svg width="80" height="80" viewBox="0 0 250 250" aria-hidden="true"><path d="M0,0 L115,115 L130,115 L142,142 L250,250 L250,0 Z"></path><path d="M128.3,109.0 C113.8,99.7 119.0,89.6 119.0,89.6 C122.0,82.7 120.5,78.6 120.5,78.6 C119.2,72.0 123.4,76.3 123.4,76.3 C127.3,80.9 125.5,87.3 125.5,87.3 C122.9,97.6 130.6,101.9 134.4,103.2" fill="currentColor" style="transform-origin: 130px 106px;" class="octo-arm"></path><path d="M115.0,115.0 C114.9,115.1 118.7,116.5 119.8,115.4 L133.7,101.6 C136.9,99.2 139.9,98.4 142.2,98.6 C133.8,88.0 127.5,74.4 143.8,58.0 C148.5,53.4 154.0,51.2 159.7,51.0 C160.3,49.4 163.2,43.6 171.4,40.1 C171.4,40.1 176.1,42.5 178.8,56.2 C183.1,58.6 187.2,61.8 190.9,65.4 C194.5,69.0 197.7,73.2 200.1,77.6 C213.8,80.2 216.3,84.9 216.3,84.9 C212.7,93.1 206.9,96.0 205.4,96.6 C205.1,102.4 203.0,107.8 198.3,112.5 C181.9,128.9 168.3,122.5 157.7,114.1 C157.9,116.9 156.7,120.9 152.7,124.9 L141.0,136.5 C139.8,137.7 141.6,141.9 141.8,141.8 Z" fill="currentColor" class="octo-body"></path></svg></span>
+
+
+    <main class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          
+
+          <div class="content post posts-expand">
+            
+
+    
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-Hans">
+    <link itemprop="mainEntityOfPage" href="https://ghyghoo8.github.io/2025/03/14/2025-03-14-%E6%89%8B%E6%8A%8A%E6%89%8B%E8%87%AA%E5%BB%BASupabase%E6%9C%8D%E5%8A%A1-%E5%A2%99%E5%86%85/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar.gif">
+      <meta itemprop="name" content="ghyghoo8">
+      <meta itemprop="description" content="碎了一地...o(*￣︶￣*)o...">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="G8空间">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          手把手自建Supabase服务-墙内
+        </h1>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-calendar"></i>
+              </span>
+              <span class="post-meta-item-text">Posted on</span>
+
+              <time title="Created: 2025-03-14 00:00:00" itemprop="dateCreated datePublished" datetime="2025-03-14T00:00:00+08:00">2025-03-14</time>
+            </span>
+              <span class="post-meta-item">
+                <span class="post-meta-item-icon">
+                  <i class="far fa-calendar-check"></i>
+                </span>
+                <span class="post-meta-item-text">Edited on</span>
+                <time title="Modified: 2025-03-15 15:37:17" itemprop="dateModified" datetime="2025-03-15T15:37:17+08:00">2025-03-15</time>
+              </span>
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-folder"></i>
+              </span>
+              <span class="post-meta-item-text">In</span>
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/%E8%BF%90%E7%BB%B4/" itemprop="url" rel="index"><span itemprop="name">运维</span></a>
+                </span>
+            </span>
+
+          
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+        <hr>
+<p>Supabase作为开源的后端即服务（BaaS）平台，支持开发者快速构建应用，同时提供灵活的自建部署选项。</p>
+<p><img src="/imgs/supa-1.png" alt="alt text"></p>
+<p><img src="/imgs/supa-2.png" alt="alt text"></p>
+<p>本文将基于官方Docker部署教程，结合实践经验，详细说明自部署流程与注意事项。</p>
+<h3 id="环境准备"><a href="#环境准备" class="headerlink" title="环境准备"></a>环境准备</h3><ul>
+<li>安装Docker与Docker Compose<br>确保系统已安装Docker及Docker Compose工具。</li>
+</ul>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">docker --version</span><br><span class="line">docker compose version</span><br></pre></td></tr></table></figure>
+
+<ul>
+<li><p>生成安全密钥<br>访问<span class="exturl" data-url="aHR0cHM6Ly9zdXBhYmFzZS5jb20vZG9jcy9ndWlkZXMvc2VsZi1ob3N0aW5nL2RvY2tlciNzZWN1cmluZy15b3VyLXNlcnZpY2Vz">Supabase密钥生成页面<i class="fa fa-external-link-alt"></i></span>，生成以下密钥并保存至安全位置：</p>
+<ul>
+<li><code>JWT_SECRET</code></li>
+<li><code>ANON_KEY</code></li>
+<li><code>SERVICE_ROLE_KEY</code></li>
+</ul>
+</li>
+<li><p>部署步骤</p>
+<ul>
+<li>克隆Supabase代码库</li>
+</ul>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">git <span class="built_in">clone</span> --depth 1 https://github.com/supabase/supabase</span><br><span class="line"><span class="built_in">cd</span> supabase/docker</span><br></pre></td></tr></table></figure>
+<ul>
+<li>配置环境变量<br>复制示例配置文件并编辑, 将<em>生成安全密钥</em>步骤下生成的密钥，copy到<code>.env</code>文件中对应的位置。</li>
+</ul>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="built_in">cp</span> .env.example .<span class="built_in">env</span></span><br><span class="line">vi .<span class="built_in">env</span></span><br></pre></td></tr></table></figure>
+<ul>
+<li>拉取Docker镜像<br>这里推荐墙内镜像地址：<code>dytt.online</code></li>
+</ul>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">docker compose pull</span><br></pre></td></tr></table></figure>
+<ul>
+<li>​启动Supabase服务</li>
+</ul>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">docker compose up -d</span><br></pre></td></tr></table></figure>
+<p>服务启动后，通过docker compose ps检查容器状态，确认所有服务正常运行。</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">docker ps</span><br></pre></td></tr></table></figure>
+<ul>
+<li>​访问管理界面<ul>
+<li>​Studio：<span class="exturl" data-url="aHR0cDovL2xvY2FsaG9zdDo4MDAw77yI6buY6K6k6LSm5Y+377yac3VwYWJhc2XvvIzlr4bnoIHop4EuZW525paH5Lu277yJ">http://localhost:8000（默认账号：supabase，密码见.env文件）<i class="fa fa-external-link-alt"></i></span></li>
+<li>Logflare界面： <span class="exturl" data-url="aHR0cDovL2xvY2FsaG9zdDo0MDAwLw==">http://localhost:4000<i class="fa fa-external-link-alt"></i></span></li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+<h3 id="核心服务"><a href="#核心服务" class="headerlink" title="核心服务"></a>核心服务</h3><table>
+<thead>
+<tr>
+<th>服务名称</th>
+<th>功能描述</th>
+<th>访问端口</th>
+</tr>
+</thead>
+<tbody><tr>
+<td><code>supabase-db</code></td>
+<td>PostgreSQL数据库</td>
+<td>5432</td>
+</tr>
+<tr>
+<td><code>supabase-auth</code></td>
+<td>用户身份认证</td>
+<td>3000</td>
+</tr>
+<tr>
+<td><code>supabase-studio</code></td>
+<td>管理控制台</td>
+<td>8000</td>
+</tr>
+<tr>
+<td><code>supabase-analytics</code></td>
+<td>Logflare控制台</td>
+<td>4000</td>
+</tr>
+</tbody></table>
+<h3 id="关闭与卸载"><a href="#关闭与卸载" class="headerlink" title="关闭与卸载"></a>关闭与卸载</h3><ul>
+<li><strong>停止服务</strong></li>
+</ul>
+   <figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">docker compose down</span><br></pre></td></tr></table></figure>
+
+<ul>
+<li><strong>彻底清理</strong></li>
+</ul>
+   <figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">docker system prune -a</span><br><span class="line"><span class="built_in">rm</span> -rf .supabase</span><br></pre></td></tr></table></figure>
+
+<h3 id="一些常见问题"><a href="#一些常见问题" class="headerlink" title="一些常见问题"></a>一些常见问题</h3><ul>
+<li><code>VAULT_ENC_KEY</code>字段长度问题：<span class="exturl" data-url="aHR0cHM6Ly9naXRodWIuY29tL29yZ3Mvc3VwYWJhc2UvZGlzY3Vzc2lvbnMvMzMxMTk=">https://github.com/orgs/supabase/discussions/33119<i class="fa fa-external-link-alt"></i></span><ul>
+<li>必须32位，而不是<em>32-chars-min</em></li>
+<li>已提交<span class="exturl" data-url="aHR0cHM6Ly9naXRodWIuY29tL3N1cGFiYXNlL3N1cGFiYXNlL3B1bGwvMzQxNzE=">issus<i class="fa fa-external-link-alt"></i></span></li>
+</ul>
+</li>
+<li>如果<code>supabase-analytics</code>服务一直在重启，则查看容器日志。</li>
+</ul>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">docker logs --details supabase-analytics</span><br></pre></td></tr></table></figure>
+<p>若提示数据库账号密码验证失败，则需要进入<code>supabase-db</code>容器，给每个pgSQL账号设置密码</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><span class="line">docker <span class="built_in">exec</span> -it supabase-db /bin/bash</span><br><span class="line"></span><br><span class="line"><span class="comment"># 进入容器后</span></span><br><span class="line">psql -U postgres -W</span><br><span class="line"><span class="comment"># 输入默认密码，比如：postgres</span></span><br><span class="line"><span class="comment"># 进入后查看用户列表</span></span><br><span class="line">SELECT rolname,rolpassword FROM pg_authid;</span><br><span class="line"></span><br><span class="line"><span class="comment"># 修改用户密码</span></span><br><span class="line">ALTER USER supabase_admin WITH PASSWORD <span class="string">&#x27;postgres&#x27;</span>;</span><br><span class="line">ALTER USER supabase_auth_admin WITH PASSWORD <span class="string">&#x27;postgres&#x27;</span>;</span><br><span class="line">ALTER USER supabase_storage_admin WITH PASSWORD <span class="string">&#x27;postgres&#x27;</span>;</span><br><span class="line">...</span><br><span class="line"></span><br></pre></td></tr></table></figure>
+
+<p>修改完成后重启容器, 然后访问<code>http://localhost:8000</code></p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">docker compose down</span><br><span class="line">docker compose up -d</span><br><span class="line"></span><br></pre></td></tr></table></figure>
+
+<h3 id="资料参考"><a href="#资料参考" class="headerlink" title="资料参考"></a>资料参考</h3><ul>
+<li><span class="exturl" data-url="aHR0cHM6Ly9zdXBhYmFzZS5jb20vZG9jcy9ndWlkZXMvc2VsZi1ob3N0aW5nL2RvY2tlcg==">官方教程: Self-Hosting with Docker<i class="fa fa-external-link-alt"></i></span></li>
+<li><span class="exturl" data-url="aHR0cHM6Ly9tcC53ZWl4aW4ucXEuY29tL3M/X19iaXo9TXpBNU56UTRPRGswTXc9PSZtaWQ9MjY1Mjc5Mjk2NCZpZHg9MSZzbj1kNzcyMDFmNzhhYWEzYWUzNzU0MmVhNTgwNzBiZTNhNyZjaGtzbT04YWNiNTcwYTIyMjg0YjYyNDdmMDRjOWE0MzI1YjI1OTVhZDBmMjcwM2NhZDdhZGZmMGJmNGU5YmVmOGRhOTA3YTE0ZDhhNzM3MDk3I3Jk">74.1k！Star分分钟搭建百万用户在线系统？Supabase 帮你轻松实现！<i class="fa fa-external-link-alt"></i></span></li>
+<li><span class="exturl" data-url="aHR0cHM6Ly9tcC53ZWl4aW4ucXEuY29tL3M/X19iaXo9TXpreE56STFOemcxTXc9PSZtaWQ9MjI0NzQ4NTQyMyZpZHg9MSZzbj1jZDU4MzU0NTA4YzYxNmY0NTQ2NmQ0OGI4NmIwOTkwNSZjaGtzbT1jMDI2ZWZhNzNlMTQ3N2RjNGViYzc4YTg5ZjQ2MmIzYzYxZjZlZGI4OTljYmY5ZDA2Yjc1MWViNDJlMWVhOTNkNGM5MmZiMjNhMGFhI3Jk">如何使用Docker配置和部署Supabase<i class="fa fa-external-link-alt"></i></span></li>
+</ul>
+
+    </div>
+
+    
+    
+    
+
+      <footer class="post-footer">
+          <div class="post-tags">
+              <a href="/tags/%E6%96%B0%E6%89%8B%E6%95%99%E7%A8%8B/" rel="tag"># 新手教程</a>
+              <a href="/tags/linux/" rel="tag"># linux</a>
+              <a href="/tags/docker/" rel="tag"># docker</a>
+              <a href="/tags/supabase/" rel="tag"># supabase</a>
+          </div>
+
+        
+
+
+        
+    <div class="post-nav">
+      <div class="post-nav-item">
+    <a href="/2025/03/13/2025-03-13-%E4%B8%80%E4%BA%9B%E5%B8%B8%E7%94%A8%E7%9A%84docker%E5%91%BD%E4%BB%A4/" rel="prev" title="awsome一些常用的docker命令">
+      <i class="fa fa-chevron-left"></i> awsome一些常用的docker命令
+    </a></div>
+      <div class="post-nav-item"></div>
+    </div>
+      </footer>
+    
+  </article>
+  
+  
+  
+
+
+
+          </div>
+          
+    
+  <div class="comments">
+    <div id="lv-container" data-id="city" data-uid="MTAyMC81NDA1OS8zMDUzMQ=="></div>
+  </div>
+  
+
+<script>
+  window.addEventListener('tabs:register', () => {
+    let { activeClass } = CONFIG.comments;
+    if (CONFIG.comments.storage) {
+      activeClass = localStorage.getItem('comments_active') || activeClass;
+    }
+    if (activeClass) {
+      let activeTab = document.querySelector(`a[href="#comment-${activeClass}"]`);
+      if (activeTab) {
+        activeTab.click();
+      }
+    }
+  });
+  if (CONFIG.comments.storage) {
+    window.addEventListener('tabs:click', event => {
+      if (!event.target.matches('.tabs-comment .tab-content .tab-pane')) return;
+      let commentClass = event.target.classList[1];
+      localStorage.setItem('comments_active', commentClass);
+    });
+  }
+</script>
+
+        </div>
+          
+  
+  <div class="toggle sidebar-toggle">
+    <span class="toggle-line toggle-line-first"></span>
+    <span class="toggle-line toggle-line-middle"></span>
+    <span class="toggle-line toggle-line-last"></span>
+  </div>
+
+  <aside class="sidebar">
+    <div class="sidebar-inner">
+
+      <ul class="sidebar-nav motion-element">
+        <li class="sidebar-nav-toc">
+          Table of Contents
+        </li>
+        <li class="sidebar-nav-overview">
+          Overview
+        </li>
+      </ul>
+
+      <!--noindex-->
+      <div class="post-toc-wrap sidebar-panel">
+          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E7%8E%AF%E5%A2%83%E5%87%86%E5%A4%87"><span class="nav-number">1.</span> <span class="nav-text">环境准备</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E6%A0%B8%E5%BF%83%E6%9C%8D%E5%8A%A1"><span class="nav-number">2.</span> <span class="nav-text">核心服务</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%85%B3%E9%97%AD%E4%B8%8E%E5%8D%B8%E8%BD%BD"><span class="nav-number">3.</span> <span class="nav-text">关闭与卸载</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E4%B8%80%E4%BA%9B%E5%B8%B8%E8%A7%81%E9%97%AE%E9%A2%98"><span class="nav-number">4.</span> <span class="nav-text">一些常见问题</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E8%B5%84%E6%96%99%E5%8F%82%E8%80%83"><span class="nav-number">5.</span> <span class="nav-text">资料参考</span></a></li></ol></div>
+      </div>
+      <!--/noindex-->
+
+      <div class="site-overview-wrap sidebar-panel">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+  <p class="site-author-name" itemprop="name">ghyghoo8</p>
+  <div class="site-description" itemprop="description">碎了一地...o(*￣︶￣*)o...</div>
+</div>
+<div class="site-state-wrap motion-element">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+          <a href="/archives/">
+        
+          <span class="site-state-item-count">22</span>
+          <span class="site-state-item-name">posts</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-categories">
+            <a href="/categories/">
+          
+        <span class="site-state-item-count">8</span>
+        <span class="site-state-item-name">categories</span></a>
+      </div>
+      <div class="site-state-item site-state-tags">
+            <a href="/tags/">
+          
+        <span class="site-state-item-count">37</span>
+        <span class="site-state-item-name">tags</span></a>
+      </div>
+  </nav>
+</div>
+
+
+
+      </div>
+
+    </div>
+  </aside>
+  <div id="sidebar-dimmer"></div>
+
+
+      </div>
+    </main>
+
+    <footer class="footer">
+      <div class="footer-inner">
+        
+
+        
+
+<div class="copyright">
+  
+  &copy; 
+  <span itemprop="copyrightYear">2025</span>
+  <span class="with-love">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">ghyghoo8</span>
+</div>
+  <div class="powered-by">Powered by <span class="exturl theme-link" data-url="aHR0cHM6Ly9oZXhvLmlv">Hexo</span> & <span class="exturl theme-link" data-url="aHR0cHM6Ly9waXNjZXMudGhlbWUtbmV4dC5vcmc=">NexT.Pisces</span>
+  </div>
+
+        
+
+
+
+
+
+
+
+
+      </div>
+    </footer>
+  </div>
+
+  
+  <script src="//cdn.jsdelivr.net/npm/animejs@3.1.0/lib/anime.min.js"></script>
+  <script src="/lib/velocity/velocity.min.js"></script>
+  <script src="/lib/velocity/velocity.ui.min.js"></script>
+
+<script src="/js/utils.js"></script>
+
+<script src="/js/motion.js"></script>
+
+
+<script src="/js/schemes/pisces.js"></script>
+
+
+<script src="/js/next-boot.js"></script>
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+  
+
+<script>
+NexT.utils.loadComments(document.querySelector('#lv-container'), () => {
+  window.livereOptions = {
+    refer: location.pathname.replace(CONFIG.root, '').replace('index.html', '')
+  };
+  (function(d, s) {
+    var j, e = d.getElementsByTagName(s)[0];
+    if (typeof LivereTower === 'function') { return; }
+    j = d.createElement(s);
+    j.src = 'https://cdn-city.livere.com/js/embed.dist.js';
+    j.async = true;
+    e.parentNode.insertBefore(j, e);
+  })(document, 'script');
+});
+</script>
+
+<!-- hexo injector body_end start -->
+<script src="/js/bot.js"></script>
+<div id="sakana-widget"></div><script>
+      function initSakanaWidget() {
+        // 默认自走模式
+        new SakanaWidget().mount('#sakana-widget').triggetAutoMode();
+      }
+    </script><script
+      async
+      onload="initSakanaWidget()"
+      src="https://cdn.jsdelivr.net/npm/sakana-widget@2.7.0/lib/sakana.min.js"
+    ></script><!-- hexo injector body_end end --></body>
+</html>

@@ -1,0 +1,501 @@
+<!DOCTYPE html>
+<html lang="zh-Hans">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
+<meta name="theme-color" content="#222">
+<meta name="generator" content="Hexo 7.3.0">
+  <link rel="apple-touch-icon" sizes="180x180" href="/imgs/logo.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/imgs/32.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/imgs/16.png">
+  <link rel="mask-icon" href="/imgs/logo.png" color="#222">
+  <meta name="google-site-verification" content="dJfRF5_6EbT_bJo2wTKbSXTDmNaOTqDGRDMcU6ylduk">
+
+<link rel="stylesheet" href="/css/main.css">
+
+
+<link rel="stylesheet" href="//cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@5/css/all.min.css">
+
+<script id="hexo-configurations">
+    var NexT = window.NexT || {};
+    var CONFIG = {"hostname":"ghyghoo8.github.io","root":"/","scheme":"Pisces","version":"7.8.0","exturl":true,"sidebar":{"position":"left","display":"post","padding":18,"offset":12,"onmobile":false},"copycode":{"enable":false,"show_result":false,"style":null},"back2top":{"enable":true,"sidebar":false,"scrollpercent":false},"bookmark":{"enable":false,"color":"#222","save":"auto"},"fancybox":false,"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":"livere","storage":true,"lazyload":false,"nav":null,"activeClass":"livere"},"algolia":{"hits":{"per_page":10},"labels":{"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}},"localsearch":{"enable":false,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}}};
+  </script>
+
+  <meta name="description" content="在使用 UniVpn 进行 SSL VPN 连接时，为了确保网络连接的稳定性和可靠性，您可能需要启用自动重连功能。该功能可以在 VPN 连接意外中断时自动重新建立连接，从而减少因网络中断带来的不便。本文将介绍如何在 Linux 操作系统下，通过结合 expect 脚本和 ping 探测来实现自动重连功能。 环境准备以 UniVpn 为例，我们将通过以下步骤实现自动重连： 启动 VPN 客户端首先">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Linux下如何实现UniVpn的自动连接&#x2F;重连保持">
+<meta property="og:url" content="https://ghyghoo8.github.io/2024/09/12/2024-09-12-Linux%E4%B8%8B%E5%A6%82%E4%BD%95%E5%AE%9E%E7%8E%B0UniVpn%E7%9A%84%E8%87%AA%E5%8A%A8%E8%BF%9E%E6%8E%A5&%E9%87%8D%E8%BF%9E%E4%BF%9D%E6%8C%81/index.html">
+<meta property="og:site_name" content="G8空间">
+<meta property="og:description" content="在使用 UniVpn 进行 SSL VPN 连接时，为了确保网络连接的稳定性和可靠性，您可能需要启用自动重连功能。该功能可以在 VPN 连接意外中断时自动重新建立连接，从而减少因网络中断带来的不便。本文将介绍如何在 Linux 操作系统下，通过结合 expect 脚本和 ping 探测来实现自动重连功能。 环境准备以 UniVpn 为例，我们将通过以下步骤实现自动重连： 启动 VPN 客户端首先">
+<meta property="og:locale">
+<meta property="article:published_time" content="2024-09-11T16:00:00.000Z">
+<meta property="article:modified_time" content="2025-03-15T07:37:17.099Z">
+<meta property="article:author" content="ghyghoo8">
+<meta property="article:tag" content="新手教程">
+<meta property="article:tag" content="UniVpn">
+<meta property="article:tag" content="shell">
+<meta property="article:tag" content="linux">
+<meta name="twitter:card" content="summary">
+
+<link rel="canonical" href="https://ghyghoo8.github.io/2024/09/12/2024-09-12-Linux%E4%B8%8B%E5%A6%82%E4%BD%95%E5%AE%9E%E7%8E%B0UniVpn%E7%9A%84%E8%87%AA%E5%8A%A8%E8%BF%9E%E6%8E%A5&%E9%87%8D%E8%BF%9E%E4%BF%9D%E6%8C%81/">
+
+
+<script id="page-configurations">
+  // https://hexo.io/docs/variables.html
+  CONFIG.page = {
+    sidebar: "",
+    isHome : false,
+    isPost : true,
+    lang   : 'zh-Hans'
+  };
+</script>
+
+  <title>Linux下如何实现UniVpn的自动连接/重连保持 | G8空间</title>
+  
+
+
+
+
+
+
+  <noscript>
+  <style>
+  .use-motion .brand,
+  .use-motion .menu-item,
+  .sidebar-inner,
+  .use-motion .post-block,
+  .use-motion .pagination,
+  .use-motion .comments,
+  .use-motion .post-header,
+  .use-motion .post-body,
+  .use-motion .collection-header { opacity: initial; }
+
+  .use-motion .site-title,
+  .use-motion .site-subtitle {
+    opacity: initial;
+    top: initial;
+  }
+
+  .use-motion .logo-line-before i { left: initial; }
+  .use-motion .logo-line-after i { right: initial; }
+  </style>
+</noscript>
+
+<!-- hexo injector head_end start --><script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-7923526446101866" crossorigin="anonymous"></script><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/sakana-widget@2.7.0/lib/sakana.min.css" /><style>#sakana-widget{position:fixed;bottom:0;left:0;}</style><!-- hexo injector head_end end --><link rel="alternate" href="/atom.xml" title="G8空间" type="application/atom+xml">
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage">
+  <div class="container use-motion">
+    <div class="headband"></div>
+
+    <header class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="Toggle navigation bar">
+      <span class="toggle-line toggle-line-first"></span>
+      <span class="toggle-line toggle-line-middle"></span>
+      <span class="toggle-line toggle-line-last"></span>
+    </div>
+  </div>
+
+  <div class="site-meta custom-logo">
+
+    <a href="/" class="brand" rel="start">
+      <span class="logo-line-before"><i></i></span>
+      <h1 class="site-title">G8空间</h1>
+      <span class="logo-line-after"><i></i></span>
+    </a>
+      <p class="site-subtitle" itemprop="description">ghyghoo8的沉淀小碎</p>
+      <a>
+        <img class="custom-logo-image" src="/imgs/IMG_0001.PNG" alt="G8空间">
+      </a>
+  </div>
+
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger">
+    </div>
+  </div>
+</div>
+
+
+
+
+<nav class="site-nav">
+  <ul id="menu" class="main-menu menu">
+        <li class="menu-item menu-item-home">
+
+    <a href="/" rel="section"><i class="fa fa-home fa-fw"></i>Home</a>
+
+  </li>
+        <li class="menu-item menu-item-about">
+
+    <a href="/about/" rel="section"><i class="fa fa-user fa-fw"></i>About</a>
+
+  </li>
+        <li class="menu-item menu-item-tags">
+
+    <a href="/tags/" rel="section"><i class="fa fa-tags fa-fw"></i>Tags</a>
+
+  </li>
+        <li class="menu-item menu-item-categories">
+
+    <a href="/categories/" rel="section"><i class="fa fa-th fa-fw"></i>Categories</a>
+
+  </li>
+        <li class="menu-item menu-item-archives">
+
+    <a href="/archives/" rel="section"><i class="fa fa-archive fa-fw"></i>Archives</a>
+
+  </li>
+        <li class="menu-item menu-item-guestbook">
+
+    <a href="/guestbook" rel="section"><i class="fa fa-comment fa-fw"></i>guestbook</a>
+
+  </li>
+  </ul>
+</nav>
+
+
+
+
+</div>
+    </header>
+
+    
+  <div class="back-to-top">
+    <i class="fa fa-arrow-up"></i>
+    <span>0%</span>
+  </div>
+
+  <span class="exturl github-corner" data-url="aHR0cHM6Ly9naXRodWIuY29tL2doeWdob284" title="Follow me on GitHub" aria-label="Follow me on GitHub"><svg width="80" height="80" viewBox="0 0 250 250" aria-hidden="true"><path d="M0,0 L115,115 L130,115 L142,142 L250,250 L250,0 Z"></path><path d="M128.3,109.0 C113.8,99.7 119.0,89.6 119.0,89.6 C122.0,82.7 120.5,78.6 120.5,78.6 C119.2,72.0 123.4,76.3 123.4,76.3 C127.3,80.9 125.5,87.3 125.5,87.3 C122.9,97.6 130.6,101.9 134.4,103.2" fill="currentColor" style="transform-origin: 130px 106px;" class="octo-arm"></path><path d="M115.0,115.0 C114.9,115.1 118.7,116.5 119.8,115.4 L133.7,101.6 C136.9,99.2 139.9,98.4 142.2,98.6 C133.8,88.0 127.5,74.4 143.8,58.0 C148.5,53.4 154.0,51.2 159.7,51.0 C160.3,49.4 163.2,43.6 171.4,40.1 C171.4,40.1 176.1,42.5 178.8,56.2 C183.1,58.6 187.2,61.8 190.9,65.4 C194.5,69.0 197.7,73.2 200.1,77.6 C213.8,80.2 216.3,84.9 216.3,84.9 C212.7,93.1 206.9,96.0 205.4,96.6 C205.1,102.4 203.0,107.8 198.3,112.5 C181.9,128.9 168.3,122.5 157.7,114.1 C157.9,116.9 156.7,120.9 152.7,124.9 L141.0,136.5 C139.8,137.7 141.6,141.9 141.8,141.8 Z" fill="currentColor" class="octo-body"></path></svg></span>
+
+
+    <main class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          
+
+          <div class="content post posts-expand">
+            
+
+    
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-Hans">
+    <link itemprop="mainEntityOfPage" href="https://ghyghoo8.github.io/2024/09/12/2024-09-12-Linux%E4%B8%8B%E5%A6%82%E4%BD%95%E5%AE%9E%E7%8E%B0UniVpn%E7%9A%84%E8%87%AA%E5%8A%A8%E8%BF%9E%E6%8E%A5&%E9%87%8D%E8%BF%9E%E4%BF%9D%E6%8C%81/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar.gif">
+      <meta itemprop="name" content="ghyghoo8">
+      <meta itemprop="description" content="碎了一地...o(*￣︶￣*)o...">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="G8空间">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          Linux下如何实现UniVpn的自动连接/重连保持
+        </h1>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-calendar"></i>
+              </span>
+              <span class="post-meta-item-text">Posted on</span>
+
+              <time title="Created: 2024-09-12 00:00:00" itemprop="dateCreated datePublished" datetime="2024-09-12T00:00:00+08:00">2024-09-12</time>
+            </span>
+              <span class="post-meta-item">
+                <span class="post-meta-item-icon">
+                  <i class="far fa-calendar-check"></i>
+                </span>
+                <span class="post-meta-item-text">Edited on</span>
+                <time title="Modified: 2025-03-15 15:37:17" itemprop="dateModified" datetime="2025-03-15T15:37:17+08:00">2025-03-15</time>
+              </span>
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-folder"></i>
+              </span>
+              <span class="post-meta-item-text">In</span>
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/%E8%BF%90%E7%BB%B4/" itemprop="url" rel="index"><span itemprop="name">运维</span></a>
+                </span>
+            </span>
+
+          
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+        <hr>
+<p>在使用 <span class="exturl" data-url="aHR0cHM6Ly93d3cubGVhZ3NvZnQuY29tL2RvYy9hcnRpY2xlLzEwMzE5Ny5odG1s">UniVpn<i class="fa fa-external-link-alt"></i></span> 进行 SSL VPN 连接时，为了确保网络连接的稳定性和可靠性，您可能需要启用自动重连功能。该功能可以在 VPN 连接意外中断时自动重新建立连接，从而减少因网络中断带来的不便。本文将介绍如何在 Linux 操作系统下，通过结合 <code>expect</code> 脚本和 <code>ping</code> 探测来实现自动重连功能。</p>
+<h3 id="环境准备"><a href="#环境准备" class="headerlink" title="环境准备"></a>环境准备</h3><p>以 UniVpn 为例，我们将通过以下步骤实现自动重连：</p>
+<h4 id="启动-VPN-客户端"><a href="#启动-VPN-客户端" class="headerlink" title="启动 VPN 客户端"></a>启动 VPN 客户端</h4><p>首先，在 shell 命令行中运行以下命令来启动 <code>UniVpn</code>，并创建一个 VPN 连接：</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">/usr/local/UniVPN/serviceclient/UniVPNCS</span><br></pre></td></tr></table></figure>
+
+<h4 id="编写-expect-脚本"><a href="#编写-expect-脚本" class="headerlink" title="编写 expect 脚本"></a>编写 <code>expect</code> 脚本</h4><p>由于需要自动处理 VPN 连接，您需要安装 expect 程序。该工具能够自动化与命令行交互的操作。</p>
+<p>安装 <code>expect</code> </p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">apt install expect</span><br></pre></td></tr></table></figure>
+
+<p>然后，编写一个 <code>expect</code> 脚本（例如 univpn_run.sh），用于监控并自动重连 VPN。</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#!/bin/bash</span></span><br><span class="line"><span class="keyword">while</span> <span class="literal">true</span> </span><br><span class="line"><span class="keyword">do</span></span><br><span class="line">expect &lt;&lt;<span class="string">EOF</span></span><br><span class="line"><span class="string">set timeout -1</span></span><br><span class="line"><span class="string">spawn /usr/local/UniVPN/serviceclient/UniVPNCS</span></span><br><span class="line"><span class="string"></span></span><br><span class="line"><span class="string"># 等待欢迎信息</span></span><br><span class="line"><span class="string">expect &quot;Welcome to UniVPN&quot;</span></span><br><span class="line"><span class="string">send &quot;3\r&quot;</span></span><br><span class="line"><span class="string"></span></span><br><span class="line"><span class="string"># 等待连接选项</span></span><br><span class="line"><span class="string">expect &quot;*1:Connect*&quot;</span></span><br><span class="line"><span class="string">send &quot;1\r&quot;</span></span><br><span class="line"><span class="string"></span></span><br><span class="line"><span class="string"># 等待连接成功提示</span></span><br><span class="line"><span class="string">expect &quot;*Please input the login user name*&quot;</span></span><br><span class="line"><span class="string">send &quot;[username]\r&quot;  #这里输入vpn用户名</span></span><br><span class="line"><span class="string"></span></span><br><span class="line"><span class="string"># 等待输入密码提示</span></span><br><span class="line"><span class="string">expect &quot;*Please input the login user password*&quot;</span></span><br><span class="line"><span class="string">send &quot;[password]\r&quot;  #这里输入vpn密码</span></span><br><span class="line"><span class="string"></span></span><br><span class="line"><span class="string"># 等待最终连接成功提示</span></span><br><span class="line"><span class="string">expect &quot;*Connect Success,Enjoy*&quot;</span></span><br><span class="line"><span class="string"></span></span><br><span class="line"><span class="string">spawn sh ./testping.sh   #这里是一个探测ping的代码</span></span><br><span class="line"><span class="string">expect &quot;*IP testing error*&quot;</span></span><br><span class="line"><span class="string"></span></span><br><span class="line"><span class="string">send &quot;q\n&quot;</span></span><br><span class="line"><span class="string">expect &quot;*Logout succeeded.*&quot;</span></span><br><span class="line"><span class="string"></span></span><br><span class="line"><span class="string">EOF</span></span><br><span class="line"></span><br><span class="line"><span class="built_in">sleep</span> 2</span><br><span class="line"><span class="keyword">done</span></span><br><span class="line"></span><br></pre></td></tr></table></figure>
+
+<h4 id="编写-ping-探测脚本"><a href="#编写-ping-探测脚本" class="headerlink" title="编写 ping 探测脚本"></a>编写 <code>ping</code> 探测脚本</h4><p>接下来，编写一个用于检测网络连通性的 <code>ping</code> 脚本（例如 testping.sh）。该脚本会定期检测 VPN 连接是否正常，若检测到连接中断，则会触发自动重连。</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#!/bin/bash</span></span><br><span class="line"><span class="keyword">while</span> <span class="literal">true</span></span><br><span class="line"><span class="keyword">do</span></span><br><span class="line">            <span class="comment"># 要ping的IP地址  </span></span><br><span class="line">            IP_ADDRESS=<span class="string">&quot;xxx.xxx.xxx.xxx&quot;</span>  <span class="comment">#vpn连接上以后能ping通的一个ip</span></span><br><span class="line">            </span><br><span class="line">            <span class="comment"># 执行ping命令，检查IP地址是否可达  </span></span><br><span class="line">            ping -c 1 <span class="variable">$IP_ADDRESS</span> &gt; /dev/null 2&gt;&amp;1  </span><br><span class="line">            </span><br><span class="line">            <span class="comment"># 检查ping命令的退出状态  </span></span><br><span class="line">            <span class="keyword">if</span> [ $? -eq 0 ]; <span class="keyword">then</span>  </span><br><span class="line">                <span class="built_in">echo</span> <span class="string">&quot;IP testing success&quot;</span>    <span class="comment">#如果ping通了，输出</span></span><br><span class="line">            <span class="keyword">else</span>  </span><br><span class="line">                <span class="built_in">echo</span> <span class="string">&quot;IP testing error&quot;</span>   <span class="comment">#如果ping不通了，输出</span></span><br><span class="line">                    <span class="built_in">exit</span></span><br><span class="line">            <span class="keyword">fi</span></span><br><span class="line"><span class="built_in">sleep</span> 20   <span class="comment">#每20秒ping一次</span></span><br><span class="line"><span class="keyword">done</span></span><br><span class="line"></span><br></pre></td></tr></table></figure>
+
+<h4 id="执行自动重连"><a href="#执行自动重连" class="headerlink" title="执行自动重连"></a>执行自动重连</h4><p>最后，执行以下命令运行自动重连脚本：</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="built_in">chmod</span> +x univpn_run.sh testping.sh &amp;  ./univpn_run.sh</span><br><span class="line"></span><br></pre></td></tr></table></figure>
+
+<p>该脚本将持续检测网络状态，若 <code>ping</code> 不通，则会结束当前 VPN 连接并尝试重新连接。</p>
+<h3 id="注意事项"><a href="#注意事项" class="headerlink" title="注意事项"></a>注意事项</h3><p>在多次连接后，可能会出现 VPN 无法正常连接的情况，这通常是由于网卡问题导致的。为解决这一问题，您可以编写一个脚本，在探测到网络故障后，自动重启网络服务。</p>
+<p>此外，若重启网络服务后某些依赖网络的服务（如 Docker）出现问题，您可以在脚本中加入这些服务的重启命令。</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#!/bin/bash</span></span><br><span class="line"></span><br><span class="line"><span class="comment"># crontab设置： 30分钟执行一次检查</span></span><br><span class="line"><span class="comment"># */30 * * * * /root/dashboard/v2-web/docs/network_check.sh</span></span><br><span class="line"></span><br><span class="line"><span class="comment"># 目标IP地址</span></span><br><span class="line">TARGET_IP=<span class="string">&quot;127.0.0.1&quot;</span>   <span class="comment">#这里换成你的IP地址</span></span><br><span class="line"></span><br><span class="line"><span class="comment"># 使用ping命令连续ping指定次数（例如每10秒一次，共ping 3次）</span></span><br><span class="line">COUNT=1    <span class="comment">#这里探测多少次</span></span><br><span class="line">INTERVAL=10   <span class="comment">#这是每次探测的间隔时间</span></span><br><span class="line"></span><br><span class="line"><span class="comment"># 使用ping命令进行测试</span></span><br><span class="line">RESULT=$(ping -c <span class="variable">$COUNT</span> -i <span class="variable">$INTERVAL</span> <span class="variable">$TARGET_IP</span> | grep <span class="string">&#x27;Destination Host Unreachable&#x27;</span>)    </span><br><span class="line"></span><br><span class="line"><span class="comment"># 如果ping的结果包含&quot;Destination Host Unreachable&quot;</span></span><br><span class="line"><span class="keyword">if</span> [[ <span class="string">&quot;<span class="variable">$RESULT</span>&quot;</span> != <span class="string">&quot;&quot;</span> ]]; <span class="keyword">then</span></span><br><span class="line">    <span class="built_in">echo</span> <span class="string">&quot;<span class="subst">$(date)</span> - Ping to <span class="variable">$TARGET_IP</span> failed. Restarting network service...&quot;</span></span><br><span class="line"> </span><br><span class="line">    <span class="comment"># 使用systemctl命令重启网络服务</span></span><br><span class="line">    systemctl restart network</span><br><span class="line">    <span class="comment">#systemctl restart docker    #这里是因为重启了network以后，docker的网络会出现问题，所以就重启一下docker。如果你有其他服务也可以这样重启一下。</span></span><br><span class="line"></span><br><span class="line"><span class="keyword">fi</span></span><br><span class="line"><span class="built_in">exit</span> 0</span><br><span class="line"></span><br></pre></td></tr></table></figure>
+
+
+
+
+<h3 id="定时检测"><a href="#定时检测" class="headerlink" title="定时检测"></a>定时检测</h3><p>为了确保 VPN 的稳定性，您可以将上述脚本与定时任务（如 <code>cron</code>）结合，定期执行 <code>ping</code> 探测，确保在网络异常时及时恢复连接。</p>
+<hr>
+<p>通过上述步骤，您可以在 Linux 操作系统下实现 <code>UniVpn</code> 的自动重连功能，从而提升网络连接的稳定性和可靠性。</p>
+
+    </div>
+
+    
+    
+    
+
+      <footer class="post-footer">
+          <div class="post-tags">
+              <a href="/tags/%E6%96%B0%E6%89%8B%E6%95%99%E7%A8%8B/" rel="tag"># 新手教程</a>
+              <a href="/tags/UniVpn/" rel="tag"># UniVpn</a>
+              <a href="/tags/shell/" rel="tag"># shell</a>
+              <a href="/tags/linux/" rel="tag"># linux</a>
+          </div>
+
+        
+
+
+        
+    <div class="post-nav">
+      <div class="post-nav-item">
+    <a href="/2024/07/10/2024-07-10-%E5%BF%AB%E9%80%9F%E5%AD%A6%E4%B9%A0CNN(%E5%8D%B7%E7%A7%AF%E7%A5%9E%E7%BB%8F%E7%BD%91%E7%BB%9C)/" rel="prev" title="【译】快速学习CNN(卷积神经网络)">
+      <i class="fa fa-chevron-left"></i> 【译】快速学习CNN(卷积神经网络)
+    </a></div>
+      <div class="post-nav-item">
+    <a href="/2025/03/13/2025-03-13-%E4%B8%80%E4%BA%9B%E5%B8%B8%E7%94%A8%E7%9A%84docker%E5%91%BD%E4%BB%A4/" rel="next" title="awsome一些常用的docker命令">
+      awsome一些常用的docker命令 <i class="fa fa-chevron-right"></i>
+    </a></div>
+    </div>
+      </footer>
+    
+  </article>
+  
+  
+  
+
+
+
+          </div>
+          
+    
+  <div class="comments">
+    <div id="lv-container" data-id="city" data-uid="MTAyMC81NDA1OS8zMDUzMQ=="></div>
+  </div>
+  
+
+<script>
+  window.addEventListener('tabs:register', () => {
+    let { activeClass } = CONFIG.comments;
+    if (CONFIG.comments.storage) {
+      activeClass = localStorage.getItem('comments_active') || activeClass;
+    }
+    if (activeClass) {
+      let activeTab = document.querySelector(`a[href="#comment-${activeClass}"]`);
+      if (activeTab) {
+        activeTab.click();
+      }
+    }
+  });
+  if (CONFIG.comments.storage) {
+    window.addEventListener('tabs:click', event => {
+      if (!event.target.matches('.tabs-comment .tab-content .tab-pane')) return;
+      let commentClass = event.target.classList[1];
+      localStorage.setItem('comments_active', commentClass);
+    });
+  }
+</script>
+
+        </div>
+          
+  
+  <div class="toggle sidebar-toggle">
+    <span class="toggle-line toggle-line-first"></span>
+    <span class="toggle-line toggle-line-middle"></span>
+    <span class="toggle-line toggle-line-last"></span>
+  </div>
+
+  <aside class="sidebar">
+    <div class="sidebar-inner">
+
+      <ul class="sidebar-nav motion-element">
+        <li class="sidebar-nav-toc">
+          Table of Contents
+        </li>
+        <li class="sidebar-nav-overview">
+          Overview
+        </li>
+      </ul>
+
+      <!--noindex-->
+      <div class="post-toc-wrap sidebar-panel">
+          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E7%8E%AF%E5%A2%83%E5%87%86%E5%A4%87"><span class="nav-number">1.</span> <span class="nav-text">环境准备</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#%E5%90%AF%E5%8A%A8-VPN-%E5%AE%A2%E6%88%B7%E7%AB%AF"><span class="nav-number">1.1.</span> <span class="nav-text">启动 VPN 客户端</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E7%BC%96%E5%86%99-expect-%E8%84%9A%E6%9C%AC"><span class="nav-number">1.2.</span> <span class="nav-text">编写 expect 脚本</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E7%BC%96%E5%86%99-ping-%E6%8E%A2%E6%B5%8B%E8%84%9A%E6%9C%AC"><span class="nav-number">1.3.</span> <span class="nav-text">编写 ping 探测脚本</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E6%89%A7%E8%A1%8C%E8%87%AA%E5%8A%A8%E9%87%8D%E8%BF%9E"><span class="nav-number">1.4.</span> <span class="nav-text">执行自动重连</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E6%B3%A8%E6%84%8F%E4%BA%8B%E9%A1%B9"><span class="nav-number">2.</span> <span class="nav-text">注意事项</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%AE%9A%E6%97%B6%E6%A3%80%E6%B5%8B"><span class="nav-number">3.</span> <span class="nav-text">定时检测</span></a></li></ol></div>
+      </div>
+      <!--/noindex-->
+
+      <div class="site-overview-wrap sidebar-panel">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+  <p class="site-author-name" itemprop="name">ghyghoo8</p>
+  <div class="site-description" itemprop="description">碎了一地...o(*￣︶￣*)o...</div>
+</div>
+<div class="site-state-wrap motion-element">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+          <a href="/archives/">
+        
+          <span class="site-state-item-count">22</span>
+          <span class="site-state-item-name">posts</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-categories">
+            <a href="/categories/">
+          
+        <span class="site-state-item-count">8</span>
+        <span class="site-state-item-name">categories</span></a>
+      </div>
+      <div class="site-state-item site-state-tags">
+            <a href="/tags/">
+          
+        <span class="site-state-item-count">37</span>
+        <span class="site-state-item-name">tags</span></a>
+      </div>
+  </nav>
+</div>
+
+
+
+      </div>
+
+    </div>
+  </aside>
+  <div id="sidebar-dimmer"></div>
+
+
+      </div>
+    </main>
+
+    <footer class="footer">
+      <div class="footer-inner">
+        
+
+        
+
+<div class="copyright">
+  
+  &copy; 
+  <span itemprop="copyrightYear">2025</span>
+  <span class="with-love">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">ghyghoo8</span>
+</div>
+  <div class="powered-by">Powered by <span class="exturl theme-link" data-url="aHR0cHM6Ly9oZXhvLmlv">Hexo</span> & <span class="exturl theme-link" data-url="aHR0cHM6Ly9waXNjZXMudGhlbWUtbmV4dC5vcmc=">NexT.Pisces</span>
+  </div>
+
+        
+
+
+
+
+
+
+
+
+      </div>
+    </footer>
+  </div>
+
+  
+  <script src="//cdn.jsdelivr.net/npm/animejs@3.1.0/lib/anime.min.js"></script>
+  <script src="/lib/velocity/velocity.min.js"></script>
+  <script src="/lib/velocity/velocity.ui.min.js"></script>
+
+<script src="/js/utils.js"></script>
+
+<script src="/js/motion.js"></script>
+
+
+<script src="/js/schemes/pisces.js"></script>
+
+
+<script src="/js/next-boot.js"></script>
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+  
+
+<script>
+NexT.utils.loadComments(document.querySelector('#lv-container'), () => {
+  window.livereOptions = {
+    refer: location.pathname.replace(CONFIG.root, '').replace('index.html', '')
+  };
+  (function(d, s) {
+    var j, e = d.getElementsByTagName(s)[0];
+    if (typeof LivereTower === 'function') { return; }
+    j = d.createElement(s);
+    j.src = 'https://cdn-city.livere.com/js/embed.dist.js';
+    j.async = true;
+    e.parentNode.insertBefore(j, e);
+  })(document, 'script');
+});
+</script>
+
+<!-- hexo injector body_end start -->
+<script src="/js/bot.js"></script>
+<div id="sakana-widget"></div><script>
+      function initSakanaWidget() {
+        // 默认自走模式
+        new SakanaWidget().mount('#sakana-widget').triggetAutoMode();
+      }
+    </script><script
+      async
+      onload="initSakanaWidget()"
+      src="https://cdn.jsdelivr.net/npm/sakana-widget@2.7.0/lib/sakana.min.js"
+    ></script><!-- hexo injector body_end end --></body>
+</html>
