@@ -12,6 +12,8 @@ env:
   THEME_BRANCH: master
   DEPLOY_REPO: ghyghoo8/ghyghoo8.github.com
   DEPLOY_BRANCH: master
+  # 注入 GitHub 自动生成的临时 Token
+  GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }} 
 
 jobs:
   build:
