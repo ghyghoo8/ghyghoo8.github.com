@@ -1,0 +1,590 @@
+<!DOCTYPE html>
+<html lang="zh-Hans">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
+<meta name="theme-color" content="#222">
+<meta name="generator" content="Hexo 8.1.1">
+  <link rel="apple-touch-icon" sizes="180x180" href="/imgs/logo.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/imgs/32.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/imgs/16.png">
+  <link rel="mask-icon" href="/imgs/logo.png" color="#222">
+  <meta name="google-site-verification" content="dJfRF5_6EbT_bJo2wTKbSXTDmNaOTqDGRDMcU6ylduk">
+
+<link rel="stylesheet" href="/css/main.css">
+
+
+<link rel="stylesheet" href="//cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@5/css/all.min.css">
+
+<script id="hexo-configurations">
+    var NexT = window.NexT || {};
+    var CONFIG = {"hostname":"ghyghoo8.github.io","root":"/","scheme":"Pisces","version":"7.8.0","exturl":true,"sidebar":{"position":"left","display":"post","padding":18,"offset":12,"onmobile":false},"copycode":{"enable":false,"show_result":false,"style":null},"back2top":{"enable":true,"sidebar":false,"scrollpercent":false},"bookmark":{"enable":false,"color":"#222","save":"auto"},"fancybox":false,"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":"livere","storage":true,"lazyload":false,"nav":null,"activeClass":"livere"},"algolia":{"hits":{"per_page":10},"labels":{"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}},"localsearch":{"enable":false,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}}};
+  </script>
+
+  <meta name="description" content="这是一篇写给自己的复盘。我是个写了多年 Python &#x2F; JS 的程序员，业余时间用 Godot 做一款像素风的「连线消除 + Roguelike」单机游戏（暂名《勇闯昆图库塔》）。从一张白纸到一个能让真人坐下来玩的版本，踩了不少坑，也总结出一些”早知道就好了”的经验。趁记忆还热，记下来温故知新。  一、最反直觉的一课：别从写代码开始程序员做游戏，第一反应往往是”先搭个棋盘渲染出来”">
+<meta property="og:type" content="article">
+<meta property="og:title" content="零帧起手——第一次做游戏的踩坑笔记">
+<meta property="og:url" content="https://ghyghoo8.github.io/2026/06/04/2026-06-04-%E9%9B%B6%E5%B8%A7%E8%B5%B7%E6%89%8B-%E7%AC%AC%E4%B8%80%E6%AC%A1%E5%81%9A%E6%B8%B8%E6%88%8F%E7%9A%84%E8%B8%A9%E5%9D%91%E7%AC%94%E8%AE%B0/index.html">
+<meta property="og:site_name" content="G8空间">
+<meta property="og:description" content="这是一篇写给自己的复盘。我是个写了多年 Python &#x2F; JS 的程序员，业余时间用 Godot 做一款像素风的「连线消除 + Roguelike」单机游戏（暂名《勇闯昆图库塔》）。从一张白纸到一个能让真人坐下来玩的版本，踩了不少坑，也总结出一些”早知道就好了”的经验。趁记忆还热，记下来温故知新。  一、最反直觉的一课：别从写代码开始程序员做游戏，第一反应往往是”先搭个棋盘渲染出来”">
+<meta property="og:locale">
+<meta property="article:published_time" content="2026-06-03T16:00:00.000Z">
+<meta property="article:modified_time" content="2026-07-30T07:56:05.138Z">
+<meta property="article:author" content="ghyghoo8">
+<meta property="article:tag" content="gamedev">
+<meta property="article:tag" content="godot">
+<meta property="article:tag" content="roguelike">
+<meta property="article:tag" content="复盘">
+<meta property="article:tag" content="新手教程">
+<meta name="twitter:card" content="summary">
+
+<link rel="canonical" href="https://ghyghoo8.github.io/2026/06/04/2026-06-04-%E9%9B%B6%E5%B8%A7%E8%B5%B7%E6%89%8B-%E7%AC%AC%E4%B8%80%E6%AC%A1%E5%81%9A%E6%B8%B8%E6%88%8F%E7%9A%84%E8%B8%A9%E5%9D%91%E7%AC%94%E8%AE%B0/">
+
+
+<script id="page-configurations">
+  // https://hexo.io/docs/variables.html
+  CONFIG.page = {
+    sidebar: "",
+    isHome : false,
+    isPost : true,
+    lang   : 'zh-Hans'
+  };
+</script>
+
+  <title>零帧起手——第一次做游戏的踩坑笔记 | G8空间</title>
+  
+
+
+
+
+
+
+  <noscript>
+  <style>
+  .use-motion .brand,
+  .use-motion .menu-item,
+  .sidebar-inner,
+  .use-motion .post-block,
+  .use-motion .pagination,
+  .use-motion .comments,
+  .use-motion .post-header,
+  .use-motion .post-body,
+  .use-motion .collection-header { opacity: initial; }
+
+  .use-motion .site-title,
+  .use-motion .site-subtitle {
+    opacity: initial;
+    top: initial;
+  }
+
+  .use-motion .logo-line-before i { left: initial; }
+  .use-motion .logo-line-after i { right: initial; }
+  </style>
+</noscript>
+
+<!-- hexo injector head_end start --><script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-7923526446101866" crossorigin="anonymous"></script><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/sakana-widget@2.7.0/lib/sakana.min.css" /><style>#sakana-widget{position:fixed;bottom:0;left:0;}</style><!-- hexo injector head_end end --><link rel="alternate" href="/atom.xml" title="G8空间" type="application/atom+xml">
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage">
+  <div class="container use-motion">
+    <div class="headband"></div>
+
+    <header class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="Toggle navigation bar">
+      <span class="toggle-line toggle-line-first"></span>
+      <span class="toggle-line toggle-line-middle"></span>
+      <span class="toggle-line toggle-line-last"></span>
+    </div>
+  </div>
+
+  <div class="site-meta custom-logo">
+
+    <a href="/" class="brand" rel="start">
+      <span class="logo-line-before"><i></i></span>
+      <h1 class="site-title">G8空间</h1>
+      <span class="logo-line-after"><i></i></span>
+    </a>
+      <p class="site-subtitle" itemprop="description">ghyghoo8的沉淀小碎</p>
+      <a>
+        <img class="custom-logo-image" src="/imgs/IMG_0001.PNG" alt="G8空间">
+      </a>
+  </div>
+
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger">
+    </div>
+  </div>
+</div>
+
+
+
+
+<nav class="site-nav">
+  <ul id="menu" class="main-menu menu">
+        <li class="menu-item menu-item-home">
+
+    <a href="/" rel="section"><i class="fa fa-home fa-fw"></i>Home</a>
+
+  </li>
+        <li class="menu-item menu-item-about">
+
+    <a href="/about/" rel="section"><i class="fa fa-user fa-fw"></i>About</a>
+
+  </li>
+        <li class="menu-item menu-item-tags">
+
+    <a href="/tags/" rel="section"><i class="fa fa-tags fa-fw"></i>Tags</a>
+
+  </li>
+        <li class="menu-item menu-item-categories">
+
+    <a href="/categories/" rel="section"><i class="fa fa-th fa-fw"></i>Categories</a>
+
+  </li>
+        <li class="menu-item menu-item-archives">
+
+    <a href="/archives/" rel="section"><i class="fa fa-archive fa-fw"></i>Archives</a>
+
+  </li>
+        <li class="menu-item menu-item-guestbook">
+
+    <a href="/guestbook" rel="section"><i class="fa fa-comment fa-fw"></i>guestbook</a>
+
+  </li>
+  </ul>
+</nav>
+
+
+
+
+</div>
+    </header>
+
+    
+  <div class="back-to-top">
+    <i class="fa fa-arrow-up"></i>
+    <span>0%</span>
+  </div>
+
+  <span class="exturl github-corner" data-url="aHR0cHM6Ly9naXRodWIuY29tL2doeWdob284" title="Follow me on GitHub" aria-label="Follow me on GitHub"><svg width="80" height="80" viewBox="0 0 250 250" aria-hidden="true"><path d="M0,0 L115,115 L130,115 L142,142 L250,250 L250,0 Z"></path><path d="M128.3,109.0 C113.8,99.7 119.0,89.6 119.0,89.6 C122.0,82.7 120.5,78.6 120.5,78.6 C119.2,72.0 123.4,76.3 123.4,76.3 C127.3,80.9 125.5,87.3 125.5,87.3 C122.9,97.6 130.6,101.9 134.4,103.2" fill="currentColor" style="transform-origin: 130px 106px;" class="octo-arm"></path><path d="M115.0,115.0 C114.9,115.1 118.7,116.5 119.8,115.4 L133.7,101.6 C136.9,99.2 139.9,98.4 142.2,98.6 C133.8,88.0 127.5,74.4 143.8,58.0 C148.5,53.4 154.0,51.2 159.7,51.0 C160.3,49.4 163.2,43.6 171.4,40.1 C171.4,40.1 176.1,42.5 178.8,56.2 C183.1,58.6 187.2,61.8 190.9,65.4 C194.5,69.0 197.7,73.2 200.1,77.6 C213.8,80.2 216.3,84.9 216.3,84.9 C212.7,93.1 206.9,96.0 205.4,96.6 C205.1,102.4 203.0,107.8 198.3,112.5 C181.9,128.9 168.3,122.5 157.7,114.1 C157.9,116.9 156.7,120.9 152.7,124.9 L141.0,136.5 C139.8,137.7 141.6,141.9 141.8,141.8 Z" fill="currentColor" class="octo-body"></path></svg></span>
+
+
+    <main class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          
+
+          <div class="content post posts-expand">
+            
+
+    
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-Hans">
+    <link itemprop="mainEntityOfPage" href="https://ghyghoo8.github.io/2026/06/04/2026-06-04-%E9%9B%B6%E5%B8%A7%E8%B5%B7%E6%89%8B-%E7%AC%AC%E4%B8%80%E6%AC%A1%E5%81%9A%E6%B8%B8%E6%88%8F%E7%9A%84%E8%B8%A9%E5%9D%91%E7%AC%94%E8%AE%B0/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar.gif">
+      <meta itemprop="name" content="ghyghoo8">
+      <meta itemprop="description" content="碎了一地...o(*￣︶￣*)o...">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="G8空间">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          零帧起手——第一次做游戏的踩坑笔记
+        </h1>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-calendar"></i>
+              </span>
+              <span class="post-meta-item-text">Posted on</span>
+
+              <time title="Created: 2026-06-04 00:00:00" itemprop="dateCreated datePublished" datetime="2026-06-04T00:00:00+08:00">2026-06-04</time>
+            </span>
+              <span class="post-meta-item">
+                <span class="post-meta-item-icon">
+                  <i class="far fa-calendar-check"></i>
+                </span>
+                <span class="post-meta-item-text">Edited on</span>
+                <time title="Modified: 2026-07-30 15:56:05" itemprop="dateModified" datetime="2026-07-30T15:56:05+08:00">2026-07-30</time>
+              </span>
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-folder"></i>
+              </span>
+              <span class="post-meta-item-text">In</span>
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/%E6%B8%B8%E6%88%8F%E5%BC%80%E5%8F%91/" itemprop="url" rel="index"><span itemprop="name">游戏开发</span></a>
+                </span>
+            </span>
+
+          
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+        <hr>
+<blockquote>
+<p>这是一篇写给自己的复盘。我是个写了多年 Python &#x2F; JS 的程序员，业余时间用 Godot 做一款像素风的「连线消除 + Roguelike」单机游戏（暂名《勇闯昆图库塔》）。从一张白纸到一个能让真人坐下来玩的版本，踩了不少坑，也总结出一些”早知道就好了”的经验。趁记忆还热，记下来温故知新。</p>
+</blockquote>
+<h2 id="一、最反直觉的一课：别从写代码开始"><a href="#一、最反直觉的一课：别从写代码开始" class="headerlink" title="一、最反直觉的一课：别从写代码开始"></a>一、最反直觉的一课：别从写代码开始</h2><p>程序员做游戏，第一反应往往是”先搭个棋盘渲染出来”。我也是。但回头看，<strong>项目真正的起点是做减法</strong>——在写第一行代码之前，把一堆开放性的选择先锁死：</p>
+<ul>
+<li><strong>平台</strong>：手机还是 PC？我选了 Steam 单机优先。这个决定直接影响分辨率、输入方式、付费模型，越早定越省。</li>
+<li><strong>美术方向</strong>：像素 &#x2F; 矢量 &#x2F; 3D？我选像素——不是因为好看，是因为<strong>它是我这种没有美术功底的人唯一能用 AI 辅助批量产出的风格</strong>。</li>
+<li><strong>核心玩法循环</strong>：一局游戏 30 秒里玩家在干什么？这个循环必须能用一句话说清。</li>
+<li><strong>世界观 &#x2F; 名字 &#x2F; 调性</strong>：哪怕是占位，也要有，否则后面所有文案、UI 文字都没法写。</li>
+</ul>
+<p>我把这些决策单独列成一张表，每一项都标注”已锁定”，然后<strong>约束自己后面不再反复推翻</strong>。这一步看起来很”虚”，但它决定了后面三个月不会因为”要不要改成卡牌玩法”这种问题反复推倒重来。</p>
+<blockquote>
+<p>教训一：**游戏开发 90% 的浪费来自方向反复横跳，而不是代码写得不够快。**先花两周想清楚”做什么 &#x2F; 不做什么”，比急着写引擎代码划算得多。</p>
+</blockquote>
+<h2 id="二、原创的边界：借鉴”设计模式”，不抄”具体内容”"><a href="#二、原创的边界：借鉴”设计模式”，不抄”具体内容”" class="headerlink" title="二、原创的边界：借鉴”设计模式”，不抄”具体内容”"></a>二、原创的边界：借鉴”设计模式”，不抄”具体内容”</h2><p>我这款游戏的玩法骨架，借鉴了同品类经典游戏里被验证过的设计模式，比如：</p>
+<ul>
+<li><strong>多通道独立随机数</strong>：装备掉落、技能抽取、棋盘生成各用一条独立的 RNG，互不污染，这样存档&#x2F;复盘&#x2F;调试都可控。</li>
+<li><strong>双轨升级</strong>：经验值练角色属性，溢出资源换装备词缀，两条线各自三选一。</li>
+<li><strong>资源的双重用途</strong>：同一种格子，先用来修护甲，溢出后转成升级点——一个资源两个出口，决策密度立刻上来了。</li>
+<li><strong>对称的优点-缺点系统</strong>：每个增益配一个代价，自然形成平衡。</li>
+</ul>
+<p>但我给自己立了一条红线，时常自我审查：</p>
+<blockquote>
+<p>“如果玩家一眼能说出’这就是某游戏的 X’，太具体，不能用。<br>如果只能说’这有点像某类游戏的 Y 设计’，OK，这是模式层面的借鉴。”</p>
+</blockquote>
+<p><strong>名字、文案、美术、数值、世界观——全部重新设计。</strong> 玩法模式是行业公共财富，可以学；但具体的可识别内容是别人的劳动成果，必须绕开。这条线对独立开发者尤其重要，宁可保守。</p>
+<h2 id="三、用”里程碑”代替”阶段”，给自己定一条防烂尾铁律"><a href="#三、用”里程碑”代替”阶段”，给自己定一条防烂尾铁律" class="headerlink" title="三、用”里程碑”代替”阶段”，给自己定一条防烂尾铁律"></a>三、用”里程碑”代替”阶段”，给自己定一条防烂尾铁律</h2><p>独立游戏最大的敌人是烂尾。我把开发拆成一串<strong>可玩的里程碑</strong>（M0 到 M6），而不是抽象的”开发阶段”：</p>
+<table>
+<thead>
+<tr>
+<th>里程碑</th>
+<th>交付物</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>M0</td>
+<td>工程脚手架（多语言 &#x2F; RNG &#x2F; 像素配置跑通）</td>
+</tr>
+<tr>
+<td>M1</td>
+<td>核心循环（棋盘 &#x2F; 连线 &#x2F; 重力 &#x2F; 死亡重开）</td>
+</tr>
+<tr>
+<td>M2</td>
+<td>真实战斗匹配 + 状态效果架构 + 动画</td>
+</tr>
+<tr>
+<td>M3</td>
+<td>成长系统（属性 &#x2F; 双轨升级 &#x2F; 装备 &#x2F; 镶嵌）</td>
+</tr>
+<tr>
+<td>M4</td>
+<td>内容铺量（职业 &#x2F; 技能 &#x2F; 敌人 &#x2F; Boss）</td>
+</tr>
+<tr>
+<td>M5</td>
+<td>美术 + 音效 + 本地化（占位换成品）</td>
+</tr>
+<tr>
+<td>M6</td>
+<td>教学 + 打包发布</td>
+</tr>
+</tbody></table>
+<p>关键不在于这张表本身，而在于配套的一条铁律：</p>
+<blockquote>
+<p><strong>防烂尾铁律：每个里程碑结束，游戏都必须能完整跑通一局。</strong></p>
+</blockquote>
+<p>也就是说，永远不存在”写了一半、跑不起来”的中间态。哪怕一个系统只做了占位实现，它也得能跑。这条规矩逼着我<strong>优先保证”可玩”，把”完美”往后放</strong>——美术用纯色块占位，文案先硬编码占位（但走多语言接口），机制没定型前绝不批量产美术资源。</p>
+<h2 id="四、给游戏写一个”机器人”：自动化测试不只是单元测试"><a href="#四、给游戏写一个”机器人”：自动化测试不只是单元测试" class="headerlink" title="四、给游戏写一个”机器人”：自动化测试不只是单元测试"></a>四、给游戏写一个”机器人”：自动化测试不只是单元测试</h2><p>这是整个项目里我最得意的一招，也是程序员背景带来的最大红利。</p>
+<p>游戏逻辑很难测——你不可能每改一个数值就手动玩 50 局。于是我做了两层自动化：</p>
+<p><strong>第一层：无头自检（selftest）。</strong> 引擎用 <code>--headless</code> 跑一遍所有核心逻辑断言，覆盖匹配规则、伤害结算、状态效果、技能派发……目前积累到 60 条。每改一处逻辑就跑一遍，几秒钟出结果。<strong>每修一个 bug 就加一条断言</strong>，回归测试自然就长出来了——这套测试帮我抓出过好几个真 bug。</p>
+<p><strong>第二层：自动试玩机器人（bot）。</strong> 我写了一个贪心策略的 AI，让它自己玩游戏：血少了去连药水、甲薄了去连盾、否则打架、能升级就升级。然后批量跑：</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">godot --headless --path game -- --simulate class=all runs=50 seed=1</span><br></pre></td></tr></table></figure>
+
+<p>输出每个职业的：平均通关楼层、各 Boss 到达率、通关率、死亡原因分布。<strong>数值平衡从”拍脑袋”变成了”数据驱动”</strong>——我能看到”6 层左右大量玩家被物理伤害磨死”，于是定位到”玩家防御成长斜率 &lt; 敌人数量成长斜率”，精准下刀，而不是瞎调。</p>
+<p>这套东西把调参变成了一个循环：跑模拟 → 看数据 → 改一个旋钮 → 重跑对比 → 迭代。</p>
+<blockquote>
+<p>教训二：**能自动化验证的东西，绝不靠手动玩。**给游戏写一个会自己玩的机器人，是把”手感玄学”逼成”工程问题”的最好办法。</p>
+</blockquote>
+<h2 id="五、但要清醒：机器人永远比真人弱"><a href="#五、但要清醒：机器人永远比真人弱" class="headerlink" title="五、但要清醒：机器人永远比真人弱"></a>五、但要清醒：机器人永远比真人弱</h2><p>上面这套很爽，但它有个致命的认知陷阱，我栽过：<strong>bot 的数据是有系统性偏差的。</strong></p>
+<p>我的贪心 bot 不会”留着大招打 Boss”，不会打复杂连招，选路也很笨。所以：</p>
+<ul>
+<li>那些<strong>靠连招爆发</strong>的职业（比如我的刺客），bot 打出来的通关率只有 15%，但真人能轻松打到更高——因为 bot 根本用不出它的核心玩法。</li>
+<li>反过来，bot 的数据能可靠反映<strong>相对信号</strong>（哪个职业偏强、哪一层是卡点、哪种死因最多），但<strong>绝对难度永远偏悲观</strong>。</li>
+</ul>
+<p>所以我最终的结论是：<strong>bot 负责”相对平衡”和”防崩盘”，绝对难度和手感必须真人实玩校准。</strong> 这恰恰是 AI 辅助开发的盲区——逻辑可以验证，但”这一下打出去爽不爽”，只有人坐下来玩才知道。</p>
+<blockquote>
+<p>教训三：**自动化能告诉你”哪里不对”，但告诉不了你”好不好玩”。**别让漂亮的通关率曲线骗了你。</p>
+</blockquote>
+<h2 id="六、数值平衡是个无底洞，所以要”旋钮化”"><a href="#六、数值平衡是个无底洞，所以要”旋钮化”" class="headerlink" title="六、数值平衡是个无底洞，所以要”旋钮化”"></a>六、数值平衡是个无底洞，所以要”旋钮化”</h2><p>我一度陷在数值地狱里：改了 A 崩了 B，修了 B 又崩了 C。后来想明白一件事——<strong>不要把数值散落在代码各处，要把它们提炼成一组命名清晰的”旋钮”</strong>：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">const SPECIAL_HP_MULT := 2.2   # 精英怪血量倍率</span><br><span class="line">const BOSS_ATK_MULT := 3.3     # Boss 攻击倍率</span><br><span class="line">const SPECIAL_PROMOTE_TURNS := 8  # 几回合提升一只精英</span><br><span class="line">const ENEMY_ATK_DIV := Vector2(65, 55)  # 敌人攻击成长除数（越小越难）</span><br></pre></td></tr></table></figure>
+
+<p>调难度的时候，我面对的是”几个有意义的旋钮”，而不是”满屏的魔法数字”。每个旋钮我都在文档里记下它的作用和方向。这样哪怕几周后回来，也知道”想让前期软一点该拧哪个”。</p>
+<p>还有一个血泪教训：<strong>警惕经济系统里的”印钞机”。</strong> 我有个技能能把药水炼成升级点，结果玩家发现可以反复刷药水farm，武器直接练到爆表，整个曲线全废。<strong>任何”资源 A 换资源 B”的设计，都要算一下它的循环上限，否则就是无限套利。</strong></p>
+<h2 id="七、和-AI-结对开发：分工是关键"><a href="#七、和-AI-结对开发：分工是关键" class="headerlink" title="七、和 AI 结对开发：分工是关键"></a>七、和 AI 结对开发：分工是关键</h2><p>这个项目我是和 Claude（Claude Code）结对做的，磨合下来形成了一套稳定分工：</p>
+<ul>
+<li><strong>AI 负责</strong>：写逻辑、写自检断言、跑模拟、做数据分析、按我的意图批量铺内容（职业&#x2F;技能&#x2F;敌人）、写文档。它在”把明确的规则翻译成正确的代码并自我验证”这件事上极强。</li>
+<li><strong>我负责</strong>：定方向、做手感判断、拍板取舍（”刺客就是要难，保留难度”）、玩真人实测、把控原创边界和法律红线。</li>
+</ul>
+<p>最舒服的节奏是：我描述一个机制 → AI 实现 + 加自检 + 跑模拟给数据 → 我看数据和实玩反馈 → 给下一步指令。<strong>AI 把我从”手写样板代码”里解放出来，让我能把精力放在只有人能做的判断上。</strong></p>
+<blockquote>
+<p>教训四：**AI 不是替你做决定，是替你把决定快速、正确地落地。**方向、品味、取舍仍然是你的活。</p>
+</blockquote>
+<h2 id="八、那些”早点做就好了”的工程小事"><a href="#八、那些”早点做就好了”的工程小事" class="headerlink" title="八、那些”早点做就好了”的工程小事"></a>八、那些”早点做就好了”的工程小事</h2><p>最后几条零碎但真实的经验：</p>
+<ol>
+<li><strong>尽早做版本系统和一键构建。</strong> 我拖到比较后期才加版本号 + <code>build.sh</code> 一键导出，之前每次给人试玩都手忙脚乱。一个脚本搞定”从版本号命名 → 导出 → 签名”，省心太多。</li>
+<li><strong>所有玩家可见文本，第一天就走本地化接口。</strong> 哪怕你现在只做中文，也别硬编码字符串。后期补英文时，硬编码的文本会让你想哭。</li>
+<li><strong>占位优先，美术最后。</strong> 纯色块能玩通的机制，才值得花钱画美术。机制没定型就出美术资源，等于提前烧钱。</li>
+<li><strong>把”为什么这么做”写进文档&#x2F;记忆。</strong> 几周后的你，会忘记今天为什么把某个数值定成这个值。记下决策的<strong>理由</strong>，比记结果更重要。</li>
+</ol>
+<h2 id="写在最后"><a href="#写在最后" class="headerlink" title="写在最后"></a>写在最后</h2><p>从 0 到一个能让真人坐下来玩的版本，最大的收获不是学会了 Godot，而是明白了：<strong>做游戏是一个”在不确定里持续做减法和判断”的过程，而不是一个”把需求翻译成代码”的过程。</strong></p>
+<p>程序员的工程能力（自动化测试、数据驱动、模块化、版本管理）是巨大的优势；但游戏最终好不好玩，靠的是那个会坐下来一局一局玩、然后皱眉说”这里不对劲”的人。</p>
+<p>下一步是美术、音效和本地化，把占位换成成品。等做到能发布的那天，再来写续集。</p>
+<blockquote>
+<p>共勉：**先让它能跑，再让它好玩，最后让它好看。**顺序别反。</p>
+</blockquote>
+
+    </div>
+
+    
+    
+    
+
+      <footer class="post-footer">
+          <div class="post-tags">
+              <a href="/tags/%E6%96%B0%E6%89%8B%E6%95%99%E7%A8%8B/" rel="tag"># 新手教程</a>
+              <a href="/tags/gamedev/" rel="tag"># gamedev</a>
+              <a href="/tags/godot/" rel="tag"># godot</a>
+              <a href="/tags/roguelike/" rel="tag"># roguelike</a>
+              <a href="/tags/%E5%A4%8D%E7%9B%98/" rel="tag"># 复盘</a>
+          </div>
+
+        
+
+
+        
+    <div class="post-nav">
+      <div class="post-nav-item">
+    <a href="/2025/03/14/2025-03-14-%E6%89%8B%E6%8A%8A%E6%89%8B%E8%87%AA%E5%BB%BASupabase%E6%9C%8D%E5%8A%A1-%E5%A2%99%E5%86%85/" rel="prev" title="手把手自建Supabase服务-墙内">
+      <i class="fa fa-chevron-left"></i> 手把手自建Supabase服务-墙内
+    </a></div>
+      <div class="post-nav-item">
+    <a href="/2026/06/05/2026-06-05-%E6%96%B0%E6%89%8B%E5%A6%82%E4%BD%95%E6%90%AD%E4%B8%80%E4%B8%AA%E5%AE%8C%E6%95%B4%E7%9A%84%E9%87%8F%E5%8C%96%E5%88%86%E6%9E%90%E7%B3%BB%E7%BB%9F/" rel="next" title="新手如何搭一个完整的量化分析系统——五层骨架与踩坑复盘">
+      新手如何搭一个完整的量化分析系统——五层骨架与踩坑复盘 <i class="fa fa-chevron-right"></i>
+    </a></div>
+    </div>
+      </footer>
+    
+  </article>
+  
+  
+  
+
+
+
+          </div>
+          
+    
+  <div class="comments">
+    <div id="lv-container" data-id="city" data-uid="MTAyMC81NDA1OS8zMDUzMQ=="></div>
+  </div>
+  
+
+<script>
+  window.addEventListener('tabs:register', () => {
+    let { activeClass } = CONFIG.comments;
+    if (CONFIG.comments.storage) {
+      activeClass = localStorage.getItem('comments_active') || activeClass;
+    }
+    if (activeClass) {
+      let activeTab = document.querySelector(`a[href="#comment-${activeClass}"]`);
+      if (activeTab) {
+        activeTab.click();
+      }
+    }
+  });
+  if (CONFIG.comments.storage) {
+    window.addEventListener('tabs:click', event => {
+      if (!event.target.matches('.tabs-comment .tab-content .tab-pane')) return;
+      let commentClass = event.target.classList[1];
+      localStorage.setItem('comments_active', commentClass);
+    });
+  }
+</script>
+
+        </div>
+          
+  
+  <div class="toggle sidebar-toggle">
+    <span class="toggle-line toggle-line-first"></span>
+    <span class="toggle-line toggle-line-middle"></span>
+    <span class="toggle-line toggle-line-last"></span>
+  </div>
+
+  <aside class="sidebar">
+    <div class="sidebar-inner">
+
+      <ul class="sidebar-nav motion-element">
+        <li class="sidebar-nav-toc">
+          Table of Contents
+        </li>
+        <li class="sidebar-nav-overview">
+          Overview
+        </li>
+      </ul>
+
+      <!--noindex-->
+      <div class="post-toc-wrap sidebar-panel">
+          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#%E4%B8%80%E3%80%81%E6%9C%80%E5%8F%8D%E7%9B%B4%E8%A7%89%E7%9A%84%E4%B8%80%E8%AF%BE%EF%BC%9A%E5%88%AB%E4%BB%8E%E5%86%99%E4%BB%A3%E7%A0%81%E5%BC%80%E5%A7%8B"><span class="nav-number">1.</span> <span class="nav-text">一、最反直觉的一课：别从写代码开始</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E4%BA%8C%E3%80%81%E5%8E%9F%E5%88%9B%E7%9A%84%E8%BE%B9%E7%95%8C%EF%BC%9A%E5%80%9F%E9%89%B4%E2%80%9D%E8%AE%BE%E8%AE%A1%E6%A8%A1%E5%BC%8F%E2%80%9D%EF%BC%8C%E4%B8%8D%E6%8A%84%E2%80%9D%E5%85%B7%E4%BD%93%E5%86%85%E5%AE%B9%E2%80%9D"><span class="nav-number">2.</span> <span class="nav-text">二、原创的边界：借鉴”设计模式”，不抄”具体内容”</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E4%B8%89%E3%80%81%E7%94%A8%E2%80%9D%E9%87%8C%E7%A8%8B%E7%A2%91%E2%80%9D%E4%BB%A3%E6%9B%BF%E2%80%9D%E9%98%B6%E6%AE%B5%E2%80%9D%EF%BC%8C%E7%BB%99%E8%87%AA%E5%B7%B1%E5%AE%9A%E4%B8%80%E6%9D%A1%E9%98%B2%E7%83%82%E5%B0%BE%E9%93%81%E5%BE%8B"><span class="nav-number">3.</span> <span class="nav-text">三、用”里程碑”代替”阶段”，给自己定一条防烂尾铁律</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%9B%9B%E3%80%81%E7%BB%99%E6%B8%B8%E6%88%8F%E5%86%99%E4%B8%80%E4%B8%AA%E2%80%9D%E6%9C%BA%E5%99%A8%E4%BA%BA%E2%80%9D%EF%BC%9A%E8%87%AA%E5%8A%A8%E5%8C%96%E6%B5%8B%E8%AF%95%E4%B8%8D%E5%8F%AA%E6%98%AF%E5%8D%95%E5%85%83%E6%B5%8B%E8%AF%95"><span class="nav-number">4.</span> <span class="nav-text">四、给游戏写一个”机器人”：自动化测试不只是单元测试</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E4%BA%94%E3%80%81%E4%BD%86%E8%A6%81%E6%B8%85%E9%86%92%EF%BC%9A%E6%9C%BA%E5%99%A8%E4%BA%BA%E6%B0%B8%E8%BF%9C%E6%AF%94%E7%9C%9F%E4%BA%BA%E5%BC%B1"><span class="nav-number">5.</span> <span class="nav-text">五、但要清醒：机器人永远比真人弱</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%85%AD%E3%80%81%E6%95%B0%E5%80%BC%E5%B9%B3%E8%A1%A1%E6%98%AF%E4%B8%AA%E6%97%A0%E5%BA%95%E6%B4%9E%EF%BC%8C%E6%89%80%E4%BB%A5%E8%A6%81%E2%80%9D%E6%97%8B%E9%92%AE%E5%8C%96%E2%80%9D"><span class="nav-number">6.</span> <span class="nav-text">六、数值平衡是个无底洞，所以要”旋钮化”</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E4%B8%83%E3%80%81%E5%92%8C-AI-%E7%BB%93%E5%AF%B9%E5%BC%80%E5%8F%91%EF%BC%9A%E5%88%86%E5%B7%A5%E6%98%AF%E5%85%B3%E9%94%AE"><span class="nav-number">7.</span> <span class="nav-text">七、和 AI 结对开发：分工是关键</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%85%AB%E3%80%81%E9%82%A3%E4%BA%9B%E2%80%9D%E6%97%A9%E7%82%B9%E5%81%9A%E5%B0%B1%E5%A5%BD%E4%BA%86%E2%80%9D%E7%9A%84%E5%B7%A5%E7%A8%8B%E5%B0%8F%E4%BA%8B"><span class="nav-number">8.</span> <span class="nav-text">八、那些”早点做就好了”的工程小事</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%86%99%E5%9C%A8%E6%9C%80%E5%90%8E"><span class="nav-number">9.</span> <span class="nav-text">写在最后</span></a></li></ol></div>
+      </div>
+      <!--/noindex-->
+
+      <div class="site-overview-wrap sidebar-panel">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+  <p class="site-author-name" itemprop="name">ghyghoo8</p>
+  <div class="site-description" itemprop="description">碎了一地...o(*￣︶￣*)o...</div>
+</div>
+<div class="site-state-wrap motion-element">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+          <a href="/archives/">
+        
+          <span class="site-state-item-count">27</span>
+          <span class="site-state-item-name">posts</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-categories">
+            <a href="/categories/">
+          
+        <span class="site-state-item-count">11</span>
+        <span class="site-state-item-name">categories</span></a>
+      </div>
+      <div class="site-state-item site-state-tags">
+            <a href="/tags/">
+          
+        <span class="site-state-item-count">54</span>
+        <span class="site-state-item-name">tags</span></a>
+      </div>
+  </nav>
+</div>
+
+
+
+      </div>
+
+    </div>
+  </aside>
+  <div id="sidebar-dimmer"></div>
+
+
+      </div>
+    </main>
+
+    <footer class="footer">
+      <div class="footer-inner">
+        
+
+        
+
+<div class="copyright">
+  
+  &copy; 
+  <span itemprop="copyrightYear">2026</span>
+  <span class="with-love">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">ghyghoo8</span>
+</div>
+  <div class="powered-by">Powered by <span class="exturl theme-link" data-url="aHR0cHM6Ly9oZXhvLmlv">Hexo</span> & <span class="exturl theme-link" data-url="aHR0cHM6Ly9waXNjZXMudGhlbWUtbmV4dC5vcmc=">NexT.Pisces</span>
+  </div>
+
+        
+
+
+
+
+
+
+
+
+      </div>
+    </footer>
+  </div>
+
+  
+  <script src="//cdn.jsdelivr.net/npm/animejs@3.1.0/lib/anime.min.js"></script>
+  <script src="/lib/velocity/velocity.min.js"></script>
+  <script src="/lib/velocity/velocity.ui.min.js"></script>
+
+<script src="/js/utils.js"></script>
+
+<script src="/js/motion.js"></script>
+
+
+<script src="/js/schemes/pisces.js"></script>
+
+
+<script src="/js/next-boot.js"></script>
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+  
+
+<script>
+NexT.utils.loadComments(document.querySelector('#lv-container'), () => {
+  window.livereOptions = {
+    refer: location.pathname.replace(CONFIG.root, '').replace('index.html', '')
+  };
+  (function(d, s) {
+    var j, e = d.getElementsByTagName(s)[0];
+    if (typeof LivereTower === 'function') { return; }
+    j = d.createElement(s);
+    j.src = 'https://cdn-city.livere.com/js/embed.dist.js';
+    j.async = true;
+    e.parentNode.insertBefore(j, e);
+  })(document, 'script');
+});
+</script>
+
+<!-- hexo injector body_end start -->
+<script src="/js/bot.js"></script>
+<div id="sakana-widget"></div><script>
+      function initSakanaWidget() {
+        // 默认自走模式
+        new SakanaWidget().mount('#sakana-widget').triggetAutoMode();
+      }
+    </script><script
+      async
+      onload="initSakanaWidget()"
+      src="https://cdn.jsdelivr.net/npm/sakana-widget@2.7.0/lib/sakana.min.js"
+    ></script><!-- hexo injector body_end end --></body>
+</html>

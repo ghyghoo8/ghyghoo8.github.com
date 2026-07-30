@@ -1,0 +1,555 @@
+<!DOCTYPE html>
+<html lang="zh-Hans">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
+<meta name="theme-color" content="#222">
+<meta name="generator" content="Hexo 8.1.1">
+  <link rel="apple-touch-icon" sizes="180x180" href="/imgs/logo.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/imgs/32.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/imgs/16.png">
+  <link rel="mask-icon" href="/imgs/logo.png" color="#222">
+  <meta name="google-site-verification" content="dJfRF5_6EbT_bJo2wTKbSXTDmNaOTqDGRDMcU6ylduk">
+
+<link rel="stylesheet" href="/css/main.css">
+
+
+<link rel="stylesheet" href="//cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@5/css/all.min.css">
+
+<script id="hexo-configurations">
+    var NexT = window.NexT || {};
+    var CONFIG = {"hostname":"ghyghoo8.github.io","root":"/","scheme":"Pisces","version":"7.8.0","exturl":true,"sidebar":{"position":"left","display":"post","padding":18,"offset":12,"onmobile":false},"copycode":{"enable":false,"show_result":false,"style":null},"back2top":{"enable":true,"sidebar":false,"scrollpercent":false},"bookmark":{"enable":false,"color":"#222","save":"auto"},"fancybox":false,"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":"livere","storage":true,"lazyload":false,"nav":null,"activeClass":"livere"},"algolia":{"hits":{"per_page":10},"labels":{"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}},"localsearch":{"enable":false,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}}};
+  </script>
+
+  <meta name="description" content="我业余在做一个 A 股量化分析系统：自动拉数据、算因子、做因果推断、生成个股分析报告。它从最初十几个互相调用的脚本，长成了一个有数据层、因子层、模型层、决策层、复盘层的系统。这篇是写给”想做量化系统、但还停在写脚本阶段”的新手的复盘——不讲怎么调参赚钱，只讲怎么把系统的骨架搭对。 因为我越做越确信：量化里真正难的不是策略，是工程。  先有骨架：一个完整的量化系统分五层新手最容易陷入的误区，是一上">
+<meta property="og:type" content="article">
+<meta property="og:title" content="新手如何搭一个完整的量化分析系统——五层骨架与踩坑复盘">
+<meta property="og:url" content="https://ghyghoo8.github.io/2026/06/05/2026-06-05-%E6%96%B0%E6%89%8B%E5%A6%82%E4%BD%95%E6%90%AD%E4%B8%80%E4%B8%AA%E5%AE%8C%E6%95%B4%E7%9A%84%E9%87%8F%E5%8C%96%E5%88%86%E6%9E%90%E7%B3%BB%E7%BB%9F/index.html">
+<meta property="og:site_name" content="G8空间">
+<meta property="og:description" content="我业余在做一个 A 股量化分析系统：自动拉数据、算因子、做因果推断、生成个股分析报告。它从最初十几个互相调用的脚本，长成了一个有数据层、因子层、模型层、决策层、复盘层的系统。这篇是写给”想做量化系统、但还停在写脚本阶段”的新手的复盘——不讲怎么调参赚钱，只讲怎么把系统的骨架搭对。 因为我越做越确信：量化里真正难的不是策略，是工程。  先有骨架：一个完整的量化系统分五层新手最容易陷入的误区，是一上">
+<meta property="og:locale">
+<meta property="article:published_time" content="2026-06-04T16:00:00.000Z">
+<meta property="article:modified_time" content="2026-07-30T07:56:05.138Z">
+<meta property="article:author" content="ghyghoo8">
+<meta property="article:tag" content="复盘">
+<meta property="article:tag" content="数据工程">
+<meta property="article:tag" content="新手教程">
+<meta property="article:tag" content="架构设计">
+<meta property="article:tag" content="量化">
+<meta name="twitter:card" content="summary">
+
+<link rel="canonical" href="https://ghyghoo8.github.io/2026/06/05/2026-06-05-%E6%96%B0%E6%89%8B%E5%A6%82%E4%BD%95%E6%90%AD%E4%B8%80%E4%B8%AA%E5%AE%8C%E6%95%B4%E7%9A%84%E9%87%8F%E5%8C%96%E5%88%86%E6%9E%90%E7%B3%BB%E7%BB%9F/">
+
+
+<script id="page-configurations">
+  // https://hexo.io/docs/variables.html
+  CONFIG.page = {
+    sidebar: "",
+    isHome : false,
+    isPost : true,
+    lang   : 'zh-Hans'
+  };
+</script>
+
+  <title>新手如何搭一个完整的量化分析系统——五层骨架与踩坑复盘 | G8空间</title>
+  
+
+
+
+
+
+
+  <noscript>
+  <style>
+  .use-motion .brand,
+  .use-motion .menu-item,
+  .sidebar-inner,
+  .use-motion .post-block,
+  .use-motion .pagination,
+  .use-motion .comments,
+  .use-motion .post-header,
+  .use-motion .post-body,
+  .use-motion .collection-header { opacity: initial; }
+
+  .use-motion .site-title,
+  .use-motion .site-subtitle {
+    opacity: initial;
+    top: initial;
+  }
+
+  .use-motion .logo-line-before i { left: initial; }
+  .use-motion .logo-line-after i { right: initial; }
+  </style>
+</noscript>
+
+<!-- hexo injector head_end start --><script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-7923526446101866" crossorigin="anonymous"></script><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/sakana-widget@2.7.0/lib/sakana.min.css" /><style>#sakana-widget{position:fixed;bottom:0;left:0;}</style><!-- hexo injector head_end end --><link rel="alternate" href="/atom.xml" title="G8空间" type="application/atom+xml">
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage">
+  <div class="container use-motion">
+    <div class="headband"></div>
+
+    <header class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="Toggle navigation bar">
+      <span class="toggle-line toggle-line-first"></span>
+      <span class="toggle-line toggle-line-middle"></span>
+      <span class="toggle-line toggle-line-last"></span>
+    </div>
+  </div>
+
+  <div class="site-meta custom-logo">
+
+    <a href="/" class="brand" rel="start">
+      <span class="logo-line-before"><i></i></span>
+      <h1 class="site-title">G8空间</h1>
+      <span class="logo-line-after"><i></i></span>
+    </a>
+      <p class="site-subtitle" itemprop="description">ghyghoo8的沉淀小碎</p>
+      <a>
+        <img class="custom-logo-image" src="/imgs/IMG_0001.PNG" alt="G8空间">
+      </a>
+  </div>
+
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger">
+    </div>
+  </div>
+</div>
+
+
+
+
+<nav class="site-nav">
+  <ul id="menu" class="main-menu menu">
+        <li class="menu-item menu-item-home">
+
+    <a href="/" rel="section"><i class="fa fa-home fa-fw"></i>Home</a>
+
+  </li>
+        <li class="menu-item menu-item-about">
+
+    <a href="/about/" rel="section"><i class="fa fa-user fa-fw"></i>About</a>
+
+  </li>
+        <li class="menu-item menu-item-tags">
+
+    <a href="/tags/" rel="section"><i class="fa fa-tags fa-fw"></i>Tags</a>
+
+  </li>
+        <li class="menu-item menu-item-categories">
+
+    <a href="/categories/" rel="section"><i class="fa fa-th fa-fw"></i>Categories</a>
+
+  </li>
+        <li class="menu-item menu-item-archives">
+
+    <a href="/archives/" rel="section"><i class="fa fa-archive fa-fw"></i>Archives</a>
+
+  </li>
+        <li class="menu-item menu-item-guestbook">
+
+    <a href="/guestbook" rel="section"><i class="fa fa-comment fa-fw"></i>guestbook</a>
+
+  </li>
+  </ul>
+</nav>
+
+
+
+
+</div>
+    </header>
+
+    
+  <div class="back-to-top">
+    <i class="fa fa-arrow-up"></i>
+    <span>0%</span>
+  </div>
+
+  <span class="exturl github-corner" data-url="aHR0cHM6Ly9naXRodWIuY29tL2doeWdob284" title="Follow me on GitHub" aria-label="Follow me on GitHub"><svg width="80" height="80" viewBox="0 0 250 250" aria-hidden="true"><path d="M0,0 L115,115 L130,115 L142,142 L250,250 L250,0 Z"></path><path d="M128.3,109.0 C113.8,99.7 119.0,89.6 119.0,89.6 C122.0,82.7 120.5,78.6 120.5,78.6 C119.2,72.0 123.4,76.3 123.4,76.3 C127.3,80.9 125.5,87.3 125.5,87.3 C122.9,97.6 130.6,101.9 134.4,103.2" fill="currentColor" style="transform-origin: 130px 106px;" class="octo-arm"></path><path d="M115.0,115.0 C114.9,115.1 118.7,116.5 119.8,115.4 L133.7,101.6 C136.9,99.2 139.9,98.4 142.2,98.6 C133.8,88.0 127.5,74.4 143.8,58.0 C148.5,53.4 154.0,51.2 159.7,51.0 C160.3,49.4 163.2,43.6 171.4,40.1 C171.4,40.1 176.1,42.5 178.8,56.2 C183.1,58.6 187.2,61.8 190.9,65.4 C194.5,69.0 197.7,73.2 200.1,77.6 C213.8,80.2 216.3,84.9 216.3,84.9 C212.7,93.1 206.9,96.0 205.4,96.6 C205.1,102.4 203.0,107.8 198.3,112.5 C181.9,128.9 168.3,122.5 157.7,114.1 C157.9,116.9 156.7,120.9 152.7,124.9 L141.0,136.5 C139.8,137.7 141.6,141.9 141.8,141.8 Z" fill="currentColor" class="octo-body"></path></svg></span>
+
+
+    <main class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          
+
+          <div class="content post posts-expand">
+            
+
+    
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-Hans">
+    <link itemprop="mainEntityOfPage" href="https://ghyghoo8.github.io/2026/06/05/2026-06-05-%E6%96%B0%E6%89%8B%E5%A6%82%E4%BD%95%E6%90%AD%E4%B8%80%E4%B8%AA%E5%AE%8C%E6%95%B4%E7%9A%84%E9%87%8F%E5%8C%96%E5%88%86%E6%9E%90%E7%B3%BB%E7%BB%9F/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar.gif">
+      <meta itemprop="name" content="ghyghoo8">
+      <meta itemprop="description" content="碎了一地...o(*￣︶￣*)o...">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="G8空间">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          新手如何搭一个完整的量化分析系统——五层骨架与踩坑复盘
+        </h1>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-calendar"></i>
+              </span>
+              <span class="post-meta-item-text">Posted on</span>
+
+              <time title="Created: 2026-06-05 00:00:00" itemprop="dateCreated datePublished" datetime="2026-06-05T00:00:00+08:00">2026-06-05</time>
+            </span>
+              <span class="post-meta-item">
+                <span class="post-meta-item-icon">
+                  <i class="far fa-calendar-check"></i>
+                </span>
+                <span class="post-meta-item-text">Edited on</span>
+                <time title="Modified: 2026-07-30 15:56:05" itemprop="dateModified" datetime="2026-07-30T15:56:05+08:00">2026-07-30</time>
+              </span>
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-folder"></i>
+              </span>
+              <span class="post-meta-item-text">In</span>
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/%E7%B3%BB%E7%BB%9F%E6%9E%B6%E6%9E%84/" itemprop="url" rel="index"><span itemprop="name">系统架构</span></a>
+                </span>
+            </span>
+
+          
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+        <blockquote>
+<p>我业余在做一个 A 股量化分析系统：自动拉数据、算因子、做因果推断、生成个股分析报告。它从最初十几个互相调用的脚本，长成了一个有数据层、因子层、模型层、决策层、复盘层的系统。这篇是写给”想做量化系统、但还停在写脚本阶段”的新手的复盘——<strong>不讲怎么调参赚钱，只讲怎么把系统的骨架搭对。</strong> 因为我越做越确信：量化里真正难的不是策略，是工程。</p>
+</blockquote>
+<h2 id="先有骨架：一个完整的量化系统分五层"><a href="#先有骨架：一个完整的量化系统分五层" class="headerlink" title="先有骨架：一个完整的量化系统分五层"></a>先有骨架：一个完整的量化系统分五层</h2><p>新手最容易陷入的误区，是一上来就钻进”用什么指标、什么模型能赚钱”。但一个能持续迭代的量化系统，<strong>赚钱的策略只是最上面薄薄一层，底下要有四层地基撑着</strong>。完整骨架长这样：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line">┌─────────────────────────────────────────────┐</span><br><span class="line">│ 5. 复盘层   回测 / 模拟盘 / IC评估 / 跨日对比      │ ← 验证前四层有没有用</span><br><span class="line">├─────────────────────────────────────────────┤</span><br><span class="line">│ 4. 决策层   多信号融合 → 评级 / 报告 / 操作清单     │ ← 人在这里介入</span><br><span class="line">├─────────────────────────────────────────────┤</span><br><span class="line">│ 3. 模型层   因子合成 / 因果推断 / 资金博弈 / 异常检测 │ ← 把数据变成判断</span><br><span class="line">├─────────────────────────────────────────────┤</span><br><span class="line">│ 2. 因子层   技术 / 基本面 / 量价因子，计算并落库     │ ← 可复现的特征</span><br><span class="line">├─────────────────────────────────────────────┤</span><br><span class="line">│ 1. 数据层   行情 / 财报 / 资金面，采集 + 统一访问    │ ← 一切的地基</span><br><span class="line">└─────────────────────────────────────────────┘</span><br></pre></td></tr></table></figure>
+
+<p>数据自下而上流动，每层只对相邻层负责。把这张图刻在脑子里，后面 80% 的架构决策都有了依据。下面逐层讲，每层都附上我真实踩过的坑。</p>
+<h2 id="第-1-层-·-数据层：地基，也是最容易偷懒的地方"><a href="#第-1-层-·-数据层：地基，也是最容易偷懒的地方" class="headerlink" title="第 1 层 · 数据层：地基，也是最容易偷懒的地方"></a>第 1 层 · 数据层：地基，也是最容易偷懒的地方</h2><p>数据层干三件事：<strong>采集</strong>（从外部源拉行情&#x2F;财报&#x2F;资金面）、<strong>落库</strong>（存进本地数据库）、<strong>统一访问</strong>（给上层提供干净的读接口）。</p>
+<p>新手最容易在”统一访问”上偷懒——每个脚本要数据就自己 <code>connect()</code> 一下。我就是这么干的，结果欠下两笔债：</p>
+<p><strong>坑一：31 个模块各自连库，字段口径乱成一锅粥。</strong> 同一张 K 线表，有的模块记得字段叫 <code>amt</code>，有的写成 <code>amount</code>；日线 <code>type</code> 标准值是 <code>&#39;1d&#39;</code>，某次 bug 让它存成了 <code>&#39;60m&#39;</code>，下游全查空；数据库路径 <code>&quot;db_file&quot;</code> 硬编码在十几个文件里。后来我把所有”读数据”收口到一个 <code>data_access.py</code>，字段口径只定义一次，顺手加了个 <code>compute_technicals()</code> 把每次都要重算的 MA&#x2F;RSI&#x2F;MACD 一次算全。<strong>地基不统一，上面每盖一层都在重复试错。</strong></p>
+<p><strong>坑二：外部数据源一定会在你最需要时挂掉。</strong> 我的”个股资金流”接口稳定跑了大半年后，某天整个路径被服务端拒绝——直连、走代理都是 Empty reply。依赖它的那块报告瞬间全空。这件事教会我一套”外部源生存法则”：</p>
+<ul>
+<li><strong>重试要克制</strong>：原来 3 次重试 ×15 秒，挂的时候白等 45 秒；改成 1 次 ×8 秒，从”卡死”变”秒跳过”。重试是为了扛抖动，不是硬刚宕机。</li>
+<li><strong>要有兜底源</strong>，但<strong>兜底数据的口径必须对得上</strong>。这是最隐蔽的坑：原接口是”超大单”口径，兜底源是”主力（超大+大单）”口径，同一只股票原口径显示 <strong>-70 亿</strong>、兜底口径 <strong>+0.7 亿</strong>，方向完全相反（”大单买、超大单卖”的派发）。<strong>所以兜底只补它对应的那一格，原口径拿不到就诚实标”不可用”，绝不拿另一个口径冒充。</strong></li>
+<li><strong>降级要能自愈</strong>：原接口恢复后自动不再走兜底。</li>
+</ul>
+<blockquote>
+<p>给新手：数据层是你唯一不能省工的地方。先写一个”唯一的读数据入口”，再把每个外部源的”挂了怎么办”想清楚。这两件事越晚做越痛。</p>
+</blockquote>
+<h2 id="第-2-层-·-因子层：让特征”可复现-可追溯”"><a href="#第-2-层-·-因子层：让特征”可复现-可追溯”" class="headerlink" title="第 2 层 · 因子层：让特征”可复现 + 可追溯”"></a>第 2 层 · 因子层：让特征”可复现 + 可追溯”</h2><p>因子层把原始 K 线&#x2F;财报，加工成一个个数值特征——动量、波动率、估值（PE&#x2F;PB&#x2F;PEG）、财务质量（F-Score）、量价（振幅&#x2F;量比）等等。我的系统现在有 29 维因子。</p>
+<p>这层新手常犯的错，是<strong>把因子算在内存里用完就扔</strong>。正确做法是：<strong>因子要落库，带上日期和计算时间戳。</strong> 原因有三：</p>
+<ol>
+<li><strong>可复现</strong>：三个月后你想知道”那天为什么给这只股 60 分”，能查到当天每个因子的值。</li>
+<li><strong>可批量</strong>：横截面排名（这只股的动量在全市场排第几）必须有全市场当天的因子快照才能算。</li>
+<li><strong>可校验</strong>：因子算错了（比如某次我把”资产负债率”的单位算错，0.5 存成了 0.005），落库后能一眼看出异常。</li>
+</ol>
+<p>还有一条:<strong>新增因子时，所有相关入口要同步</strong>。我加了 6 个新因子后，忘了同步因子评估模块，导致评估时报错——因为评估那边的因子列表是另一处硬编码的。<strong>任何”因子清单”这种东西，都该有唯一来源，而不是 copy 在多个文件里。</strong></p>
+<h2 id="第-3-层-·-模型层：把数据变成判断，但要留余地"><a href="#第-3-层-·-模型层：把数据变成判断，但要留余地" class="headerlink" title="第 3 层 · 模型层：把数据变成判断，但要留余地"></a>第 3 层 · 模型层：把数据变成判断，但要留余地</h2><p>这是量化系统的”大脑”，把因子加工成可决策的信号。我这层有几个互相独立的模块：因子合成评分、因果推断（R-Learner）、资金博弈（6 类资金角色）、财务异常检测、市场状态识别。这层有两条最重要的原则：</p>
+<p><strong>原则一：单一信号会骗你，必须多路交叉验证。</strong> 我的综合评分给过一只股 <strong>63 分、全市场第 6</strong>，看着是顶级标的。但把其他信号摆一起：主力在净流出、散户融资暴增 60%（拥挤）、因果模型偏空、PE 接近 500 倍、利息都覆盖不了。<strong>一个”全市场第 6”的高分股，底下藏着”主力跑、散户接、估值畸高”。</strong> 只信评分就追在山顶了。所以我刻意让各路信号<strong>保持输入独立</strong>——它们集体矛盾时，矛盾本身就是最值钱的信息。</p>
+<p>最典型的是财务异常里一条规则：<strong>经营性现金流持续低于净利润</strong>——账面利润飞涨但现金没回来，利润是应收账款堆的。光看净利润增速你会很兴奋，加上这条交叉验证才看见风险。</p>
+<p><strong>原则二：再好的模型都有边界，要给它装”门控开关”。</strong> 我的因果推断模型在大部分环境有效，但在”趋势向上+高波动”的市场状态下会失效（多空夏普 -0.33）。新手直觉是”失效了去调模型”，更聪明的做法是<strong>承认它有适用域，并在系统层面门控</strong>——我做了个市场状态识别模块，处在失效象限时<strong>自动停用这个模型的评级修饰</strong>。<strong>与其追求一个万能模型，不如做一个”知道自己什么时候不该说话”的系统。</strong></p>
+<h2 id="第-4-层-·-决策层：机器出数据，人做判断"><a href="#第-4-层-·-决策层：机器出数据，人做判断" class="headerlink" title="第 4 层 · 决策层：机器出数据，人做判断"></a>第 4 层 · 决策层：机器出数据，人做判断</h2><p>决策层把模型信号融合成最终产物：评级、风险收益测算、分析报告、操作清单。这层我踩过、也想明白了一件关于<strong>人机边界</strong>的事。</p>
+<p>我曾经每分析一只股票都手工拼 8 个数据源、手敲 300 行报告，一只 15 分钟，还容易抄错数字。做到第十只我才反应过来：<strong>这件事的”数据部分”是确定性的，该让机器做。</strong> 于是写了个报告生成器：输入代码，自动把所有数据源串成报告骨架，只在三处留 <code>&lt;!-- 待人工填写 --&gt;</code>：业务面、风险收益、最终结论。单股分析从 15 分钟压到 3 分钟。</p>
+<p>但我<strong>故意没让它自动出结论</strong>。因为实战时验证了一件事：<strong>生成器看不到的，恰恰最需要人判断。</strong> 有次它给”建议 3 星”，我手工降成 2 星——因为当时核心看空信号（超大单流出）因数据源挂了拿不到，生成器没看见所以”乐观”了。这个分歧本身就证明：<strong>人工复核不能省。</strong></p>
+<p>所以我的决策层这么切：</p>
+<ul>
+<li><strong>机器负责</strong>：拉数、算指标、跑模型、组装骨架、确定性的交叉验证——又快又不累。</li>
+<li><strong>人负责</strong>：解读业务、判断口径异常、权衡矛盾信号、对”模型看不见的东西”兜底——需要上下文和常识。</li>
+</ul>
+<blockquote>
+<p>给新手：自动化不是取代人，是把人从确定性劳动里解放出来专注判断。好的设计会清楚标出”这里需要人”，而不是假装全知。</p>
+</blockquote>
+<h2 id="第-5-层-·-复盘层：没有它，前四层都是自嗨"><a href="#第-5-层-·-复盘层：没有它，前四层都是自嗨" class="headerlink" title="第 5 层 · 复盘层：没有它，前四层都是自嗨"></a>第 5 层 · 复盘层：没有它，前四层都是自嗨</h2><p>这是新手最容易<strong>完全跳过</strong>的一层，但它决定你的系统是”科学”还是”玄学”。复盘层回答一个问题：<strong>前四层产出的判断，到底有没有用？</strong></p>
+<p>我的复盘层有几件套：</p>
+<ul>
+<li><strong>回测</strong>：策略在历史数据上跑一遍，看收益&#x2F;回撤&#x2F;夏普。注意要做 Walk-Forward（滚动训练-测试）+ 防过拟合，别用未来数据。</li>
+<li><strong>IC 评估</strong>：每个因子和未来收益的相关性（IC&#x2F;ICIR），定期算，淘汰失效因子。我就靠这个发现”财报披露窗口”因子是强负 alpha（ICIR -2.36）。</li>
+<li><strong>模拟盘</strong>：每天用真实行情结算虚拟持仓，跟踪策略真实表现。</li>
+<li><strong>跨日对比</strong>：今天的评级清单 vs 昨天，看谁新晋、谁掉队。</li>
+</ul>
+<p><strong>复盘层的产出要反哺前四层</strong>：IC 评估淘汰因子（反哺因子层）、回测验证模型门控的有效性（反哺模型层）、模拟盘暴露决策偏差（反哺决策层）。<strong>没有复盘闭环，你永远不知道自己是真有 alpha 还是在过拟合噪声。</strong></p>
+<h2 id="必须单独拎出来的头号杀手：过拟合"><a href="#必须单独拎出来的头号杀手：过拟合" class="headerlink" title="必须单独拎出来的头号杀手：过拟合"></a>必须单独拎出来的头号杀手：过拟合</h2><p>如果说前面五层是”怎么把系统搭起来”，那这一节是”怎么不让系统骗你自己”。<strong>过拟合是量化新手的头号死因</strong>，它致命在于：你的回测曲线越漂亮，你越得意，而它很可能只是把历史噪声背了下来。</p>
+<p>为什么量化特别容易过拟合？因为金融数据<strong>信噪比极低</strong>（真实规律微弱，随机波动巨大）、<strong>样本有限</strong>（A 股有效历史就十几年）、而人<strong>特别擅长事后找规律</strong>（任何一段历史你都能编出一个”完美”策略）。三者叠加，新手几乎必然会做出一个”回测年化 50%、实盘亏钱”的东西。</p>
+<p>我在系统里专门用了几道防线，每一道都建议你抄走：</p>
+<p><strong>防线一:严格样本外 —— Walk-Forward 滚动验证。</strong> 别用全部历史训练再用全部历史测试（那叫”开卷考试”）。要滚动：用 2020-2022 训练、2023 测试，再用 2020-2023 训练、2024 测试……只在”模型没见过的未来”上验证。我所有回测都走 Walk-Forward，一个策略只有在多个滚动窗口都稳定，才算数。</p>
+<p><strong>防线二:防标签泄漏 —— Purged k-fold + embargo。</strong> 这是新手最容易忽略的细节。我的收益标签是”未来 20 天的超额收益”，意味着 6 月 1 日这条样本的标签，要用到 6 月底的数据。如果训练集里有 6 月 1 日、测试集里有 6 月 10 日，<strong>它们的标签窗口重叠了</strong>——测试集的”未来”泄漏进了训练集。做法是在训练&#x2F;测试之间设一个 embargo（隔离带），把窗口会重叠的样本剔掉。<strong>任何用到”未来 N 天”做标签的模型，都必须处理这个泄漏。</strong></p>
+<p><strong>防线三:防假数据 —— 源头校验。</strong> 过拟合有时不是模型的错，是数据的错。我加了一个合成&#x2F;假数据检测（几条规则：价格是否过度平滑、成交量是否异常恒定、是否有可疑的等差数列填充等），因为某些降级数据源会用插值&#x2F;合成数据填补缺口，<strong>用假数据训练出来的”规律”百分百是过拟合。</strong> 数据进模型前先验真。</p>
+<p><strong>防线四:因子层面持续淘汰 —— 别靠回测好看就留。</strong> 一个因子在回测里有效，可能只是运气。我用 IC 评估（因子和未来收益的滚动相关性）定期体检，<strong>失效的因子就淘汰</strong>，哪怕它曾经回测很美。我就靠这个发现某个因子是强负 alpha，果断剔除。</p>
+<p><strong>防线五:系统层面承认边界 —— 模型门控。</strong> 前面讲过的市场状态门控，本质也是防过拟合的一种——不在模型已知失效的环境里硬用它的输出，就是承认”我的模型只在某些条件下成立”，而不是假装它放之四海皆准。</p>
+<blockquote>
+<p>最该建立的是一种<strong>心态</strong>：回测好看是默认应该怀疑的事，不是值得高兴的事。每看到一条漂亮的曲线，先问”我是不是哪里泄漏了未来、用了假数据、或者把噪声当成了信号”。<strong>对自己的结果保持敌意，是量化能活下来的前提。</strong></p>
+</blockquote>
+<h2 id="贯穿五层的横切原则"><a href="#贯穿五层的横切原则" class="headerlink" title="贯穿五层的横切原则"></a>贯穿五层的横切原则</h2><p>有些原则不属于某一层，但每层都要遵守，决定系统的长期健康：</p>
+<ul>
+<li><strong>根因排查，别打补丁。</strong> 我有个模型预测表冻结了 6 周，修了三次才到底：第一次改”触发日终点”没用 → 第二次发现真卡点是”数据加载终点”参数写死 → 第三次发现刷新流程漏了一个数据版本。<strong>改了你以为是原因的东西却没解决，是宝贵信号——说明你对根因的理解还不对，继续挖，别叠补丁。</strong></li>
+<li><strong>配置&#x2F;常量唯一来源。</strong> “股票池名称”枚举最初散在 12 个文件的命令行参数里，加一个新池要改 12 处必然漏。抽成一个常量，一处定义处处引用。<strong>copy-paste 过第二次的魔法值，都该收敛。</strong></li>
+<li><strong>文档和代码同步。</strong> 我的文档一度还写”23 维因子”，代码已经 29 维。文档落后于代码，三个月后的你自己都会被误导。</li>
+<li><strong>诚实面对盲区。</strong> 做大盘研判时北向连续数据拿不到、估值只有横截面没有历史分位，我没假装有，而是专门写一节”数据盲区”列清楚。<strong>会说”我不知道”的系统，比什么都敢答的可信得多。</strong></li>
+</ul>
+<h2 id="结语：给新手的搭建顺序"><a href="#结语：给新手的搭建顺序" class="headerlink" title="结语：给新手的搭建顺序"></a>结语：给新手的搭建顺序</h2><p>如果你正要从零搭一个量化系统，<strong>严格自下而上</strong>，别跳级：</p>
+<ol>
+<li><strong>先把数据层做扎实</strong>——统一读取入口 + 外部源降级。这步占你 40% 的工作量，但省下后面 80% 的麻烦。</li>
+<li><strong>再做因子层</strong>——可复现、落库、唯一清单。</li>
+<li><strong>然后是模型层</strong>——多信号交叉验证 + 模型门控。</li>
+<li><strong>接着决策层</strong>——工具化数据、人工补判断。</li>
+<li><strong>最后务必补上复盘层</strong>——没有它，前面全是自嗨。</li>
+</ol>
+<p>注意，这张清单里没有一条是关于”什么策略能赚钱”。因为我越做越确信：<strong>量化新手的瓶颈从来不是策略，而是这套关于数据、降级、验证、边界、诚实的工程能力。</strong> 策略会失效、会过时，但一个工程扎实的系统，能让你快速试错、诚实复盘、持续迭代——这才是长期活下来的底气。</p>
+<h2 id="一个顺手的数据底座"><a href="#一个顺手的数据底座" class="headerlink" title="一个顺手的数据底座"></a>一个顺手的数据底座</h2><p>最后留个彩蛋。上面反复提到”数据层是地基””外部源会挂、要多源兜底”——这些采集和降级的脏活，我抽出了一部分做成了一个开源的金融数据技能集，覆盖行情、财报、资金面（龙虎榜&#x2F;北向&#x2F;融资融券&#x2F;大宗交易&#x2F;股东户数）、研报、公告等全链条 A 股数据，自带多源降级：</p>
+<p>👉 <strong><span class="exturl" data-url="aHR0cHM6Ly9naXRodWIuY29tL2doeWdob284L214LXNraWxsLWNj">github.com&#x2F;ghyghoo8&#x2F;mx-skill-cc<i class="fa fa-external-link-alt"></i></span></strong></p>
+<p>如果你正在搭自己的量化系统、不想从零造数据层的轮子，可以拿它当第 1 层的起点，把精力省下来花在上面四层的判断逻辑上。欢迎 star &#x2F; issue &#x2F; PR。</p>
+<p>共勉。</p>
+
+    </div>
+
+    
+    
+    
+
+      <footer class="post-footer">
+          <div class="post-tags">
+              <a href="/tags/%E6%96%B0%E6%89%8B%E6%95%99%E7%A8%8B/" rel="tag"># 新手教程</a>
+              <a href="/tags/%E9%87%8F%E5%8C%96/" rel="tag"># 量化</a>
+              <a href="/tags/%E5%A4%8D%E7%9B%98/" rel="tag"># 复盘</a>
+              <a href="/tags/%E6%9E%B6%E6%9E%84%E8%AE%BE%E8%AE%A1/" rel="tag"># 架构设计</a>
+              <a href="/tags/%E6%95%B0%E6%8D%AE%E5%B7%A5%E7%A8%8B/" rel="tag"># 数据工程</a>
+          </div>
+
+        
+
+
+        
+    <div class="post-nav">
+      <div class="post-nav-item">
+    <a href="/2026/06/04/2026-06-04-%E9%9B%B6%E5%B8%A7%E8%B5%B7%E6%89%8B-%E7%AC%AC%E4%B8%80%E6%AC%A1%E5%81%9A%E6%B8%B8%E6%88%8F%E7%9A%84%E8%B8%A9%E5%9D%91%E7%AC%94%E8%AE%B0/" rel="prev" title="零帧起手——第一次做游戏的踩坑笔记">
+      <i class="fa fa-chevron-left"></i> 零帧起手——第一次做游戏的踩坑笔记
+    </a></div>
+      <div class="post-nav-item">
+    <a href="/2026/07/20/2026-07-20-%E7%B2%BE%E8%AF%BB%E6%B7%B1%E5%85%A5%E7%90%86%E8%A7%A3-AI-Agent-%E8%AE%BE%E8%AE%A1%E5%8E%9F%E7%90%86%E4%B8%8E%E5%B7%A5%E7%A8%8B%E5%AE%9E%E8%B7%B5/" rel="next" title="精读《深入理解 AI Agent：设计原理与工程实践》">
+      精读《深入理解 AI Agent：设计原理与工程实践》 <i class="fa fa-chevron-right"></i>
+    </a></div>
+    </div>
+      </footer>
+    
+  </article>
+  
+  
+  
+
+
+
+          </div>
+          
+    
+  <div class="comments">
+    <div id="lv-container" data-id="city" data-uid="MTAyMC81NDA1OS8zMDUzMQ=="></div>
+  </div>
+  
+
+<script>
+  window.addEventListener('tabs:register', () => {
+    let { activeClass } = CONFIG.comments;
+    if (CONFIG.comments.storage) {
+      activeClass = localStorage.getItem('comments_active') || activeClass;
+    }
+    if (activeClass) {
+      let activeTab = document.querySelector(`a[href="#comment-${activeClass}"]`);
+      if (activeTab) {
+        activeTab.click();
+      }
+    }
+  });
+  if (CONFIG.comments.storage) {
+    window.addEventListener('tabs:click', event => {
+      if (!event.target.matches('.tabs-comment .tab-content .tab-pane')) return;
+      let commentClass = event.target.classList[1];
+      localStorage.setItem('comments_active', commentClass);
+    });
+  }
+</script>
+
+        </div>
+          
+  
+  <div class="toggle sidebar-toggle">
+    <span class="toggle-line toggle-line-first"></span>
+    <span class="toggle-line toggle-line-middle"></span>
+    <span class="toggle-line toggle-line-last"></span>
+  </div>
+
+  <aside class="sidebar">
+    <div class="sidebar-inner">
+
+      <ul class="sidebar-nav motion-element">
+        <li class="sidebar-nav-toc">
+          Table of Contents
+        </li>
+        <li class="sidebar-nav-overview">
+          Overview
+        </li>
+      </ul>
+
+      <!--noindex-->
+      <div class="post-toc-wrap sidebar-panel">
+          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%85%88%E6%9C%89%E9%AA%A8%E6%9E%B6%EF%BC%9A%E4%B8%80%E4%B8%AA%E5%AE%8C%E6%95%B4%E7%9A%84%E9%87%8F%E5%8C%96%E7%B3%BB%E7%BB%9F%E5%88%86%E4%BA%94%E5%B1%82"><span class="nav-number">1.</span> <span class="nav-text">先有骨架：一个完整的量化系统分五层</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E7%AC%AC-1-%E5%B1%82-%C2%B7-%E6%95%B0%E6%8D%AE%E5%B1%82%EF%BC%9A%E5%9C%B0%E5%9F%BA%EF%BC%8C%E4%B9%9F%E6%98%AF%E6%9C%80%E5%AE%B9%E6%98%93%E5%81%B7%E6%87%92%E7%9A%84%E5%9C%B0%E6%96%B9"><span class="nav-number">2.</span> <span class="nav-text">第 1 层 · 数据层：地基，也是最容易偷懒的地方</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E7%AC%AC-2-%E5%B1%82-%C2%B7-%E5%9B%A0%E5%AD%90%E5%B1%82%EF%BC%9A%E8%AE%A9%E7%89%B9%E5%BE%81%E2%80%9D%E5%8F%AF%E5%A4%8D%E7%8E%B0-%E5%8F%AF%E8%BF%BD%E6%BA%AF%E2%80%9D"><span class="nav-number">3.</span> <span class="nav-text">第 2 层 · 因子层：让特征”可复现 + 可追溯”</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E7%AC%AC-3-%E5%B1%82-%C2%B7-%E6%A8%A1%E5%9E%8B%E5%B1%82%EF%BC%9A%E6%8A%8A%E6%95%B0%E6%8D%AE%E5%8F%98%E6%88%90%E5%88%A4%E6%96%AD%EF%BC%8C%E4%BD%86%E8%A6%81%E7%95%99%E4%BD%99%E5%9C%B0"><span class="nav-number">4.</span> <span class="nav-text">第 3 层 · 模型层：把数据变成判断，但要留余地</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E7%AC%AC-4-%E5%B1%82-%C2%B7-%E5%86%B3%E7%AD%96%E5%B1%82%EF%BC%9A%E6%9C%BA%E5%99%A8%E5%87%BA%E6%95%B0%E6%8D%AE%EF%BC%8C%E4%BA%BA%E5%81%9A%E5%88%A4%E6%96%AD"><span class="nav-number">5.</span> <span class="nav-text">第 4 层 · 决策层：机器出数据，人做判断</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E7%AC%AC-5-%E5%B1%82-%C2%B7-%E5%A4%8D%E7%9B%98%E5%B1%82%EF%BC%9A%E6%B2%A1%E6%9C%89%E5%AE%83%EF%BC%8C%E5%89%8D%E5%9B%9B%E5%B1%82%E9%83%BD%E6%98%AF%E8%87%AA%E5%97%A8"><span class="nav-number">6.</span> <span class="nav-text">第 5 层 · 复盘层：没有它，前四层都是自嗨</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%BF%85%E9%A1%BB%E5%8D%95%E7%8B%AC%E6%8B%8E%E5%87%BA%E6%9D%A5%E7%9A%84%E5%A4%B4%E5%8F%B7%E6%9D%80%E6%89%8B%EF%BC%9A%E8%BF%87%E6%8B%9F%E5%90%88"><span class="nav-number">7.</span> <span class="nav-text">必须单独拎出来的头号杀手：过拟合</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E8%B4%AF%E7%A9%BF%E4%BA%94%E5%B1%82%E7%9A%84%E6%A8%AA%E5%88%87%E5%8E%9F%E5%88%99"><span class="nav-number">8.</span> <span class="nav-text">贯穿五层的横切原则</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E7%BB%93%E8%AF%AD%EF%BC%9A%E7%BB%99%E6%96%B0%E6%89%8B%E7%9A%84%E6%90%AD%E5%BB%BA%E9%A1%BA%E5%BA%8F"><span class="nav-number">9.</span> <span class="nav-text">结语：给新手的搭建顺序</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E4%B8%80%E4%B8%AA%E9%A1%BA%E6%89%8B%E7%9A%84%E6%95%B0%E6%8D%AE%E5%BA%95%E5%BA%A7"><span class="nav-number">10.</span> <span class="nav-text">一个顺手的数据底座</span></a></li></ol></div>
+      </div>
+      <!--/noindex-->
+
+      <div class="site-overview-wrap sidebar-panel">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+  <p class="site-author-name" itemprop="name">ghyghoo8</p>
+  <div class="site-description" itemprop="description">碎了一地...o(*￣︶￣*)o...</div>
+</div>
+<div class="site-state-wrap motion-element">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+          <a href="/archives/">
+        
+          <span class="site-state-item-count">27</span>
+          <span class="site-state-item-name">posts</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-categories">
+            <a href="/categories/">
+          
+        <span class="site-state-item-count">11</span>
+        <span class="site-state-item-name">categories</span></a>
+      </div>
+      <div class="site-state-item site-state-tags">
+            <a href="/tags/">
+          
+        <span class="site-state-item-count">54</span>
+        <span class="site-state-item-name">tags</span></a>
+      </div>
+  </nav>
+</div>
+
+
+
+      </div>
+
+    </div>
+  </aside>
+  <div id="sidebar-dimmer"></div>
+
+
+      </div>
+    </main>
+
+    <footer class="footer">
+      <div class="footer-inner">
+        
+
+        
+
+<div class="copyright">
+  
+  &copy; 
+  <span itemprop="copyrightYear">2026</span>
+  <span class="with-love">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">ghyghoo8</span>
+</div>
+  <div class="powered-by">Powered by <span class="exturl theme-link" data-url="aHR0cHM6Ly9oZXhvLmlv">Hexo</span> & <span class="exturl theme-link" data-url="aHR0cHM6Ly9waXNjZXMudGhlbWUtbmV4dC5vcmc=">NexT.Pisces</span>
+  </div>
+
+        
+
+
+
+
+
+
+
+
+      </div>
+    </footer>
+  </div>
+
+  
+  <script src="//cdn.jsdelivr.net/npm/animejs@3.1.0/lib/anime.min.js"></script>
+  <script src="/lib/velocity/velocity.min.js"></script>
+  <script src="/lib/velocity/velocity.ui.min.js"></script>
+
+<script src="/js/utils.js"></script>
+
+<script src="/js/motion.js"></script>
+
+
+<script src="/js/schemes/pisces.js"></script>
+
+
+<script src="/js/next-boot.js"></script>
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+  
+
+<script>
+NexT.utils.loadComments(document.querySelector('#lv-container'), () => {
+  window.livereOptions = {
+    refer: location.pathname.replace(CONFIG.root, '').replace('index.html', '')
+  };
+  (function(d, s) {
+    var j, e = d.getElementsByTagName(s)[0];
+    if (typeof LivereTower === 'function') { return; }
+    j = d.createElement(s);
+    j.src = 'https://cdn-city.livere.com/js/embed.dist.js';
+    j.async = true;
+    e.parentNode.insertBefore(j, e);
+  })(document, 'script');
+});
+</script>
+
+<!-- hexo injector body_end start -->
+<script src="/js/bot.js"></script>
+<div id="sakana-widget"></div><script>
+      function initSakanaWidget() {
+        // 默认自走模式
+        new SakanaWidget().mount('#sakana-widget').triggetAutoMode();
+      }
+    </script><script
+      async
+      onload="initSakanaWidget()"
+      src="https://cdn.jsdelivr.net/npm/sakana-widget@2.7.0/lib/sakana.min.js"
+    ></script><!-- hexo injector body_end end --></body>
+</html>
