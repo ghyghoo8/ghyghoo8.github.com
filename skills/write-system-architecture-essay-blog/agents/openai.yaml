@@ -1,0 +1,4 @@
+interface:
+  display_name: "系统架构论文博客"
+  short_description: "从真实项目提炼经脱敏、可分享且可备考的系统架构论文博客"
+  default_prompt: "使用 $write-system-architecture-essay-blog 将当前项目架构演进脱敏整理成可公开分享、可备考的中文论文式博客。"
