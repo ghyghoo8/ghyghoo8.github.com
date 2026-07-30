@@ -129,6 +129,10 @@ feed:
   icon: icon.png
   autodiscovery: true
   template:
-  
+
 scripts:
   - scripts/injector.js
+
+sitemap:
+  path: sitemap.xml
+  rel: false
