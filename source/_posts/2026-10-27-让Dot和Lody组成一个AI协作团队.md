@@ -143,6 +143,7 @@ Lody 会话及回合引用（如使用）：
 
 ## 参考资料
 
+- [项目仓库：mymcp-4-codexcloud](https://github.com/CF-FE/mymcp-4-codexcloud)
 - [OpenAI：Delegate ongoing work to your dot](https://learn.chatgpt.com/docs/whats-new/september-28-october-2-2026#delegate-ongoing-work-to-your-dot)
 - [Lody 官方文档](https://lody.ai/zh/docs/)
 
