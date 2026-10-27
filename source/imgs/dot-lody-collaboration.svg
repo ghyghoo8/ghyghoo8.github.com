@@ -1,0 +1,31 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1200" height="1010" viewBox="0 0 1200 1010" role="img" aria-labelledby="title desc">
+  <title id="title">Dot 与 Lody 协作流程</title>
+  <desc id="desc">从提出目标到 Dot 协调、Codex 云任务、按需使用 Lody 跨节点、执行者交付以及负责人验收的推荐流程。箭头表示项目约定，不表示所有环节已完成端到端验证。</desc>
+  <defs>
+    <marker id="arrow" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M 0 0 L 10 5 L 0 10 z" fill="#8a9bad"/></marker>
+    <style>text{font-family:-apple-system,BlinkMacSystemFont,"PingFang SC","Microsoft YaHei",sans-serif}.heading{font-size:34px;font-weight:700;fill:#172b3d}.sub{font-size:20px;fill:#607487}.tag{font-size:17px;font-weight:700;fill:#2f6b83;letter-spacing:1px}.name{font-size:26px;font-weight:700;fill:#1e3446}.detail{font-size:20px;fill:#617587}.note{font-size:18px;fill:#5b7081}.link{stroke:#8a9bad;stroke-width:2.5;marker-end:url(#arrow)}</style>
+  </defs>
+  <rect width="1200" height="1010" rx="24" fill="#f3f7f9"/>
+  <text x="90" y="76" class="heading">Dot + Lody：从目标到验收</text>
+  <text x="90" y="113" class="sub">一套项目协作路线 · 根据任务需要选择执行节点</text>
+  <g>
+    <rect x="90" y="153" width="1020" height="100" rx="14" fill="#fff" stroke="#dce7ec"/>
+    <text x="120" y="189" class="tag">01 目标</text><text x="120" y="224" class="name">提出需求</text><text x="350" y="224" class="detail">明确目标、授权范围与成功标准</text>
+    <path class="link" d="M600 253 V277"/>
+    <rect x="90" y="280" width="1020" height="100" rx="14" fill="#fff" stroke="#dce7ec"/>
+    <text x="120" y="316" class="tag">02 协调</text><text x="120" y="351" class="name">Dot</text><text x="350" y="351" class="detail">沟通目标，在本项目中发起独立云任务</text>
+    <path class="link" d="M600 380 V404"/>
+    <rect x="90" y="407" width="1020" height="100" rx="14" fill="#fff" stroke="#dce7ec"/>
+    <text x="120" y="443" class="tag">03 开发</text><text x="120" y="478" class="name">Codex 云任务</text><text x="350" y="478" class="detail">核对环境、输入版本、职责与执行范围</text>
+    <path class="link" d="M600 507 V531"/>
+    <rect x="90" y="534" width="1020" height="100" rx="14" fill="#e7f3f4" stroke="#c7e2e4"/>
+    <text x="120" y="570" class="tag">04 按需跨节点</text><text x="120" y="605" class="name">Lody</text><text x="350" y="605" class="detail">定位已有节点、派发任务并观察原会话</text>
+    <path class="link" d="M600 634 V658"/>
+    <rect x="90" y="661" width="1020" height="100" rx="14" fill="#fff" stroke="#dce7ec"/>
+    <text x="120" y="697" class="tag">05 执行</text><text x="120" y="732" class="name">执行者</text><text x="350" y="732" class="detail">交付产物、验证结果和未决事项</text>
+    <path class="link" d="M600 761 V785"/>
+    <rect x="90" y="788" width="1020" height="100" rx="14" fill="#fff" stroke="#dce7ec"/>
+    <text x="120" y="824" class="tag">06 验收</text><text x="120" y="859" class="name">负责人 → Dot</text><text x="350" y="859" class="detail">负责人复核验收，Dot 汇总结果</text>
+  </g>
+  <text x="90" y="940" class="note">图示为项目约定的推荐路线；Lody 按需使用，实际验证范围见文中案例。</text>
+</svg>
