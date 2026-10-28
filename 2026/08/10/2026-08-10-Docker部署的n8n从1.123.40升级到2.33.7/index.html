@@ -1,0 +1,697 @@
+<!DOCTYPE html>
+<html lang="zh-Hans">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
+<meta name="theme-color" content="#222">
+<meta name="generator" content="Hexo 8.1.2">
+  <link rel="apple-touch-icon" sizes="180x180" href="/imgs/logo.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/imgs/32.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/imgs/16.png">
+  <link rel="mask-icon" href="/imgs/logo.png" color="#222">
+  <meta name="google-site-verification" content="dJfRF5_6EbT_bJo2wTKbSXTDmNaOTqDGRDMcU6ylduk">
+
+<link rel="stylesheet" href="/css/main.css">
+
+
+<link rel="stylesheet" href="//cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@5/css/all.min.css">
+
+<script id="hexo-configurations">
+    var NexT = window.NexT || {};
+    var CONFIG = {"hostname":"ghyghoo8.github.io","root":"/","scheme":"Pisces","version":"7.8.0","exturl":true,"sidebar":{"position":"left","display":"post","padding":18,"offset":12,"onmobile":false},"copycode":{"enable":false,"show_result":false,"style":null},"back2top":{"enable":true,"sidebar":false,"scrollpercent":false},"bookmark":{"enable":false,"color":"#222","save":"auto"},"fancybox":false,"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":"livere","storage":true,"lazyload":false,"nav":null,"activeClass":"livere"},"algolia":{"hits":{"per_page":10},"labels":{"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}},"localsearch":{"enable":false,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}}};
+  </script>
+
+  <meta name="description" content="最近需要把一套 Docker 单容器运行的 n8n，从 1.123.40 升级到 2.33.7。乍看只是换一个镜像标签，真正动手后才发现：跨大版本升级的重点从来不是启动新容器，而是确认数据边界、提前暴露兼容问题，以及准备一条真的能走通的回滚路径。 这篇记录一套适用于“小型自建实例 + SQLite + Docker named volume”的稳妥迁移方法。PostgreSQL、queue mod">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Docker 单容器升级实录：n8n 1.123.40 到 2.33.7（SQLite 备份与可回滚迁移）">
+<meta property="og:url" content="https://ghyghoo8.github.io/2026/08/10/2026-08-10-Docker%E9%83%A8%E7%BD%B2%E7%9A%84n8n%E4%BB%8E1.123.40%E5%8D%87%E7%BA%A7%E5%88%B02.33.7/index.html">
+<meta property="og:site_name" content="G8空间">
+<meta property="og:description" content="最近需要把一套 Docker 单容器运行的 n8n，从 1.123.40 升级到 2.33.7。乍看只是换一个镜像标签，真正动手后才发现：跨大版本升级的重点从来不是启动新容器，而是确认数据边界、提前暴露兼容问题，以及准备一条真的能走通的回滚路径。 这篇记录一套适用于“小型自建实例 + SQLite + Docker named volume”的稳妥迁移方法。PostgreSQL、queue mod">
+<meta property="og:locale">
+<meta property="article:published_time" content="2026-08-09T16:00:00.000Z">
+<meta property="article:modified_time" content="2026-10-28T02:56:49.306Z">
+<meta property="article:author" content="ghyghoo8">
+<meta property="article:tag" content="docker">
+<meta property="article:tag" content="n8n">
+<meta property="article:tag" content="sqlite">
+<meta property="article:tag" content="升级迁移">
+<meta property="article:tag" content="新手教程">
+<meta name="twitter:card" content="summary">
+
+<link rel="canonical" href="https://ghyghoo8.github.io/2026/08/10/2026-08-10-Docker%E9%83%A8%E7%BD%B2%E7%9A%84n8n%E4%BB%8E1.123.40%E5%8D%87%E7%BA%A7%E5%88%B02.33.7/">
+
+
+<script id="page-configurations">
+  // https://hexo.io/docs/variables.html
+  CONFIG.page = {
+    sidebar: "",
+    isHome : false,
+    isPost : true,
+    lang   : 'zh-Hans'
+  };
+</script>
+
+  <title>Docker 单容器升级实录：n8n 1.123.40 到 2.33.7（SQLite 备份与可回滚迁移） | G8空间</title>
+  
+
+
+
+
+
+
+  <noscript>
+  <style>
+  .use-motion .brand,
+  .use-motion .menu-item,
+  .sidebar-inner,
+  .use-motion .post-block,
+  .use-motion .pagination,
+  .use-motion .comments,
+  .use-motion .post-header,
+  .use-motion .post-body,
+  .use-motion .collection-header { opacity: initial; }
+
+  .use-motion .site-title,
+  .use-motion .site-subtitle {
+    opacity: initial;
+    top: initial;
+  }
+
+  .use-motion .logo-line-before i { left: initial; }
+  .use-motion .logo-line-after i { right: initial; }
+  </style>
+</noscript>
+
+<!-- hexo injector head_end start --><script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-7923526446101866" crossorigin="anonymous"></script><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/sakana-widget@2.7.0/lib/sakana.min.css" /><style>#sakana-widget{position:fixed;bottom:0;left:0;}</style><!-- hexo injector head_end end --><link rel="alternate" href="/atom.xml" title="G8空间" type="application/atom+xml">
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage">
+  <div class="container use-motion">
+    <div class="headband"></div>
+
+    <header class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="Toggle navigation bar">
+      <span class="toggle-line toggle-line-first"></span>
+      <span class="toggle-line toggle-line-middle"></span>
+      <span class="toggle-line toggle-line-last"></span>
+    </div>
+  </div>
+
+  <div class="site-meta custom-logo">
+
+    <a href="/" class="brand" rel="start">
+      <span class="logo-line-before"><i></i></span>
+      <h1 class="site-title">G8空间</h1>
+      <span class="logo-line-after"><i></i></span>
+    </a>
+      <p class="site-subtitle" itemprop="description">ghyghoo8的沉淀小碎</p>
+      <a>
+        <img class="custom-logo-image" src="/imgs/IMG_0001.PNG" alt="G8空间">
+      </a>
+  </div>
+
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger">
+    </div>
+  </div>
+</div>
+
+
+
+
+<nav class="site-nav">
+  <ul id="menu" class="main-menu menu">
+        <li class="menu-item menu-item-home">
+
+    <a href="/" rel="section"><i class="fa fa-home fa-fw"></i>Home</a>
+
+  </li>
+        <li class="menu-item menu-item-about">
+
+    <a href="/about/" rel="section"><i class="fa fa-user fa-fw"></i>About</a>
+
+  </li>
+        <li class="menu-item menu-item-tags">
+
+    <a href="/tags/" rel="section"><i class="fa fa-tags fa-fw"></i>Tags</a>
+
+  </li>
+        <li class="menu-item menu-item-categories">
+
+    <a href="/categories/" rel="section"><i class="fa fa-th fa-fw"></i>Categories</a>
+
+  </li>
+        <li class="menu-item menu-item-archives">
+
+    <a href="/archives/" rel="section"><i class="fa fa-archive fa-fw"></i>Archives</a>
+
+  </li>
+        <li class="menu-item menu-item-guestbook">
+
+    <a href="/guestbook" rel="section"><i class="fa fa-comment fa-fw"></i>guestbook</a>
+
+  </li>
+  </ul>
+</nav>
+
+
+
+
+</div>
+    </header>
+
+    
+  <div class="back-to-top">
+    <i class="fa fa-arrow-up"></i>
+    <span>0%</span>
+  </div>
+
+  <span class="exturl github-corner" data-url="aHR0cHM6Ly9naXRodWIuY29tL2doeWdob284" title="Follow me on GitHub" aria-label="Follow me on GitHub"><svg width="80" height="80" viewBox="0 0 250 250" aria-hidden="true"><path d="M0,0 L115,115 L130,115 L142,142 L250,250 L250,0 Z"></path><path d="M128.3,109.0 C113.8,99.7 119.0,89.6 119.0,89.6 C122.0,82.7 120.5,78.6 120.5,78.6 C119.2,72.0 123.4,76.3 123.4,76.3 C127.3,80.9 125.5,87.3 125.5,87.3 C122.9,97.6 130.6,101.9 134.4,103.2" fill="currentColor" style="transform-origin: 130px 106px;" class="octo-arm"></path><path d="M115.0,115.0 C114.9,115.1 118.7,116.5 119.8,115.4 L133.7,101.6 C136.9,99.2 139.9,98.4 142.2,98.6 C133.8,88.0 127.5,74.4 143.8,58.0 C148.5,53.4 154.0,51.2 159.7,51.0 C160.3,49.4 163.2,43.6 171.4,40.1 C171.4,40.1 176.1,42.5 178.8,56.2 C183.1,58.6 187.2,61.8 190.9,65.4 C194.5,69.0 197.7,73.2 200.1,77.6 C213.8,80.2 216.3,84.9 216.3,84.9 C212.7,93.1 206.9,96.0 205.4,96.6 C205.1,102.4 203.0,107.8 198.3,112.5 C181.9,128.9 168.3,122.5 157.7,114.1 C157.9,116.9 156.7,120.9 152.7,124.9 L141.0,136.5 C139.8,137.7 141.6,141.9 141.8,141.8 Z" fill="currentColor" class="octo-body"></path></svg></span>
+
+
+    <main class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          
+
+          <div class="content post posts-expand">
+            
+
+    
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-Hans">
+    <link itemprop="mainEntityOfPage" href="https://ghyghoo8.github.io/2026/08/10/2026-08-10-Docker%E9%83%A8%E7%BD%B2%E7%9A%84n8n%E4%BB%8E1.123.40%E5%8D%87%E7%BA%A7%E5%88%B02.33.7/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar.gif">
+      <meta itemprop="name" content="ghyghoo8">
+      <meta itemprop="description" content="碎了一地...o(*￣︶￣*)o...">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="G8空间">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          Docker 单容器升级实录：n8n 1.123.40 到 2.33.7（SQLite 备份与可回滚迁移）
+        </h1>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-calendar"></i>
+              </span>
+              <span class="post-meta-item-text">Posted on</span>
+
+              <time title="Created: 2026-08-10 00:00:00" itemprop="dateCreated datePublished" datetime="2026-08-10T00:00:00+08:00">2026-08-10</time>
+            </span>
+              <span class="post-meta-item">
+                <span class="post-meta-item-icon">
+                  <i class="far fa-calendar-check"></i>
+                </span>
+                <span class="post-meta-item-text">Edited on</span>
+                <time title="Modified: 2026-10-28 10:56:49" itemprop="dateModified" datetime="2026-10-28T10:56:49+08:00">2026-10-28</time>
+              </span>
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-folder"></i>
+              </span>
+              <span class="post-meta-item-text">In</span>
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/%E8%BF%90%E7%BB%B4/" itemprop="url" rel="index"><span itemprop="name">运维</span></a>
+                </span>
+            </span>
+
+          
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+        <p>最近需要把一套 Docker 单容器运行的 n8n，从 <code>1.123.40</code> 升级到 <code>2.33.7</code>。乍看只是换一个镜像标签，真正动手后才发现：<strong>跨大版本升级的重点从来不是启动新容器，而是确认数据边界、提前暴露兼容问题，以及准备一条真的能走通的回滚路径。</strong></p>
+<p>这篇记录一套适用于“小型自建实例 + SQLite + Docker named volume”的稳妥迁移方法。PostgreSQL、queue mode、多 worker 等部署不在本文范围内。文中的目录、容器名和数据卷都是通用示例，不包含真实服务器信息。</p>
+<p>先给结论：</p>
+<figure class="highlight text"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">1.123.40</span><br><span class="line">   ↓ 完整离线备份 A</span><br><span class="line">1.123.69</span><br><span class="line">   ↓ Migration Report + 兼容性验证 + 完整离线备份 B</span><br><span class="line">2.33.7</span><br><span class="line">   ↓ 业务验证；失败则恢复旧卷</span><br><span class="line">完成</span><br></pre></td></tr></table></figure>
+
+<p>官方没有要求逐个 2.x 小版本升级，也没有为每一对跨版本组合单独背书。本文选择 <code>1.123.69</code> 作为预检过渡点，再进入 <code>2.33.7</code>。这不是数据库迁移的强制分段，而是为了先用 1.x 的 Migration Report 和 task runner 行为做一次低成本预演。</p>
+<span id="more"></span>
+
+<h2 id="先定义本文用到的变量"><a href="#先定义本文用到的变量" class="headerlink" title="先定义本文用到的变量"></a>先定义本文用到的变量</h2><p>先把示例值改成自己的实际配置；后续命令都引用这些变量：</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line"><span class="built_in">export</span> N8N_CONTAINER=n8n</span><br><span class="line"><span class="built_in">export</span> N8N_VOLUME=n8n_data</span><br><span class="line"><span class="built_in">export</span> N8N_ROLLBACK_VOLUME=n8n_data_rollback</span><br><span class="line"><span class="built_in">export</span> N8N_BACKUP_DIR=/path/to/secure/backup</span><br><span class="line"><span class="built_in">export</span> N8N_PORT_BIND=127.0.0.1:5678:5678</span><br><span class="line"></span><br><span class="line"><span class="comment"># 必须填写服务器上真实存在的旧镜像标签</span></span><br><span class="line"><span class="built_in">export</span> N8N_OLD_IMAGE=n8nio/n8n:1.123.40</span><br><span class="line"><span class="built_in">export</span> N8N_PRECHECK_IMAGE=docker.n8n.io/n8nio/n8n:1.123.69</span><br><span class="line"><span class="built_in">export</span> N8N_TARGET_IMAGE=docker.n8n.io/n8nio/n8n:2.33.7</span><br></pre></td></tr></table></figure>
+
+<p>这些值的含义如下：</p>
+<table>
+<thead>
+<tr>
+<th>变量</th>
+<th>含义</th>
+</tr>
+</thead>
+<tbody><tr>
+<td><code>N8N_CONTAINER</code></td>
+<td>当前 n8n 容器名</td>
+</tr>
+<tr>
+<td><code>N8N_VOLUME</code></td>
+<td>挂载到 <code>/home/node/.n8n</code> 的原数据卷</td>
+</tr>
+<tr>
+<td><code>N8N_ROLLBACK_VOLUME</code></td>
+<td>发生回滚时创建的新卷，不能与原卷同名</td>
+</tr>
+<tr>
+<td><code>N8N_BACKUP_DIR</code></td>
+<td>宿主机上的私有备份目录，不要放进网站目录或公共对象存储</td>
+</tr>
+<tr>
+<td><code>N8N_PORT_BIND</code></td>
+<td>端口映射示例；同机反向代理可只绑定 <code>127.0.0.1</code>，其他场景按实际网络拓扑调整</td>
+</tr>
+<tr>
+<td><code>N8N_OLD_IMAGE</code></td>
+<td>本机已经缓存、能够提供 <code>sh</code> 和 <code>tar</code> 的旧 n8n 镜像</td>
+</tr>
+</tbody></table>
+<p>先确认关键对象都存在：</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">docker volume inspect <span class="string">&quot;<span class="variable">$N8N_VOLUME</span>&quot;</span></span><br><span class="line">docker image inspect <span class="string">&quot;<span class="variable">$N8N_OLD_IMAGE</span>&quot;</span></span><br></pre></td></tr></table></figure>
+
+<h2 id="先弄清楚：数据不在容器里"><a href="#先弄清楚：数据不在容器里" class="headerlink" title="先弄清楚：数据不在容器里"></a>先弄清楚：数据不在容器里</h2><p>这类部署最容易混淆三个东西：</p>
+<ul>
+<li><strong>镜像</strong>：例如 <code>n8nio/n8n:1.123.40</code>，只提供程序和运行环境。</li>
+<li><strong>容器</strong>：镜像启动后的进程实例，可以删除和重建。</li>
+<li><strong>named volume</strong>：真正持久化数据的地方，例如变量 <code>N8N_VOLUME</code> 指向的卷。</li>
+</ul>
+<p>典型挂载如下：</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">-v <span class="string">&quot;<span class="variable">$&#123;N8N_VOLUME&#125;</span>:/home/node/.n8n&quot;</span></span><br></pre></td></tr></table></figure>
+
+<p><code>/home/node/.n8n</code> 中通常包含：</p>
+<ul>
+<li><code>database.sqlite</code>：工作流、用户、凭据、执行记录等数据；</li>
+<li><code>config</code>：实例配置和自动生成的凭据加密密钥；</li>
+<li>实例日志、源代码控制资源及部分文件数据。</li>
+</ul>
+<p>因此，新容器是否能“继承旧数据”，不取决于镜像名称，而取决于它是否继续挂载<strong>同一个</strong> <code>N8N_VOLUME</code>。答案是：只要原 named volume 完整，并且 2.33.7 继续把它挂载到 <code>/home/node/.n8n</code>，新版就会读取 1.123.40 的数据，并在首次启动时执行所需的数据库迁移。</p>
+<p>还有一个常见误解：</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">-e N8N_ENFORCE_SETTINGS_FILE_PERMISSIONS=<span class="literal">true</span></span><br></pre></td></tr></table></figure>
+
+<p>这个设置只负责收紧配置文件权限，不会自动备份工作流，也不能替代数据卷备份。</p>
+<h2 id="升级前的四条红线"><a href="#升级前的四条红线" class="headerlink" title="升级前的四条红线"></a>升级前的四条红线</h2><p>开始前先把边界讲清楚：</p>
+<ol>
+<li>SQLite 必须在 n8n 停止后做完整卷备份。</li>
+<li>1.x 和 2.x 不能同时读写同一个数据卷。</li>
+<li>2.x 启动并迁移数据库后，不能只把镜像标签改回 1.x。</li>
+<li>不要删除原卷，也不要对 <code>N8N_VOLUME</code> 运行 <code>docker volume rm</code>。</li>
+</ol>
+<p>如果旧容器使用了 <code>--rm</code>，<code>docker stop &quot;$N8N_CONTAINER&quot;</code> 后容器对象会自动删除，但 named volume 不会被删除。这也是为什么“容器没了”和“数据没了”不是一回事。本文在迁移窗口沿用 <code>--rm</code> 以匹配这一场景；稳定运行后，更适合改用 Compose 或显式重启策略，这应当作为迁移之外的独立变更。</p>
+<h2 id="第一步：先把目标镜像准备好"><a href="#第一步：先把目标镜像准备好" class="headerlink" title="第一步：先把目标镜像准备好"></a>第一步：先把目标镜像准备好</h2><p>尽量在停机前拉取目标镜像：</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">docker pull <span class="string">&quot;<span class="variable">$N8N_PRECHECK_IMAGE</span>&quot;</span></span><br><span class="line">docker pull <span class="string">&quot;<span class="variable">$N8N_TARGET_IMAGE</span>&quot;</span></span><br></pre></td></tr></table></figure>
+
+<p>大版本迁移不要使用会漂移的 <code>latest</code>、<code>stable</code> 等标签，固定版本能让部署和回滚都更可控。</p>
+<p>如果服务器无法直接访问镜像仓库，可以在另一台联网机器上先拉取再打包：</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">docker pull <span class="string">&quot;<span class="variable">$N8N_PRECHECK_IMAGE</span>&quot;</span></span><br><span class="line">docker pull <span class="string">&quot;<span class="variable">$N8N_TARGET_IMAGE</span>&quot;</span></span><br><span class="line"></span><br><span class="line">docker save -o n8n-upgrade-images.tar \</span><br><span class="line">  <span class="string">&quot;<span class="variable">$N8N_PRECHECK_IMAGE</span>&quot;</span> \</span><br><span class="line">  <span class="string">&quot;<span class="variable">$N8N_TARGET_IMAGE</span>&quot;</span></span><br></pre></td></tr></table></figure>
+
+<p>把文件复制到目标服务器后导入：</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">docker load -i n8n-upgrade-images.tar</span><br></pre></td></tr></table></figure>
+
+<h2 id="第二步：停止服务并完整备份-SQLite-卷"><a href="#第二步：停止服务并完整备份-SQLite-卷" class="headerlink" title="第二步：停止服务并完整备份 SQLite 卷"></a>第二步：停止服务并完整备份 SQLite 卷</h2><p>先确认数据卷存在：</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">docker volume inspect <span class="string">&quot;<span class="variable">$N8N_VOLUME</span>&quot;</span></span><br></pre></td></tr></table></figure>
+
+<p>停止旧容器：</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">docker stop -t 120 <span class="string">&quot;<span class="variable">$N8N_CONTAINER</span>&quot;</span></span><br></pre></td></tr></table></figure>
+
+<p>如果提示 <code>No such container</code>，通常表示容器此前已经停止，并因为使用 <code>--rm</code> 被自动删除。只要 <code>docker volume inspect &quot;$N8N_VOLUME&quot;</code> 仍能找到数据卷，就可以继续。</p>
+<p>创建一个通用备份目录：</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="built_in">sudo</span> install -d -m 0700 <span class="string">&quot;<span class="variable">$N8N_BACKUP_DIR</span>&quot;</span></span><br></pre></td></tr></table></figure>
+
+<p>确认旧数据库和配置文件存在：</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">docker run --<span class="built_in">rm</span> \</span><br><span class="line">  --entrypoint sh \</span><br><span class="line">  -v <span class="string">&quot;<span class="variable">$&#123;N8N_VOLUME&#125;</span>:/data:ro&quot;</span> \</span><br><span class="line">  <span class="string">&quot;<span class="variable">$N8N_OLD_IMAGE</span>&quot;</span> \</span><br><span class="line">  -c <span class="string">&#x27;ls -lh /data/database.sqlite /data/config&#x27;</span></span><br></pre></td></tr></table></figure>
+
+<p>然后使用本机已有的旧 n8n 镜像，把数据卷以只读方式挂载并打包：</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">docker run --<span class="built_in">rm</span> \</span><br><span class="line">  --user 0:0 \</span><br><span class="line">  --entrypoint sh \</span><br><span class="line">  -v <span class="string">&quot;<span class="variable">$&#123;N8N_VOLUME&#125;</span>:/source:ro&quot;</span> \</span><br><span class="line">  -v <span class="string">&quot;<span class="variable">$&#123;N8N_BACKUP_DIR&#125;</span>:/backup&quot;</span> \</span><br><span class="line">  <span class="string">&quot;<span class="variable">$N8N_OLD_IMAGE</span>&quot;</span> \</span><br><span class="line">  -c <span class="string">&#x27;tar -czf /backup/n8n_data-before-v2.tgz -C /source .&#x27;</span></span><br></pre></td></tr></table></figure>
+
+<p>验证压缩包不是“看起来存在，实际上不可读”：</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line"><span class="built_in">sudo</span> <span class="built_in">ls</span> -lh <span class="string">&quot;<span class="variable">$&#123;N8N_BACKUP_DIR&#125;</span>/n8n_data-before-v2.tgz&quot;</span></span><br><span class="line"><span class="built_in">sudo</span> <span class="built_in">sha256sum</span> <span class="string">&quot;<span class="variable">$&#123;N8N_BACKUP_DIR&#125;</span>/n8n_data-before-v2.tgz&quot;</span></span><br><span class="line"></span><br><span class="line">docker run --<span class="built_in">rm</span> \</span><br><span class="line">  --user 0:0 \</span><br><span class="line">  --entrypoint sh \</span><br><span class="line">  -v <span class="string">&quot;<span class="variable">$&#123;N8N_BACKUP_DIR&#125;</span>:/backup:ro&quot;</span> \</span><br><span class="line">  <span class="string">&quot;<span class="variable">$N8N_OLD_IMAGE</span>&quot;</span> \</span><br><span class="line">  -c <span class="string">&#x27;tar -tzf /backup/n8n_data-before-v2.tgz &gt;/dev/null &amp;&amp; echo BACKUP_OK&#x27;</span></span><br></pre></td></tr></table></figure>
+
+<p>只有看到 <code>BACKUP_OK</code>，这份备份才算通过最基本的可读性检查。</p>
+<blockquote>
+<p><strong>安全提醒：</strong> 这个 <code>.tgz</code> 没有加密。它包含 n8n 数据库，并且通常也包含用于解密凭据的实例配置；如果原实例通过外部 <code>N8N_ENCRYPTION_KEY</code> 提供密钥，还必须单独安全保存同一个值。备份目录应限制访问，不要把归档、校验和、<code>docker inspect</code> 输出、完整日志或未脱敏截图提交到公开仓库。</p>
+</blockquote>
+<h3 id="为什么不需要专门安装-Alpine"><a href="#为什么不需要专门安装-Alpine" class="headerlink" title="为什么不需要专门安装 Alpine"></a>为什么不需要专门安装 Alpine</h3><p>网上常见的数据卷备份命令会临时启动 <code>alpine</code>：</p>
+<figure class="highlight text"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">Unable to find image &#x27;alpine:...&#x27; locally</span><br><span class="line">Client.Timeout exceeded while awaiting headers</span><br></pre></td></tr></table></figure>
+
+<p>这个错误表示 Docker 访问镜像仓库超时，并不代表数据卷有问题。<code>alpine:3.22</code> 只是一个临时工具镜像，不是 n8n 迁移依赖，也不需要专门安装。既然服务器本地已经有旧 n8n 镜像，就可以直接复用其中的 shell 和 tar，少一次网络依赖，也少一个故障点。</p>
+<h2 id="第三步：先在-1-123-69-做迁移预检"><a href="#第三步：先在-1-123-69-做迁移预检" class="headerlink" title="第三步：先在 1.123.69 做迁移预检"></a>第三步：先在 1.123.69 做迁移预检</h2><p>启动 1.123.69，并继续挂载原数据卷：</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line">docker run -d --<span class="built_in">rm</span> \</span><br><span class="line">  --name <span class="string">&quot;<span class="variable">$N8N_CONTAINER</span>&quot;</span> \</span><br><span class="line">  -p <span class="string">&quot;<span class="variable">$N8N_PORT_BIND</span>&quot;</span> \</span><br><span class="line">  -v <span class="string">&quot;<span class="variable">$&#123;N8N_VOLUME&#125;</span>:/home/node/.n8n&quot;</span> \</span><br><span class="line">  -e DB_TYPE=sqlite \</span><br><span class="line">  -e DB_SQLITE_POOL_SIZE=2 \</span><br><span class="line">  -e N8N_ENFORCE_SETTINGS_FILE_PERMISSIONS=<span class="literal">true</span> \</span><br><span class="line">  -e N8N_RUNNERS_ENABLED=<span class="literal">true</span> \</span><br><span class="line">  <span class="string">&quot;<span class="variable">$N8N_PRECHECK_IMAGE</span>&quot;</span></span><br></pre></td></tr></table></figure>
+
+<p>这里仅展示迁移相关设置。实际部署时，要把原实例中的域名、Webhook、反向代理、区域、时区、执行超时等环境变量原样补回；<strong>大版本迁移期间不要顺手修改无关配置，也不要把真实值贴进公开文章。</strong> 如果原实例显式设置了 <code>N8N_ENCRYPTION_KEY</code>，新容器必须继续使用完全相同的值，否则已有凭据无法解密。</p>
+<p>原命令中常见但不属于迁移核心的变量，可以按下面的原则处理：</p>
+<ul>
+<li><code>N8N_DEFAULT_LOCALE</code>、<code>GENERIC_TIMEZONE</code>、<code>TZ</code>、<code>EXECUTIONS_TIMEOUT</code>：沿用原实例实际值，不要照抄别人的区域或超时设置；</li>
+<li><code>N8N_HOST</code>、<code>N8N_PROTOCOL</code>、<code>WEBHOOK_URL</code>、反向代理相关变量：按原部署恢复，否则 Webhook 或 OAuth 回调地址可能变化；</li>
+<li><code>N8N_SECURE_COOKIE=false</code>：只适合明确受信任的纯 HTTP 测试环境；生产 HTTPS 应省略它或保持安全 Cookie；</li>
+<li>凭据、令牌和加密密钥：从私有配置恢复，不要直接写进 shell 历史、文章或公开仓库。</li>
+</ul>
+<p>观察日志并确认版本：</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">docker logs -f <span class="string">&quot;<span class="variable">$N8N_CONTAINER</span>&quot;</span></span><br><span class="line">docker <span class="built_in">exec</span> <span class="string">&quot;<span class="variable">$N8N_CONTAINER</span>&quot;</span> n8n --version</span><br></pre></td></tr></table></figure>
+
+<p>然后以全局管理员登录，进入：</p>
+<figure class="highlight text"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">Settings -&gt; Migration Report</span><br></pre></td></tr></table></figure>
+
+<p>Migration Report 会把问题分成 <code>Workflow Issues</code> 和 <code>Instance Issues</code>。处理顺序很简单：</p>
+<ul>
+<li><code>Critical</code>：升级前必须解决，否则工作流可能直接失败；</li>
+<li><code>Medium</code>：确认行为变化是否影响现有流程；</li>
+<li><code>Low</code>：检查弃用项，安排后续清理；</li>
+<li>修改后刷新报告，理想状态是两页都没有未解决问题。</li>
+</ul>
+<p>这一阶段还要手工抽测代表性工作流，尤其是 Code、Webhook、Schedule、OAuth 和子工作流。</p>
+<h2 id="v2-最值得检查的破坏性变化"><a href="#v2-最值得检查的破坏性变化" class="headerlink" title="v2 最值得检查的破坏性变化"></a>v2 最值得检查的破坏性变化</h2><p>完整清单应以官方文档为准。对单容器 SQLite 部署，最容易踩坑的是下面这些：</p>
+<h3 id="1-SQLite-改用-pooled-WAL-驱动"><a href="#1-SQLite-改用-pooled-WAL-驱动" class="headerlink" title="1. SQLite 改用 pooled&#x2F;WAL 驱动"></a>1. SQLite 改用 pooled&#x2F;WAL 驱动</h3><p>v2 删除旧 SQLite driver，只保留 pooled driver。先在 1.x 设置：</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">-e DB_SQLITE_POOL_SIZE=2</span><br></pre></td></tr></table></figure>
+
+<p>可以提前验证 WAL 模式下的运行情况。</p>
+<h3 id="2-Code-节点默认使用-task-runner"><a href="#2-Code-节点默认使用-task-runner" class="headerlink" title="2. Code 节点默认使用 task runner"></a>2. Code 节点默认使用 task runner</h3><p>1.x 可以先设置：</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">-e N8N_RUNNERS_ENABLED=<span class="literal">true</span></span><br></pre></td></tr></table></figure>
+
+<p>到了 v2，task runner 默认启用，这个变量已经弃用，不再需要继续设置。</p>
+<p>单容器默认使用 internal runner，能够运行 JavaScript Code，但官方不建议生产环境长期使用 internal mode。更严格的生产部署应为 runner 增加独立 sidecar。</p>
+<h3 id="3-Python-Code-不是原样兼容"><a href="#3-Python-Code-不是原样兼容" class="headerlink" title="3. Python Code 不是原样兼容"></a>3. Python Code 不是原样兼容</h3><p>v2 移除了旧 Pyodide Python 实现。Python Code 和 Python Tool 需要 external task runner，以及与主容器完全同版本的 <code>n8nio/runners</code> 镜像。</p>
+<p>如果实例中存在 Python Code，这应当视为迁移阻断项，而不是升级后再处理的小问题。</p>
+<h3 id="4-文件、命令和环境变量访问更严格"><a href="#4-文件、命令和环境变量访问更严格" class="headerlink" title="4. 文件、命令和环境变量访问更严格"></a>4. 文件、命令和环境变量访问更严格</h3><ul>
+<li>Code 节点默认不能直接读取环境变量；</li>
+<li><code>ExecuteCommand</code>、<code>LocalFileTrigger</code> 默认禁用；</li>
+<li>文件节点默认只能访问受允许的目录；</li>
+<li>Git 节点默认禁止 bare repository；</li>
+<li>Code 节点中的 <code>$evaluateExpression()</code> 在安全模式下不再正常工作。</li>
+</ul>
+<p>不要为了“先跑起来”直接关闭所有安全限制。优先改造工作流，临时兼容开关只应当作为短期过渡。</p>
+<h3 id="5-保存不等于发布"><a href="#5-保存不等于发布" class="headerlink" title="5. 保存不等于发布"></a>5. 保存不等于发布</h3><p>v2 引入更明确的 Save&#x2F;Publish 语义。保存修改只更新草稿，必须执行 <code>Publish</code> 才会更新线上运行版本。</p>
+<p>这类行为变化不会总是表现为启动报错，却可能造成“明明保存了，生产流程却没变化”的误判。</p>
+<h2 id="第四步：保存一份“已就绪”的-1-x-备份"><a href="#第四步：保存一份“已就绪”的-1-x-备份" class="headerlink" title="第四步：保存一份“已就绪”的 1.x 备份"></a>第四步：保存一份“已就绪”的 1.x 备份</h2><p>完成 Migration Report 修复并验证 1.123.69 正常后，再停止容器：</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">docker stop -t 120 <span class="string">&quot;<span class="variable">$N8N_CONTAINER</span>&quot;</span></span><br></pre></td></tr></table></figure>
+
+<p>再次备份：</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><span class="line">docker run --<span class="built_in">rm</span> \</span><br><span class="line">  --user 0:0 \</span><br><span class="line">  --entrypoint sh \</span><br><span class="line">  -v <span class="string">&quot;<span class="variable">$&#123;N8N_VOLUME&#125;</span>:/source:ro&quot;</span> \</span><br><span class="line">  -v <span class="string">&quot;<span class="variable">$&#123;N8N_BACKUP_DIR&#125;</span>:/backup&quot;</span> \</span><br><span class="line">  <span class="string">&quot;<span class="variable">$N8N_PRECHECK_IMAGE</span>&quot;</span> \</span><br><span class="line">  -c <span class="string">&#x27;tar -czf /backup/n8n_data-1.123.69-ready-for-v2.tgz -C /source .&#x27;</span></span><br><span class="line"></span><br><span class="line">docker run --<span class="built_in">rm</span> \</span><br><span class="line">  --user 0:0 \</span><br><span class="line">  --entrypoint sh \</span><br><span class="line">  -v <span class="string">&quot;<span class="variable">$&#123;N8N_BACKUP_DIR&#125;</span>:/backup:ro&quot;</span> \</span><br><span class="line">  <span class="string">&quot;<span class="variable">$N8N_PRECHECK_IMAGE</span>&quot;</span> \</span><br><span class="line">  -c <span class="string">&#x27;tar -tzf /backup/n8n_data-1.123.69-ready-for-v2.tgz &gt;/dev/null &amp;&amp; echo BACKUP_B_OK&#x27;</span></span><br></pre></td></tr></table></figure>
+
+<p>确认看到 <code>BACKUP_B_OK</code>。为什么要做第二份备份？因为 Migration Report 阶段可能已经修改了工作流或实例配置。回滚时我们真正想恢复的是“兼容问题已经处理完、但还没被 v2 改写数据库”的状态。</p>
+<h2 id="第五步：启动-2-33-7"><a href="#第五步：启动-2-33-7" class="headerlink" title="第五步：启动 2.33.7"></a>第五步：启动 2.33.7</h2><p>继续使用同一个 <code>N8N_VOLUME</code>：</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line">docker run -d --<span class="built_in">rm</span> \</span><br><span class="line">  --name <span class="string">&quot;<span class="variable">$N8N_CONTAINER</span>&quot;</span> \</span><br><span class="line">  -p <span class="string">&quot;<span class="variable">$N8N_PORT_BIND</span>&quot;</span> \</span><br><span class="line">  -v <span class="string">&quot;<span class="variable">$&#123;N8N_VOLUME&#125;</span>:/home/node/.n8n&quot;</span> \</span><br><span class="line">  -e DB_TYPE=sqlite \</span><br><span class="line">  -e DB_SQLITE_POOL_SIZE=2 \</span><br><span class="line">  -e N8N_ENFORCE_SETTINGS_FILE_PERMISSIONS=<span class="literal">true</span> \</span><br><span class="line">  <span class="string">&quot;<span class="variable">$N8N_TARGET_IMAGE</span>&quot;</span></span><br></pre></td></tr></table></figure>
+
+<p>同样需要把原实例的其他环境变量补回。与 1.x 命令相比，这里不再设置 <code>N8N_RUNNERS_ENABLED</code>，因为 v2 已默认启用 task runners。</p>
+<p>首次启动会在原 SQLite 数据库上依次执行未完成的迁移。此时持续观察日志，不要中断：</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">docker logs -f <span class="string">&quot;<span class="variable">$N8N_CONTAINER</span>&quot;</span></span><br></pre></td></tr></table></figure>
+
+<p>启动完成后确认版本：</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">docker <span class="built_in">exec</span> <span class="string">&quot;<span class="variable">$N8N_CONTAINER</span>&quot;</span> n8n --version</span><br></pre></td></tr></table></figure>
+
+<p>预期输出：</p>
+<figure class="highlight text"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">2.33.7</span><br></pre></td></tr></table></figure>
+
+<h2 id="升级后不要只看“页面能打开”"><a href="#升级后不要只看“页面能打开”" class="headerlink" title="升级后不要只看“页面能打开”"></a>升级后不要只看“页面能打开”</h2><p>UI 能登录，只能证明进程和数据库基本可用。真正的验证至少包括：</p>
+<ul>
+<li>工作流数量、名称和历史执行记录符合预期；</li>
+<li>凭据能够正常解密并连接外部服务；</li>
+<li>Webhook 生产 URL 正常；</li>
+<li>Schedule Trigger 正常；</li>
+<li>JavaScript Code 节点正常；</li>
+<li>子工作流经过 Wait、Webhook、Form 或人工审批后，父流程收到的结果符合预期；</li>
+<li>社区节点和自定义节点正常加载；</li>
+<li>修改工作流后执行了 <code>Publish</code>；</li>
+<li>日志中没有数据库迁移、凭据解密或 task runner 错误。</li>
+</ul>
+<p>验证顺序也很重要：先跑只读、低风险流程，再验证会发消息、扣费、写数据库或修改外部系统的流程。</p>
+<h2 id="回滚：恢复到新卷，不要覆盖现场"><a href="#回滚：恢复到新卷，不要覆盖现场" class="headerlink" title="回滚：恢复到新卷，不要覆盖现场"></a>回滚：恢复到新卷，不要覆盖现场</h2><p>如果 2.33.7 验证失败，先停止它：</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">docker stop -t 120 <span class="string">&quot;<span class="variable">$N8N_CONTAINER</span>&quot;</span></span><br></pre></td></tr></table></figure>
+
+<p>不要直接用 1.123.69 打开已经被 v2 迁移过的 <code>N8N_VOLUME</code>。创建一个新的回滚卷：</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">docker volume create <span class="string">&quot;<span class="variable">$N8N_ROLLBACK_VOLUME</span>&quot;</span></span><br></pre></td></tr></table></figure>
+
+<p>将第二次备份恢复进去：</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">docker run --<span class="built_in">rm</span> \</span><br><span class="line">  --user 0:0 \</span><br><span class="line">  --entrypoint sh \</span><br><span class="line">  -v <span class="string">&quot;<span class="variable">$&#123;N8N_ROLLBACK_VOLUME&#125;</span>:/restore&quot;</span> \</span><br><span class="line">  -v <span class="string">&quot;<span class="variable">$&#123;N8N_BACKUP_DIR&#125;</span>:/backup:ro&quot;</span> \</span><br><span class="line">  <span class="string">&quot;<span class="variable">$N8N_PRECHECK_IMAGE</span>&quot;</span> \</span><br><span class="line">  -c <span class="string">&#x27;tar -xzf /backup/n8n_data-1.123.69-ready-for-v2.tgz -C /restore&#x27;</span></span><br></pre></td></tr></table></figure>
+
+<p>然后用旧版本挂载回滚卷：</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line">docker run -d --<span class="built_in">rm</span> \</span><br><span class="line">  --name <span class="string">&quot;<span class="variable">$N8N_CONTAINER</span>&quot;</span> \</span><br><span class="line">  -p <span class="string">&quot;<span class="variable">$N8N_PORT_BIND</span>&quot;</span> \</span><br><span class="line">  -v <span class="string">&quot;<span class="variable">$&#123;N8N_ROLLBACK_VOLUME&#125;</span>:/home/node/.n8n&quot;</span> \</span><br><span class="line">  -e DB_TYPE=sqlite \</span><br><span class="line">  -e DB_SQLITE_POOL_SIZE=2 \</span><br><span class="line">  -e N8N_ENFORCE_SETTINGS_FILE_PERMISSIONS=<span class="literal">true</span> \</span><br><span class="line">  -e N8N_RUNNERS_ENABLED=<span class="literal">true</span> \</span><br><span class="line">  <span class="string">&quot;<span class="variable">$N8N_PRECHECK_IMAGE</span>&quot;</span></span><br></pre></td></tr></table></figure>
+
+<p>启动回滚实例时，也要恢复原实例的其他环境变量以及相同的外部 <code>N8N_ENCRYPTION_KEY</code>（如果使用过）。</p>
+<p>这样做有两个好处：</p>
+<ol>
+<li>回滚实例使用的是明确的升级前数据；</li>
+<li>迁移失败后的原 <code>N8N_VOLUME</code> 仍然保留，可以继续排查。</li>
+</ol>
+<p>官方也提供 <code>n8n db:revert</code>，但它一次只回退最后一条数据库迁移。跨大版本可能包含多条迁移，因此完整快照恢复更适合作为主要回滚方案。</p>
+<h2 id="这次迁移最值得记住的几件事"><a href="#这次迁移最值得记住的几件事" class="headerlink" title="这次迁移最值得记住的几件事"></a>这次迁移最值得记住的几件事</h2><p>第一，<strong>容器是耗材，数据卷才是资产。</strong> 只要边界搞清楚，重建容器并不可怕。</p>
+<p>第二，<strong>备份的标准不是“文件生成了”，而是“文件能够被读取，并且知道如何恢复”。</strong> 没演练过的回滚只能算愿望。</p>
+<p>第三，<strong>大版本升级不要顺手重构部署。</strong> 域名、反向代理、Cookie、时区、重启策略等无关变量，等迁移稳定后再单独调整。</p>
+<p>第四，<strong>不要为了减少步骤而省掉中间检查。</strong> 1.123.69 不是数据库迁移的强制跳板，却是把兼容问题提前暴露出来的便宜保险。</p>
+<p>第五，<strong>外网依赖本身也是风险。</strong> 一个临时 Alpine 镜像就可能因为仓库超时卡住维护窗口；优先复用已有镜像，或者提前准备离线镜像包。</p>
+<h2 id="参考资料"><a href="#参考资料" class="headerlink" title="参考资料"></a>参考资料</h2><ul>
+<li><span class="exturl" data-url="aHR0cHM6Ly9naXRodWIuY29tL244bi1pby9uOG4vcmVsZWFzZXMvdGFnL244biU0MDIuMzMuNw==">n8n 2.33.7 Release<i class="fa fa-external-link-alt"></i></span></li>
+<li><span class="exturl" data-url="aHR0cHM6Ly9kb2NzLm44bi5pby9kZXBsb3kvaG9zdC1uOG4vaW5zdGFsbC1vcHRpb25zL2luc3RhbGwtd2l0aC1kb2NrZXI=">Docker 安装与更新<i class="fa fa-external-link-alt"></i></span></li>
+<li><span class="exturl" data-url="aHR0cHM6Ly9kb2NzLm44bi5pby9jaGFuZ2Vsb2cvdjIwLW1pZ3JhdGlvbi10b29s">v2.0 Migration Tool<i class="fa fa-external-link-alt"></i></span></li>
+<li><span class="exturl" data-url="aHR0cHM6Ly9kb2NzLm44bi5pby9jaGFuZ2Vsb2cvdjIwLWJyZWFraW5nLWNoYW5nZXM=">v2.0 Breaking Changes<i class="fa fa-external-link-alt"></i></span></li>
+<li><span class="exturl" data-url="aHR0cHM6Ly9kb2NzLm44bi5pby9kZXBsb3kvaG9zdC1uOG4vY29uZmlndXJlLW44bi9zZXQtdXAtdGFzay1ydW5uZXJz">Task runners<i class="fa fa-external-link-alt"></i></span></li>
+<li><span class="exturl" data-url="aHR0cHM6Ly9kb2NzLm44bi5pby9kZXBsb3kvaG9zdC1uOG4vY29uZmlndXJlLW44bi91c2UtdGhlLWNvbW1hbmQtbGluZQ==">n8n CLI<i class="fa fa-external-link-alt"></i></span></li>
+</ul>
+
+    </div>
+
+    
+    
+    
+
+      <footer class="post-footer">
+          <div class="post-tags">
+              <a href="/tags/%E6%96%B0%E6%89%8B%E6%95%99%E7%A8%8B/" rel="tag"># 新手教程</a>
+              <a href="/tags/docker/" rel="tag"># docker</a>
+              <a href="/tags/n8n/" rel="tag"># n8n</a>
+              <a href="/tags/sqlite/" rel="tag"># sqlite</a>
+              <a href="/tags/%E5%8D%87%E7%BA%A7%E8%BF%81%E7%A7%BB/" rel="tag"># 升级迁移</a>
+          </div>
+
+        
+
+
+        
+    <div class="post-nav">
+      <div class="post-nav-item">
+    <a href="/2026/07/30/2026-07-30-%E9%9D%A2%E5%90%91%E6%B6%B2%E5%86%B7IDC%E7%9A%84%E6%95%B0%E5%AD%97%E5%AD%AA%E7%94%9F%E7%9B%91%E6%8E%A7%E5%B9%B3%E5%8F%B0%E6%9E%B6%E6%9E%84%E8%AE%BE%E8%AE%A1%E4%B8%8E%E6%BC%94%E8%BF%9B%E5%AE%9E%E8%B7%B5/" rel="prev" title="面向液冷 IDC 的数字孪生监控平台架构设计与演进实践">
+      <i class="fa fa-chevron-left"></i> 面向液冷 IDC 的数字孪生监控平台架构设计与演进实践
+    </a></div>
+      <div class="post-nav-item">
+    <a href="/2026/10/27/2026-10-27-%E8%AE%A9Dot%E5%92%8CLody%E7%BB%84%E6%88%90%E4%B8%80%E4%B8%AAAI%E5%8D%8F%E4%BD%9C%E5%9B%A2%E9%98%9F/" rel="next" title="让 Dot 来派活：我的 Lody 多 Agent 协作实践">
+      让 Dot 来派活：我的 Lody 多 Agent 协作实践 <i class="fa fa-chevron-right"></i>
+    </a></div>
+    </div>
+      </footer>
+    
+  </article>
+  
+  
+  
+
+
+
+          </div>
+          
+    
+  <div class="comments">
+    <div id="lv-container" data-id="city" data-uid="MTAyMC81NDA1OS8zMDUzMQ=="></div>
+  </div>
+  
+
+<script>
+  window.addEventListener('tabs:register', () => {
+    let { activeClass } = CONFIG.comments;
+    if (CONFIG.comments.storage) {
+      activeClass = localStorage.getItem('comments_active') || activeClass;
+    }
+    if (activeClass) {
+      let activeTab = document.querySelector(`a[href="#comment-${activeClass}"]`);
+      if (activeTab) {
+        activeTab.click();
+      }
+    }
+  });
+  if (CONFIG.comments.storage) {
+    window.addEventListener('tabs:click', event => {
+      if (!event.target.matches('.tabs-comment .tab-content .tab-pane')) return;
+      let commentClass = event.target.classList[1];
+      localStorage.setItem('comments_active', commentClass);
+    });
+  }
+</script>
+
+        </div>
+          
+  
+  <div class="toggle sidebar-toggle">
+    <span class="toggle-line toggle-line-first"></span>
+    <span class="toggle-line toggle-line-middle"></span>
+    <span class="toggle-line toggle-line-last"></span>
+  </div>
+
+  <aside class="sidebar">
+    <div class="sidebar-inner">
+
+      <ul class="sidebar-nav motion-element">
+        <li class="sidebar-nav-toc">
+          Table of Contents
+        </li>
+        <li class="sidebar-nav-overview">
+          Overview
+        </li>
+      </ul>
+
+      <!--noindex-->
+      <div class="post-toc-wrap sidebar-panel">
+          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%85%88%E5%AE%9A%E4%B9%89%E6%9C%AC%E6%96%87%E7%94%A8%E5%88%B0%E7%9A%84%E5%8F%98%E9%87%8F"><span class="nav-number">1.</span> <span class="nav-text">先定义本文用到的变量</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%85%88%E5%BC%84%E6%B8%85%E6%A5%9A%EF%BC%9A%E6%95%B0%E6%8D%AE%E4%B8%8D%E5%9C%A8%E5%AE%B9%E5%99%A8%E9%87%8C"><span class="nav-number">2.</span> <span class="nav-text">先弄清楚：数据不在容器里</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%8D%87%E7%BA%A7%E5%89%8D%E7%9A%84%E5%9B%9B%E6%9D%A1%E7%BA%A2%E7%BA%BF"><span class="nav-number">3.</span> <span class="nav-text">升级前的四条红线</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E7%AC%AC%E4%B8%80%E6%AD%A5%EF%BC%9A%E5%85%88%E6%8A%8A%E7%9B%AE%E6%A0%87%E9%95%9C%E5%83%8F%E5%87%86%E5%A4%87%E5%A5%BD"><span class="nav-number">4.</span> <span class="nav-text">第一步：先把目标镜像准备好</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E7%AC%AC%E4%BA%8C%E6%AD%A5%EF%BC%9A%E5%81%9C%E6%AD%A2%E6%9C%8D%E5%8A%A1%E5%B9%B6%E5%AE%8C%E6%95%B4%E5%A4%87%E4%BB%BD-SQLite-%E5%8D%B7"><span class="nav-number">5.</span> <span class="nav-text">第二步：停止服务并完整备份 SQLite 卷</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E4%B8%BA%E4%BB%80%E4%B9%88%E4%B8%8D%E9%9C%80%E8%A6%81%E4%B8%93%E9%97%A8%E5%AE%89%E8%A3%85-Alpine"><span class="nav-number">5.1.</span> <span class="nav-text">为什么不需要专门安装 Alpine</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E7%AC%AC%E4%B8%89%E6%AD%A5%EF%BC%9A%E5%85%88%E5%9C%A8-1-123-69-%E5%81%9A%E8%BF%81%E7%A7%BB%E9%A2%84%E6%A3%80"><span class="nav-number">6.</span> <span class="nav-text">第三步：先在 1.123.69 做迁移预检</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#v2-%E6%9C%80%E5%80%BC%E5%BE%97%E6%A3%80%E6%9F%A5%E7%9A%84%E7%A0%B4%E5%9D%8F%E6%80%A7%E5%8F%98%E5%8C%96"><span class="nav-number">7.</span> <span class="nav-text">v2 最值得检查的破坏性变化</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#1-SQLite-%E6%94%B9%E7%94%A8-pooled-WAL-%E9%A9%B1%E5%8A%A8"><span class="nav-number">7.1.</span> <span class="nav-text">1. SQLite 改用 pooled&#x2F;WAL 驱动</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#2-Code-%E8%8A%82%E7%82%B9%E9%BB%98%E8%AE%A4%E4%BD%BF%E7%94%A8-task-runner"><span class="nav-number">7.2.</span> <span class="nav-text">2. Code 节点默认使用 task runner</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#3-Python-Code-%E4%B8%8D%E6%98%AF%E5%8E%9F%E6%A0%B7%E5%85%BC%E5%AE%B9"><span class="nav-number">7.3.</span> <span class="nav-text">3. Python Code 不是原样兼容</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#4-%E6%96%87%E4%BB%B6%E3%80%81%E5%91%BD%E4%BB%A4%E5%92%8C%E7%8E%AF%E5%A2%83%E5%8F%98%E9%87%8F%E8%AE%BF%E9%97%AE%E6%9B%B4%E4%B8%A5%E6%A0%BC"><span class="nav-number">7.4.</span> <span class="nav-text">4. 文件、命令和环境变量访问更严格</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#5-%E4%BF%9D%E5%AD%98%E4%B8%8D%E7%AD%89%E4%BA%8E%E5%8F%91%E5%B8%83"><span class="nav-number">7.5.</span> <span class="nav-text">5. 保存不等于发布</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E7%AC%AC%E5%9B%9B%E6%AD%A5%EF%BC%9A%E4%BF%9D%E5%AD%98%E4%B8%80%E4%BB%BD%E2%80%9C%E5%B7%B2%E5%B0%B1%E7%BB%AA%E2%80%9D%E7%9A%84-1-x-%E5%A4%87%E4%BB%BD"><span class="nav-number">8.</span> <span class="nav-text">第四步：保存一份“已就绪”的 1.x 备份</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E7%AC%AC%E4%BA%94%E6%AD%A5%EF%BC%9A%E5%90%AF%E5%8A%A8-2-33-7"><span class="nav-number">9.</span> <span class="nav-text">第五步：启动 2.33.7</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%8D%87%E7%BA%A7%E5%90%8E%E4%B8%8D%E8%A6%81%E5%8F%AA%E7%9C%8B%E2%80%9C%E9%A1%B5%E9%9D%A2%E8%83%BD%E6%89%93%E5%BC%80%E2%80%9D"><span class="nav-number">10.</span> <span class="nav-text">升级后不要只看“页面能打开”</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%9B%9E%E6%BB%9A%EF%BC%9A%E6%81%A2%E5%A4%8D%E5%88%B0%E6%96%B0%E5%8D%B7%EF%BC%8C%E4%B8%8D%E8%A6%81%E8%A6%86%E7%9B%96%E7%8E%B0%E5%9C%BA"><span class="nav-number">11.</span> <span class="nav-text">回滚：恢复到新卷，不要覆盖现场</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E8%BF%99%E6%AC%A1%E8%BF%81%E7%A7%BB%E6%9C%80%E5%80%BC%E5%BE%97%E8%AE%B0%E4%BD%8F%E7%9A%84%E5%87%A0%E4%BB%B6%E4%BA%8B"><span class="nav-number">12.</span> <span class="nav-text">这次迁移最值得记住的几件事</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%8F%82%E8%80%83%E8%B5%84%E6%96%99"><span class="nav-number">13.</span> <span class="nav-text">参考资料</span></a></li></ol></div>
+      </div>
+      <!--/noindex-->
+
+      <div class="site-overview-wrap sidebar-panel">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+  <p class="site-author-name" itemprop="name">ghyghoo8</p>
+  <div class="site-description" itemprop="description">碎了一地...o(*￣︶￣*)o...</div>
+</div>
+<div class="site-state-wrap motion-element">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+          <a href="/archives/">
+        
+          <span class="site-state-item-count">29</span>
+          <span class="site-state-item-name">posts</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-categories">
+            <a href="/categories/">
+          
+        <span class="site-state-item-count">12</span>
+        <span class="site-state-item-name">categories</span></a>
+      </div>
+      <div class="site-state-item site-state-tags">
+            <a href="/tags/">
+          
+        <span class="site-state-item-count">61</span>
+        <span class="site-state-item-name">tags</span></a>
+      </div>
+  </nav>
+</div>
+
+
+
+      </div>
+
+    </div>
+  </aside>
+  <div id="sidebar-dimmer"></div>
+
+
+      </div>
+    </main>
+
+    <footer class="footer">
+      <div class="footer-inner">
+        
+
+        
+
+<div class="copyright">
+  
+  &copy; 
+  <span itemprop="copyrightYear">2026</span>
+  <span class="with-love">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">ghyghoo8</span>
+</div>
+  <div class="powered-by">Powered by <span class="exturl theme-link" data-url="aHR0cHM6Ly9oZXhvLmlv">Hexo</span> & <span class="exturl theme-link" data-url="aHR0cHM6Ly9waXNjZXMudGhlbWUtbmV4dC5vcmc=">NexT.Pisces</span>
+  </div>
+
+        
+
+
+
+
+
+
+
+
+      </div>
+    </footer>
+  </div>
+
+  
+  <script src="//cdn.jsdelivr.net/npm/animejs@3.1.0/lib/anime.min.js"></script>
+  <script src="/lib/velocity/velocity.min.js"></script>
+  <script src="/lib/velocity/velocity.ui.min.js"></script>
+
+<script src="/js/utils.js"></script>
+
+<script src="/js/motion.js"></script>
+
+
+<script src="/js/schemes/pisces.js"></script>
+
+
+<script src="/js/next-boot.js"></script>
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+  
+
+<script>
+NexT.utils.loadComments(document.querySelector('#lv-container'), () => {
+  window.livereOptions = {
+    refer: location.pathname.replace(CONFIG.root, '').replace('index.html', '')
+  };
+  (function(d, s) {
+    var j, e = d.getElementsByTagName(s)[0];
+    if (typeof LivereTower === 'function') { return; }
+    j = d.createElement(s);
+    j.src = 'https://cdn-city.livere.com/js/embed.dist.js';
+    j.async = true;
+    e.parentNode.insertBefore(j, e);
+  })(document, 'script');
+});
+</script>
+
+<!-- hexo injector body_end start -->
+<script src="/js/bot.js"></script>
+<div id="sakana-widget"></div><script>
+      function initSakanaWidget() {
+        // 默认自走模式
+        new SakanaWidget().mount('#sakana-widget').triggetAutoMode();
+      }
+    </script><script
+      async
+      onload="initSakanaWidget()"
+      src="https://cdn.jsdelivr.net/npm/sakana-widget@2.7.0/lib/sakana.min.js"
+    ></script><!-- hexo injector body_end end --></body>
+</html>

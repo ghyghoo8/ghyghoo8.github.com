@@ -1,0 +1,504 @@
+<!DOCTYPE html>
+<html lang="zh-Hans">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
+<meta name="theme-color" content="#222">
+<meta name="generator" content="Hexo 8.1.2">
+  <link rel="apple-touch-icon" sizes="180x180" href="/imgs/logo.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/imgs/32.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/imgs/16.png">
+  <link rel="mask-icon" href="/imgs/logo.png" color="#222">
+  <meta name="google-site-verification" content="dJfRF5_6EbT_bJo2wTKbSXTDmNaOTqDGRDMcU6ylduk">
+
+<link rel="stylesheet" href="/css/main.css">
+
+
+<link rel="stylesheet" href="//cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@5/css/all.min.css">
+
+<script id="hexo-configurations">
+    var NexT = window.NexT || {};
+    var CONFIG = {"hostname":"ghyghoo8.github.io","root":"/","scheme":"Pisces","version":"7.8.0","exturl":true,"sidebar":{"position":"left","display":"post","padding":18,"offset":12,"onmobile":false},"copycode":{"enable":false,"show_result":false,"style":null},"back2top":{"enable":true,"sidebar":false,"scrollpercent":false},"bookmark":{"enable":false,"color":"#222","save":"auto"},"fancybox":false,"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":"livere","storage":true,"lazyload":false,"nav":null,"activeClass":"livere"},"algolia":{"hits":{"per_page":10},"labels":{"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}},"localsearch":{"enable":false,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}}};
+  </script>
+
+  <meta name="description" content="同时用几个 AI 做事，很容易遇到一个问题：它们各自都能干活，连接它们的人却一直是自己。 把需求复制给写代码的 Agent，再把结果交给另一个 Agent 审查；这边缺资料，过去补一下；那边卡住了，再回来问一句。窗口开得越来越多，自己也越来越像一个负责转发消息的项目经理。 最近，我在尝试用 Dot + Lody 接过这部分工作。核心做法很直接：在 Dot 自己的云端执行环境中安装并使用 Lody">
+<meta property="og:type" content="article">
+<meta property="og:title" content="让 Dot 来派活：我的 Lody 多 Agent 协作实践">
+<meta property="og:url" content="https://ghyghoo8.github.io/2026/10/27/2026-10-27-%E8%AE%A9Dot%E5%92%8CLody%E7%BB%84%E6%88%90%E4%B8%80%E4%B8%AAAI%E5%8D%8F%E4%BD%9C%E5%9B%A2%E9%98%9F/index.html">
+<meta property="og:site_name" content="G8空间">
+<meta property="og:description" content="同时用几个 AI 做事，很容易遇到一个问题：它们各自都能干活，连接它们的人却一直是自己。 把需求复制给写代码的 Agent，再把结果交给另一个 Agent 审查；这边缺资料，过去补一下；那边卡住了，再回来问一句。窗口开得越来越多，自己也越来越像一个负责转发消息的项目经理。 最近，我在尝试用 Dot + Lody 接过这部分工作。核心做法很直接：在 Dot 自己的云端执行环境中安装并使用 Lody">
+<meta property="og:locale">
+<meta property="og:image" content="https://ghyghoo8.github.io/imgs/dot-lody-collaboration.svg">
+<meta property="article:published_time" content="2026-10-26T16:00:00.000Z">
+<meta property="article:modified_time" content="2026-10-27T16:00:00.000Z">
+<meta property="article:author" content="ghyghoo8">
+<meta property="article:tag" content="AI Agent">
+<meta property="article:tag" content="Codex">
+<meta property="article:tag" content="Dot">
+<meta property="article:tag" content="Lody">
+<meta property="article:tag" content="多智能体协作">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="https://ghyghoo8.github.io/imgs/dot-lody-collaboration.svg">
+
+<link rel="canonical" href="https://ghyghoo8.github.io/2026/10/27/2026-10-27-%E8%AE%A9Dot%E5%92%8CLody%E7%BB%84%E6%88%90%E4%B8%80%E4%B8%AAAI%E5%8D%8F%E4%BD%9C%E5%9B%A2%E9%98%9F/">
+
+
+<script id="page-configurations">
+  // https://hexo.io/docs/variables.html
+  CONFIG.page = {
+    sidebar: "",
+    isHome : false,
+    isPost : true,
+    lang   : 'zh-Hans'
+  };
+</script>
+
+  <title>让 Dot 来派活：我的 Lody 多 Agent 协作实践 | G8空间</title>
+  
+
+
+
+
+
+
+  <noscript>
+  <style>
+  .use-motion .brand,
+  .use-motion .menu-item,
+  .sidebar-inner,
+  .use-motion .post-block,
+  .use-motion .pagination,
+  .use-motion .comments,
+  .use-motion .post-header,
+  .use-motion .post-body,
+  .use-motion .collection-header { opacity: initial; }
+
+  .use-motion .site-title,
+  .use-motion .site-subtitle {
+    opacity: initial;
+    top: initial;
+  }
+
+  .use-motion .logo-line-before i { left: initial; }
+  .use-motion .logo-line-after i { right: initial; }
+  </style>
+</noscript>
+
+<!-- hexo injector head_end start --><script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-7923526446101866" crossorigin="anonymous"></script><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/sakana-widget@2.7.0/lib/sakana.min.css" /><style>#sakana-widget{position:fixed;bottom:0;left:0;}</style><!-- hexo injector head_end end --><link rel="alternate" href="/atom.xml" title="G8空间" type="application/atom+xml">
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage">
+  <div class="container use-motion">
+    <div class="headband"></div>
+
+    <header class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="Toggle navigation bar">
+      <span class="toggle-line toggle-line-first"></span>
+      <span class="toggle-line toggle-line-middle"></span>
+      <span class="toggle-line toggle-line-last"></span>
+    </div>
+  </div>
+
+  <div class="site-meta custom-logo">
+
+    <a href="/" class="brand" rel="start">
+      <span class="logo-line-before"><i></i></span>
+      <h1 class="site-title">G8空间</h1>
+      <span class="logo-line-after"><i></i></span>
+    </a>
+      <p class="site-subtitle" itemprop="description">ghyghoo8的沉淀小碎</p>
+      <a>
+        <img class="custom-logo-image" src="/imgs/IMG_0001.PNG" alt="G8空间">
+      </a>
+  </div>
+
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger">
+    </div>
+  </div>
+</div>
+
+
+
+
+<nav class="site-nav">
+  <ul id="menu" class="main-menu menu">
+        <li class="menu-item menu-item-home">
+
+    <a href="/" rel="section"><i class="fa fa-home fa-fw"></i>Home</a>
+
+  </li>
+        <li class="menu-item menu-item-about">
+
+    <a href="/about/" rel="section"><i class="fa fa-user fa-fw"></i>About</a>
+
+  </li>
+        <li class="menu-item menu-item-tags">
+
+    <a href="/tags/" rel="section"><i class="fa fa-tags fa-fw"></i>Tags</a>
+
+  </li>
+        <li class="menu-item menu-item-categories">
+
+    <a href="/categories/" rel="section"><i class="fa fa-th fa-fw"></i>Categories</a>
+
+  </li>
+        <li class="menu-item menu-item-archives">
+
+    <a href="/archives/" rel="section"><i class="fa fa-archive fa-fw"></i>Archives</a>
+
+  </li>
+        <li class="menu-item menu-item-guestbook">
+
+    <a href="/guestbook" rel="section"><i class="fa fa-comment fa-fw"></i>guestbook</a>
+
+  </li>
+  </ul>
+</nav>
+
+
+
+
+</div>
+    </header>
+
+    
+  <div class="back-to-top">
+    <i class="fa fa-arrow-up"></i>
+    <span>0%</span>
+  </div>
+
+  <span class="exturl github-corner" data-url="aHR0cHM6Ly9naXRodWIuY29tL2doeWdob284" title="Follow me on GitHub" aria-label="Follow me on GitHub"><svg width="80" height="80" viewBox="0 0 250 250" aria-hidden="true"><path d="M0,0 L115,115 L130,115 L142,142 L250,250 L250,0 Z"></path><path d="M128.3,109.0 C113.8,99.7 119.0,89.6 119.0,89.6 C122.0,82.7 120.5,78.6 120.5,78.6 C119.2,72.0 123.4,76.3 123.4,76.3 C127.3,80.9 125.5,87.3 125.5,87.3 C122.9,97.6 130.6,101.9 134.4,103.2" fill="currentColor" style="transform-origin: 130px 106px;" class="octo-arm"></path><path d="M115.0,115.0 C114.9,115.1 118.7,116.5 119.8,115.4 L133.7,101.6 C136.9,99.2 139.9,98.4 142.2,98.6 C133.8,88.0 127.5,74.4 143.8,58.0 C148.5,53.4 154.0,51.2 159.7,51.0 C160.3,49.4 163.2,43.6 171.4,40.1 C171.4,40.1 176.1,42.5 178.8,56.2 C183.1,58.6 187.2,61.8 190.9,65.4 C194.5,69.0 197.7,73.2 200.1,77.6 C213.8,80.2 216.3,84.9 216.3,84.9 C212.7,93.1 206.9,96.0 205.4,96.6 C205.1,102.4 203.0,107.8 198.3,112.5 C181.9,128.9 168.3,122.5 157.7,114.1 C157.9,116.9 156.7,120.9 152.7,124.9 L141.0,136.5 C139.8,137.7 141.6,141.9 141.8,141.8 Z" fill="currentColor" class="octo-body"></path></svg></span>
+
+
+    <main class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          
+
+          <div class="content post posts-expand">
+            
+
+    
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-Hans">
+    <link itemprop="mainEntityOfPage" href="https://ghyghoo8.github.io/2026/10/27/2026-10-27-%E8%AE%A9Dot%E5%92%8CLody%E7%BB%84%E6%88%90%E4%B8%80%E4%B8%AAAI%E5%8D%8F%E4%BD%9C%E5%9B%A2%E9%98%9F/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar.gif">
+      <meta itemprop="name" content="ghyghoo8">
+      <meta itemprop="description" content="碎了一地...o(*￣︶￣*)o...">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="G8空间">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          让 Dot 来派活：我的 Lody 多 Agent 协作实践
+        </h1>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-calendar"></i>
+              </span>
+              <span class="post-meta-item-text">Posted on</span>
+
+              <time title="Created: 2026-10-27 00:00:00" itemprop="dateCreated datePublished" datetime="2026-10-27T00:00:00+08:00">2026-10-27</time>
+            </span>
+              <span class="post-meta-item">
+                <span class="post-meta-item-icon">
+                  <i class="far fa-calendar-check"></i>
+                </span>
+                <span class="post-meta-item-text">Edited on</span>
+                <time title="Modified: 2026-10-28 00:00:00" itemprop="dateModified" datetime="2026-10-28T00:00:00+08:00">2026-10-28</time>
+              </span>
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-folder"></i>
+              </span>
+              <span class="post-meta-item-text">In</span>
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/AI/" itemprop="url" rel="index"><span itemprop="name">AI</span></a>
+                </span>
+            </span>
+
+          
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+        <p>同时用几个 AI 做事，很容易遇到一个问题：它们各自都能干活，连接它们的人却一直是自己。</p>
+<p>把需求复制给写代码的 Agent，再把结果交给另一个 Agent 审查；这边缺资料，过去补一下；那边卡住了，再回来问一句。窗口开得越来越多，自己也越来越像一个负责转发消息的项目经理。</p>
+<p>最近，我在尝试用 <strong>Dot + Lody</strong> 接过这部分工作。核心做法很直接：<strong>在 Dot 自己的云端执行环境中安装并使用 Lody CLI，让 Dot 能联系已有机器上的 Agent、派发任务、查看进展，再把结果带回来。</strong></p>
+<p>这篇文章聊聊我为什么这样搭配，以及接通工具之后，怎样让几个 Agent 真正接得上彼此的工作。</p>
+<span id="more"></span>
+
+<h2 id="Dot-管目标，Lody-连接执行"><a href="#Dot-管目标，Lody-连接执行" class="headerlink" title="Dot 管目标，Lody 连接执行"></a>Dot 管目标，Lody 连接执行</h2><p>我给这两个工具的分工是：Dot 负责和我沟通，记住正在推进的目标，协调各个项目；Lody 提供访问机器、选择 Agent 和操作会话的入口。</p>
+<p><span class="exturl" data-url="aHR0cHM6Ly9sZWFybi5jaGF0Z3B0LmNvbS9kb2NzL3doYXRzLW5ldy9zZXB0ZW1iZXItMjgtb2N0b2Jlci0yLTIwMjYjZGVsZWdhdGUtb25nb2luZy13b3JrLXRvLXlvdXItZG90">Dot<i class="fa fa-external-link-alt"></i></span> 有自己的云电脑，可以持续处理任务，也能向 Work 或 Codex 委派工作。<span class="exturl" data-url="aHR0cHM6Ly9sb2R5LmFpL3poL2RvY3MvY2xpLw==">Lody CLI<i class="fa fa-external-link-alt"></i></span> 则提供了查询工作区和机器、创建会话、继续对话、查看状态与历史等命令。把 CLI 放进 Dot 的工具箱，Dot 就有了一条联系这些执行者的路线。</p>
+<p><img src="/imgs/dot-lody-collaboration.svg" alt="Dot 在自身环境中使用 Lody CLI，协调已有机器上的 Agent；Codex Cloud 是按需选择的分支"></p>
+<p>例如，一个项目的代码和开发环境已经在本地机器上，Dot 可以通过 Lody 把任务交到那个环境中的 Agent。需要复核时，再由具备条件的会话接手检查。任务可以留在适合它的地方完成，我主要和 Dot 讨论目标、进展以及需要取舍的问题。</p>
+<p>遇到需要独立云端开发环境的工作，Dot 也可以创建 Codex Cloud 任务。这是另一条可选路线。Dot 自己的云电脑和 Codex 云任务分别准备工具与身份，某一端的安装和登录不会自然传到另一端。</p>
+<h2 id="我先把执行位置分清楚"><a href="#我先把执行位置分清楚" class="headerlink" title="我先把执行位置分清楚"></a>我先把执行位置分清楚</h2><p>让 Dot 使用 Lody，需要分别准备两端：Dot 的执行环境里有可用的 CLI 和登录身份，承担工作的机器上有已配置好的 Agent。前者负责发出指令、查看会话，后者在自己的环境中完成工作。</p>
+<p>具体安装与登录跟随 <span class="exturl" data-url="aHR0cHM6Ly9sb2R5LmFpL3poL2RvY3MvcXVpY2tzdGFydC8=">Lody 快速开始<i class="fa fa-external-link-alt"></i></span>。给 Dot 的第一项工作可以很简单：检查现有安装和登录，只读查看指定工作区里的机器、Agent 和会话。能找到正确的目标，再交一项输入清楚、结果容易核对的任务。凭证放在环境支持的安全配置中，不写进任务描述。</p>
+<p>环境重载后的检查也适合整理成一段简短指引：先看 CLI、登录和原会话是否可用，只补缺失部分，并沿保存的任务引用继续。这样接续工作时，才知道哪些已经做过，哪些还需要处理。</p>
+<h2 id="一个项目有人负责，协作才不会全堆在-Dot-身上"><a href="#一个项目有人负责，协作才不会全堆在-Dot-身上" class="headerlink" title="一个项目有人负责，协作才不会全堆在 Dot 身上"></a>一个项目有人负责，协作才不会全堆在 Dot 身上</h2><p>接通工具之后，所有细节都交给 Dot 盯着也不合适。多个项目一起推进时，它既要和我沟通，又要处理每个执行者的具体问题，很容易重新变成一个繁忙的消息转发站。</p>
+<p>所以，我把分工再往下放一层：<strong>Dot 沟通各项目负责人，项目负责人组织本项目的执行、复核和验收。</strong></p>
+<p>以一个功能修改为例：负责人先弄清预期行为和验收方式，再判断能否拆开。接口尚未确定，就先把接口讨论清楚；输入稳定、工作互不冲突的部分，再交给不同 Agent 并行。执行者提交变更和自检结果，复核者检查，负责人确认交付后向 Dot 回报。</p>
+<p>小改动不用走成一场会议。负责人可以自己处理，在同一轮里交代做了什么、检查了什么。只有需要交接、并行或后续恢复时，才把分工展开。</p>
+<p>角色库和协作规则也因此要分开：代码、设计、研究等角色描述专业能力；项目负责人、执行者、复核者描述本次工作中的责任。同一个 Agent 可以做不同的事，但每次都得知道结果交给谁。</p>
+<h2 id="大家看同一份进度，比多开几个会话更有用"><a href="#大家看同一份进度，比多开几个会话更有用" class="headerlink" title="大家看同一份进度，比多开几个会话更有用"></a>大家看同一份进度，比多开几个会话更有用</h2><p>跨会话协作最容易丢的，往往是最新进展。执行者在自己的对话里说完成了，负责人看到的还是上一版，Dot 又拿着另一份摘要。</p>
+<p>我把统一记录入口选在 GitHub Projects：看板用来了解当前有哪些任务、谁在做、卡在哪里、下一步是什么；详细要求和关键进展放在关联任务里，代码、文件和复核报告通过链接展开。</p>
+<p>我给这套协作约定的做法是：<strong>各角色开始工作、跟进和交接时，都先从同一个正式入口了解现状。</strong> 聊天里产生的新决定和新结果，再回到对应任务中。这样接手的人可以沿着记录找到上下文，不用翻完几个人的聊天历史。</p>
+<p>这也是我正在继续补齐的一环：看板创建好之后，还要接上任务、执行会话和结果回执。对已经运行的任务，补齐关联即可；不用为了换工具再做一遍。</p>
+<p>在此基础上，我又单独定义了流程审计职责，检查有没有任务漏记、状态与证据是否对得上、遗留问题有没有人接手。它和检查代码或音频质量的复核者分工不同，也不替项目负责人验收。审计只看已有看板还不够，得拿派发和执行记录回来对照，才能发现那些压根没入板的任务。</p>
+<h2 id="一次小测试，让我重新看待“完成”"><a href="#一次小测试，让我重新看待“完成”" class="headerlink" title="一次小测试，让我重新看待“完成”"></a>一次小测试，让我重新看待“完成”</h2><p>在一次云控制端通过 Lody 协作远端 Agent 的测试里，任务要求读取资料并生成一个小文件。第一次回合返回了 <code>completed</code>，实际回复却是 <code>DOWNLOAD_FAILED</code>：资料没有下载下来，文件也没有生成。</p>
+<p>如果只看状态，这项工作已经结束；看过回复才知道，目标根本还没完成。</p>
+<p>后续我们沿原会话补交资料，明确发起新回合，再核对回传的文件内容。这个过程让我更在意结果里有没有说清楚三件事：<strong>做了什么，交付在哪里，还有什么没检查。</strong></p>
+<p>代码测试通过，就报告测试通过；产物经过实际复核，再报告对应的检查结果。像音频这类文件，可以由具备条件的会话在产物所在机器上检查，把报告交给负责人，不必都搬到 Dot 那一端。</p>
+<p>请求超时也是类似的道理。没收到回复时，先沿原会话和任务引用查看，弄清事情做到哪里，再决定下一步。直接再派一遍，反而可能让两个执行者同时做同一件事。</p>
+<p>上面的案例验证的是云控制端与远端 Agent 的交接，并非一次由 Dot 全程发起的测试。这套协作方式是随着不同环节的实践逐步补齐的；记录好每一步，后面的接入和调整才有依据。</p>
+<p>我希望最终形成的日常工作方式是：我和 Dot 讨论目标与取舍，项目负责人安排工作，执行者交付可以检查的成果。需要了解进展时，打开共同的任务入口，就能顺着记录找到正在做的事，以及下一步该找谁。</p>
+<p>具体实现移步<span class="exturl" data-url="aHR0cHM6Ly9naXRodWIuY29tL0NGLUZFL215bWNwLTQtY29kZXhjbG91ZA==">这里<i class="fa fa-external-link-alt"></i></span>。</p>
+
+    </div>
+
+    
+    
+    
+
+      <footer class="post-footer">
+          <div class="post-tags">
+              <a href="/tags/AI-Agent/" rel="tag"># AI Agent</a>
+              <a href="/tags/Dot/" rel="tag"># Dot</a>
+              <a href="/tags/Lody/" rel="tag"># Lody</a>
+              <a href="/tags/Codex/" rel="tag"># Codex</a>
+              <a href="/tags/%E5%A4%9A%E6%99%BA%E8%83%BD%E4%BD%93%E5%8D%8F%E4%BD%9C/" rel="tag"># 多智能体协作</a>
+          </div>
+
+        
+
+
+        
+    <div class="post-nav">
+      <div class="post-nav-item">
+    <a href="/2026/08/10/2026-08-10-Docker%E9%83%A8%E7%BD%B2%E7%9A%84n8n%E4%BB%8E1.123.40%E5%8D%87%E7%BA%A7%E5%88%B02.33.7/" rel="prev" title="Docker 单容器升级实录：n8n 1.123.40 到 2.33.7（SQLite 备份与可回滚迁移）">
+      <i class="fa fa-chevron-left"></i> Docker 单容器升级实录：n8n 1.123.40 到 2.33.7（SQLite 备份与可回滚迁移）
+    </a></div>
+      <div class="post-nav-item"></div>
+    </div>
+      </footer>
+    
+  </article>
+  
+  
+  
+
+
+
+          </div>
+          
+    
+  <div class="comments">
+    <div id="lv-container" data-id="city" data-uid="MTAyMC81NDA1OS8zMDUzMQ=="></div>
+  </div>
+  
+
+<script>
+  window.addEventListener('tabs:register', () => {
+    let { activeClass } = CONFIG.comments;
+    if (CONFIG.comments.storage) {
+      activeClass = localStorage.getItem('comments_active') || activeClass;
+    }
+    if (activeClass) {
+      let activeTab = document.querySelector(`a[href="#comment-${activeClass}"]`);
+      if (activeTab) {
+        activeTab.click();
+      }
+    }
+  });
+  if (CONFIG.comments.storage) {
+    window.addEventListener('tabs:click', event => {
+      if (!event.target.matches('.tabs-comment .tab-content .tab-pane')) return;
+      let commentClass = event.target.classList[1];
+      localStorage.setItem('comments_active', commentClass);
+    });
+  }
+</script>
+
+        </div>
+          
+  
+  <div class="toggle sidebar-toggle">
+    <span class="toggle-line toggle-line-first"></span>
+    <span class="toggle-line toggle-line-middle"></span>
+    <span class="toggle-line toggle-line-last"></span>
+  </div>
+
+  <aside class="sidebar">
+    <div class="sidebar-inner">
+
+      <ul class="sidebar-nav motion-element">
+        <li class="sidebar-nav-toc">
+          Table of Contents
+        </li>
+        <li class="sidebar-nav-overview">
+          Overview
+        </li>
+      </ul>
+
+      <!--noindex-->
+      <div class="post-toc-wrap sidebar-panel">
+          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#Dot-%E7%AE%A1%E7%9B%AE%E6%A0%87%EF%BC%8CLody-%E8%BF%9E%E6%8E%A5%E6%89%A7%E8%A1%8C"><span class="nav-number">1.</span> <span class="nav-text">Dot 管目标，Lody 连接执行</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E6%88%91%E5%85%88%E6%8A%8A%E6%89%A7%E8%A1%8C%E4%BD%8D%E7%BD%AE%E5%88%86%E6%B8%85%E6%A5%9A"><span class="nav-number">2.</span> <span class="nav-text">我先把执行位置分清楚</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E4%B8%80%E4%B8%AA%E9%A1%B9%E7%9B%AE%E6%9C%89%E4%BA%BA%E8%B4%9F%E8%B4%A3%EF%BC%8C%E5%8D%8F%E4%BD%9C%E6%89%8D%E4%B8%8D%E4%BC%9A%E5%85%A8%E5%A0%86%E5%9C%A8-Dot-%E8%BA%AB%E4%B8%8A"><span class="nav-number">3.</span> <span class="nav-text">一个项目有人负责，协作才不会全堆在 Dot 身上</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%A4%A7%E5%AE%B6%E7%9C%8B%E5%90%8C%E4%B8%80%E4%BB%BD%E8%BF%9B%E5%BA%A6%EF%BC%8C%E6%AF%94%E5%A4%9A%E5%BC%80%E5%87%A0%E4%B8%AA%E4%BC%9A%E8%AF%9D%E6%9B%B4%E6%9C%89%E7%94%A8"><span class="nav-number">4.</span> <span class="nav-text">大家看同一份进度，比多开几个会话更有用</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E4%B8%80%E6%AC%A1%E5%B0%8F%E6%B5%8B%E8%AF%95%EF%BC%8C%E8%AE%A9%E6%88%91%E9%87%8D%E6%96%B0%E7%9C%8B%E5%BE%85%E2%80%9C%E5%AE%8C%E6%88%90%E2%80%9D"><span class="nav-number">5.</span> <span class="nav-text">一次小测试，让我重新看待“完成”</span></a></li></ol></div>
+      </div>
+      <!--/noindex-->
+
+      <div class="site-overview-wrap sidebar-panel">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+  <p class="site-author-name" itemprop="name">ghyghoo8</p>
+  <div class="site-description" itemprop="description">碎了一地...o(*￣︶￣*)o...</div>
+</div>
+<div class="site-state-wrap motion-element">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+          <a href="/archives/">
+        
+          <span class="site-state-item-count">29</span>
+          <span class="site-state-item-name">posts</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-categories">
+            <a href="/categories/">
+          
+        <span class="site-state-item-count">12</span>
+        <span class="site-state-item-name">categories</span></a>
+      </div>
+      <div class="site-state-item site-state-tags">
+            <a href="/tags/">
+          
+        <span class="site-state-item-count">61</span>
+        <span class="site-state-item-name">tags</span></a>
+      </div>
+  </nav>
+</div>
+
+
+
+      </div>
+
+    </div>
+  </aside>
+  <div id="sidebar-dimmer"></div>
+
+
+      </div>
+    </main>
+
+    <footer class="footer">
+      <div class="footer-inner">
+        
+
+        
+
+<div class="copyright">
+  
+  &copy; 
+  <span itemprop="copyrightYear">2026</span>
+  <span class="with-love">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">ghyghoo8</span>
+</div>
+  <div class="powered-by">Powered by <span class="exturl theme-link" data-url="aHR0cHM6Ly9oZXhvLmlv">Hexo</span> & <span class="exturl theme-link" data-url="aHR0cHM6Ly9waXNjZXMudGhlbWUtbmV4dC5vcmc=">NexT.Pisces</span>
+  </div>
+
+        
+
+
+
+
+
+
+
+
+      </div>
+    </footer>
+  </div>
+
+  
+  <script src="//cdn.jsdelivr.net/npm/animejs@3.1.0/lib/anime.min.js"></script>
+  <script src="/lib/velocity/velocity.min.js"></script>
+  <script src="/lib/velocity/velocity.ui.min.js"></script>
+
+<script src="/js/utils.js"></script>
+
+<script src="/js/motion.js"></script>
+
+
+<script src="/js/schemes/pisces.js"></script>
+
+
+<script src="/js/next-boot.js"></script>
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+  
+
+<script>
+NexT.utils.loadComments(document.querySelector('#lv-container'), () => {
+  window.livereOptions = {
+    refer: location.pathname.replace(CONFIG.root, '').replace('index.html', '')
+  };
+  (function(d, s) {
+    var j, e = d.getElementsByTagName(s)[0];
+    if (typeof LivereTower === 'function') { return; }
+    j = d.createElement(s);
+    j.src = 'https://cdn-city.livere.com/js/embed.dist.js';
+    j.async = true;
+    e.parentNode.insertBefore(j, e);
+  })(document, 'script');
+});
+</script>
+
+<!-- hexo injector body_end start -->
+<script src="/js/bot.js"></script>
+<div id="sakana-widget"></div><script>
+      function initSakanaWidget() {
+        // 默认自走模式
+        new SakanaWidget().mount('#sakana-widget').triggetAutoMode();
+      }
+    </script><script
+      async
+      onload="initSakanaWidget()"
+      src="https://cdn.jsdelivr.net/npm/sakana-widget@2.7.0/lib/sakana.min.js"
+    ></script><!-- hexo injector body_end end --></body>
+</html>
