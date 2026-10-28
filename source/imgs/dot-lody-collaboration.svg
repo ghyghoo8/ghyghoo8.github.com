@@ -1,31 +1,35 @@
-<svg xmlns="http://www.w3.org/2000/svg" width="1200" height="1010" viewBox="0 0 1200 1010" role="img" aria-labelledby="title desc">
-  <title id="title">Dot 与 Lody 协作流程</title>
-  <desc id="desc">从提出目标到 Dot 协调、Codex 云任务、按需使用 Lody 跨节点、执行者交付以及负责人验收的推荐流程。箭头表示项目约定，不表示所有环节已完成端到端验证。</desc>
+<svg xmlns="http://www.w3.org/2000/svg" width="1200" height="1200" viewBox="0 0 1200 1200" role="img" aria-labelledby="title desc">
+  <title id="title">Dot 安装并使用 Lody CLI 的协作流程</title>
+  <desc id="desc">Dot 接收目标后，可以在自己的云电脑安装并使用 Lody CLI，连接已有远端节点并接收结果；也可按需创建独立的 Codex 云任务。两条路线的结果交给负责人复核，Dot 汇总。图示为协作路线，不代表端到端自动运行已经验证。</desc>
   <defs>
-    <marker id="arrow" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M 0 0 L 10 5 L 0 10 z" fill="#8a9bad"/></marker>
-    <style>text{font-family:-apple-system,BlinkMacSystemFont,"PingFang SC","Microsoft YaHei",sans-serif}.heading{font-size:34px;font-weight:700;fill:#172b3d}.sub{font-size:20px;fill:#607487}.tag{font-size:17px;font-weight:700;fill:#2f6b83;letter-spacing:1px}.name{font-size:26px;font-weight:700;fill:#1e3446}.detail{font-size:20px;fill:#617587}.note{font-size:18px;fill:#5b7081}.link{stroke:#8a9bad;stroke-width:2.5;marker-end:url(#arrow)}</style>
+    <marker id="arrow" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="7" markerHeight="7" orient="auto"><path d="M0 0 L10 5 L0 10z" fill="#8397a7"/></marker>
+    <style>text{font-family:-apple-system,BlinkMacSystemFont,"PingFang SC","Microsoft YaHei",sans-serif}.heading{font-size:36px;font-weight:700;fill:#172b3d}.subtitle{font-size:21px;fill:#607487}.tag{font-size:17px;font-weight:700;letter-spacing:1px;fill:#2f6b83}.name{font-size:27px;font-weight:700;fill:#1e3446}.detail{font-size:20px;fill:#617587}.note{font-size:19px;fill:#5b7081}.link{stroke:#8397a7;stroke-width:3;fill:none;marker-end:url(#arrow)}</style>
   </defs>
-  <rect width="1200" height="1010" rx="24" fill="#f3f7f9"/>
-  <text x="90" y="76" class="heading">Dot + Lody：从目标到验收</text>
-  <text x="90" y="113" class="sub">一套项目协作路线 · 根据任务需要选择执行节点</text>
-  <g>
-    <rect x="90" y="153" width="1020" height="100" rx="14" fill="#fff" stroke="#dce7ec"/>
-    <text x="120" y="189" class="tag">01 目标</text><text x="120" y="224" class="name">提出需求</text><text x="350" y="224" class="detail">明确目标、授权范围与成功标准</text>
-    <path class="link" d="M600 253 V277"/>
-    <rect x="90" y="280" width="1020" height="100" rx="14" fill="#fff" stroke="#dce7ec"/>
-    <text x="120" y="316" class="tag">02 协调</text><text x="120" y="351" class="name">Dot</text><text x="350" y="351" class="detail">沟通目标，在本项目中发起独立云任务</text>
-    <path class="link" d="M600 380 V404"/>
-    <rect x="90" y="407" width="1020" height="100" rx="14" fill="#fff" stroke="#dce7ec"/>
-    <text x="120" y="443" class="tag">03 开发</text><text x="120" y="478" class="name">Codex 云任务</text><text x="350" y="478" class="detail">核对环境、输入版本、职责与执行范围</text>
-    <path class="link" d="M600 507 V531"/>
-    <rect x="90" y="534" width="1020" height="100" rx="14" fill="#e7f3f4" stroke="#c7e2e4"/>
-    <text x="120" y="570" class="tag">04 按需跨节点</text><text x="120" y="605" class="name">Lody</text><text x="350" y="605" class="detail">定位已有节点、派发任务并观察原会话</text>
-    <path class="link" d="M600 634 V658"/>
-    <rect x="90" y="661" width="1020" height="100" rx="14" fill="#fff" stroke="#dce7ec"/>
-    <text x="120" y="697" class="tag">05 执行</text><text x="120" y="732" class="name">执行者</text><text x="350" y="732" class="detail">交付产物、验证结果和未决事项</text>
-    <path class="link" d="M600 761 V785"/>
-    <rect x="90" y="788" width="1020" height="100" rx="14" fill="#fff" stroke="#dce7ec"/>
-    <text x="120" y="824" class="tag">06 验收</text><text x="120" y="859" class="name">负责人 → Dot</text><text x="350" y="859" class="detail">负责人复核验收，Dot 汇总结果</text>
-  </g>
-  <text x="90" y="940" class="note">图示为项目约定的推荐路线；Lody 按需使用，实际验证范围见文中案例。</text>
+  <rect width="1200" height="1200" rx="24" fill="#f3f7f9"/>
+  <text x="78" y="78" class="heading">Dot + Lody：从目标到验收</text>
+  <text x="78" y="116" class="subtitle">Dot 直接使用 Lody CLI；Codex 云任务按需独立开展</text>
+  <rect x="78" y="155" width="1044" height="100" rx="15" fill="#fff" stroke="#dce7ec"/>
+  <text x="110" y="193" class="tag">目标</text><text x="110" y="229" class="name">提出需求</text><text x="358" y="229" class="detail">明确目标、授权范围与验收标准</text>
+  <path class="link" d="M600 255 V292"/>
+  <rect x="78" y="296" width="1044" height="118" rx="15" fill="#e7f3f4" stroke="#c7e2e4"/>
+  <text x="110" y="334" class="tag">协调与派发</text><text x="110" y="371" class="name">Dot 云电脑</text><text x="358" y="371" class="detail">安装并使用 Lody CLI，管理协作任务</text>
+  <path class="link" d="M340 414 V474"/>
+  <path class="link" d="M860 414 V474"/>
+  <rect x="78" y="478" width="510" height="164" rx="15" fill="#fff" stroke="#dce7ec"/>
+  <text x="110" y="519" class="tag">主要路线</text><text x="110" y="560" class="name">Lody 协作节点</text>
+  <text x="110" y="597" class="detail">选择已授权的工作区、机器与 Agent</text>
+  <rect x="612" y="478" width="510" height="164" rx="15" fill="#fff" stroke="#dce7ec"/>
+  <text x="644" y="519" class="tag">按需选择</text><text x="644" y="560" class="name">Codex 云任务</text>
+  <text x="644" y="597" class="detail">在独立环境中完成开发任务</text>
+  <path class="link" d="M333 642 V705"/>
+  <path class="link" d="M867 642 V705"/>
+  <rect x="78" y="709" width="510" height="140" rx="15" fill="#fff" stroke="#dce7ec"/>
+  <text x="110" y="750" class="tag">执行与回传</text><text x="110" y="791" class="name">远端 Agent</text><text x="110" y="823" class="detail">返回任务结果、产物与会话引用</text>
+  <rect x="612" y="709" width="510" height="140" rx="15" fill="#fff" stroke="#dce7ec"/>
+  <text x="644" y="750" class="tag">执行与回传</text><text x="644" y="791" class="name">云任务执行者</text><text x="644" y="823" class="detail">返回变更、检查结果和产物</text>
+  <path class="link" d="M333 849 V899 H600 V928"/>
+  <path class="link" d="M867 849 V899 H600 V928"/>
+  <rect x="78" y="932" width="1044" height="110" rx="15" fill="#fff" stroke="#dce7ec"/>
+  <text x="110" y="972" class="tag">验收</text><text x="110" y="1010" class="name">负责人复核 → Dot 汇总</text><text x="610" y="1010" class="detail">按实际结果和证据报告</text>
+  <text x="78" y="1110" class="note">图示为协作路线；各执行位置、身份与验证范围分别确认。</text>
 </svg>
