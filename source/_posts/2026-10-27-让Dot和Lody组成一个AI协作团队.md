@@ -40,6 +40,21 @@ tags:
 
 一个会话链接可以帮助定位对象，但它不会自动带来完整聊天历史、对方机器上的文件或对外服务权限。同样，两台机器都出现 `/workspace`，也不意味着它们共享同一份文件。
 
+## 让 Dot 通过 Codex 云环境使用 Lody
+
+我们的做法是先准备好 Codex 云环境，再让 Dot 用它创建一项云任务。云任务根据需要通过 Lody CLI 联系已有执行节点，结果沿原任务回传给 Dot。
+
+这条协作路线可参考前面的流程图。
+
+准备时，在 Codex 云环境中配置仓库、依赖与网络，并通过环境变量提供 Lody CLI 所需的凭证。我们使用 `LODY_CLI_TOKEN` 这个变量名，它是本项目的约定：**变量存在不等于 CLI 已登录**。任务需要在已有授权范围内复用有效身份或显式完成认证；凭证不要放进聊天、仓库或共享快照。
+
+Codex 的直接环境变量会传给程序；网络密钥则由代理向允许的 HTTPS 目标替换占位符。若 CLI 需要直接读取真实凭证，不能未经验证把网络密钥占位符当作有效登录材料。具体配置见 [Codex 云环境文档](https://learn.chatgpt.com/docs/environments/cloud-environments#configure-environment-variables-and-network-secrets)。
+
+云任务准备好 CLI 和身份后，按实际授权选择 Lody 工作区、机器和 Agent 配置；执行节点还要具备运行进程及模型凭证。首次接入可参考 [Lody 快速开始](https://lody.ai/zh/docs/quickstart/) 和 [CLI 文档](https://lody.ai/zh/docs/cli/)，具体操作以当次版本帮助为准。派发后保留原生会话和回合引用，核对任务结果与产物，再交由 Dot 汇总和负责人验收。
+
+这里的 CLI 运行在 **Codex 云任务**中，不能因此推断 Dot 自己的云电脑也已完成安装或登录。我们已验证过云控制端经 Lody 协作远端并回传产物；这项验证与 Dot 协调云任务的记录属于不同片段，并不证明完整链路已经自动闭环。
+
+
 ## 一次任务怎样从目标走到验收
 
 ### 1. 把目标写成可验证的任务
@@ -143,8 +158,9 @@ Lody 会话及回合引用（如使用）：
 
 ## 参考资料
 
-- [项目仓库：mymcp-4-codexcloud](https://github.com/CF-FE/mymcp-4-codexcloud)
 - [OpenAI：Delegate ongoing work to your dot](https://learn.chatgpt.com/docs/whats-new/september-28-october-2-2026#delegate-ongoing-work-to-your-dot)
 - [Lody 官方文档](https://lody.ai/zh/docs/)
 
 文中的实践案例依据项目内部验收记录整理，已去除机器、会话与业务标识；记录中的不同验证片段分别表述，未将它们合并为一次完整的端到端实测。
+
+具体实现移步[这里](https://github.com/CF-FE/mymcp-4-codexcloud)。
