@@ -1,0 +1,56 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1200" height="1120" viewBox="0 0 1200 1120" role="img" aria-labelledby="title desc">
+<title id="title">机器控制与消息交接，分成两条路径</title><desc id="desc">机器控制路径：项目负责人经 Herdr 选择明确目标，通过 SSH 直连执行机 Agent。消息交接路径：获准云端客户端、任务信箱和本地协调桥传递任务与结果，再由项目负责人显式承接。信箱不自动启动 Agent。首版接入器只覆盖本地已有 Agent。</desc>
+<defs><marker id="arrow" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M0 0L10 5L0 10Z" fill="context-stroke"/></marker></defs>
+<style>text{font-family:"PingFang SC","Microsoft YaHei","Noto Sans CJK SC",sans-serif}</style>
+<rect x="0" y="0" width="1200" height="1120" rx="0" fill="#f4f7f8"/>
+<text x="56" y="56" font-size="21" fill="#166c68" font-weight="650" text-anchor="start">02 / AGENT COLLABORATION</text>
+<text x="56" y="113" font-size="43" fill="#173047" font-weight="700" text-anchor="start">机器控制与消息交接，分成两条路径</text>
+<text x="56" y="154" font-size="25" fill="#516475" font-weight="400" text-anchor="start">两条路径配合工作，各自回答不同的问题。</text>
+<rect x="48" y="195" width="1104" height="335" rx="18" fill="white" stroke="#d5e0e5" stroke-width="1.5"/>
+<text x="78" y="243" font-size="31" fill="#365cad" font-weight="650" text-anchor="start">A  机器控制：怎样联系执行者？</text>
+<rect x="78" y="284" width="225" height="123" rx="18" fill="#f2f5fb" stroke="#d5e0e5" stroke-width="1.5"/>
+<rect x="78" y="301" width="5" height="89" rx="2" fill="#365cad"/>
+<text x="103" y="328" font-size="29" fill="#365cad" font-weight="650" text-anchor="start">项目负责人</text>
+<text x="103" y="367" font-size="25" fill="#516475" font-weight="400" text-anchor="start">决定任务与目标</text>
+<rect x="351" y="284" width="225" height="123" rx="18" fill="#f2f5fb" stroke="#d5e0e5" stroke-width="1.5"/>
+<rect x="351" y="301" width="5" height="89" rx="2" fill="#365cad"/>
+<text x="376" y="328" font-size="29" fill="#365cad" font-weight="650" text-anchor="start">Herdr</text>
+<text x="376" y="367" font-size="25" fill="#516475" font-weight="400" text-anchor="start">找到明确会话</text>
+<rect x="624" y="284" width="225" height="123" rx="18" fill="#f2f5fb" stroke="#d5e0e5" stroke-width="1.5"/>
+<rect x="624" y="301" width="5" height="89" rx="2" fill="#365cad"/>
+<text x="649" y="328" font-size="29" fill="#365cad" font-weight="650" text-anchor="start">SSH 直连</text>
+<text x="649" y="367" font-size="25" fill="#516475" font-weight="400" text-anchor="start">建立远程连接</text>
+<rect x="897" y="284" width="225" height="123" rx="18" fill="#f2f5fb" stroke="#d5e0e5" stroke-width="1.5"/>
+<rect x="897" y="301" width="5" height="89" rx="2" fill="#365cad"/>
+<text x="922" y="328" font-size="29" fill="#365cad" font-weight="650" text-anchor="start">执行端 Agent</text>
+<text x="922" y="367" font-size="25" fill="#516475" font-weight="400" text-anchor="start">处理具体工作</text>
+<path d="M 309 346 H 343" fill="none" stroke="#365cad" stroke-width="3" stroke-linejoin="round" stroke-linecap="round" marker-end="url(#arrow)"/>
+<path d="M 582 346 H 616" fill="none" stroke="#365cad" stroke-width="3" stroke-linejoin="round" stroke-linecap="round" marker-end="url(#arrow)"/>
+<path d="M 855 346 H 889" fill="none" stroke="#365cad" stroke-width="3" stroke-linejoin="round" stroke-linecap="round" marker-end="url(#arrow)"/>
+<text x="78" y="465" font-size="26" fill="#516475" font-weight="400" text-anchor="start">远端机器控制沿 SSH 直连；不经任务信箱中转。</text>
+<rect x="48" y="562" width="1104" height="335" rx="18" fill="white" stroke="#d5e0e5" stroke-width="1.5"/>
+<text x="78" y="610" font-size="31" fill="#166c68" font-weight="650" text-anchor="start">B  消息交接：任务与结果怎样留存？</text>
+<rect x="78" y="652" width="225" height="123" rx="18" fill="#eef6f4" stroke="#d5e0e5" stroke-width="1.5"/>
+<rect x="78" y="669" width="5" height="89" rx="2" fill="#166c68"/>
+<text x="103" y="696" font-size="29" fill="#166c68" font-weight="650" text-anchor="start">云端客户端</text>
+<text x="103" y="735" font-size="25" fill="#516475" font-weight="400" text-anchor="start">按权限收发</text>
+<rect x="351" y="652" width="225" height="123" rx="18" fill="#eef6f4" stroke="#d5e0e5" stroke-width="1.5"/>
+<rect x="351" y="669" width="5" height="89" rx="2" fill="#166c68"/>
+<text x="376" y="696" font-size="29" fill="#166c68" font-weight="650" text-anchor="start">任务信箱</text>
+<text x="376" y="735" font-size="25" fill="#516475" font-weight="400" text-anchor="start">保存任务与结果</text>
+<rect x="624" y="652" width="225" height="123" rx="18" fill="#eef6f4" stroke="#d5e0e5" stroke-width="1.5"/>
+<rect x="624" y="669" width="5" height="89" rx="2" fill="#166c68"/>
+<text x="649" y="696" font-size="29" fill="#166c68" font-weight="650" text-anchor="start">本地协调桥</text>
+<text x="649" y="735" font-size="25" fill="#516475" font-weight="400" text-anchor="start">收件与补传</text>
+<rect x="897" y="652" width="225" height="123" rx="18" fill="#eef6f4" stroke="#d5e0e5" stroke-width="1.5"/>
+<rect x="897" y="669" width="5" height="89" rx="2" fill="#166c68"/>
+<text x="922" y="696" font-size="29" fill="#166c68" font-weight="650" text-anchor="start">项目负责人</text>
+<text x="922" y="735" font-size="25" fill="#516475" font-weight="400" text-anchor="start">显式承接任务</text>
+<path d="M 309 714 H 343" fill="none" stroke="#166c68" stroke-width="3" stroke-linejoin="round" stroke-linecap="round" marker-end="url(#arrow)" marker-start="url(#arrow)"/>
+<path d="M 582 714 H 616" fill="none" stroke="#166c68" stroke-width="3" stroke-linejoin="round" stroke-linecap="round" marker-end="url(#arrow)" marker-start="url(#arrow)"/>
+<path d="M 855 714 H 889" fill="none" stroke="#166c68" stroke-width="3" stroke-linejoin="round" stroke-linecap="round" marker-end="url(#arrow)" stroke-dasharray="8 7"/>
+<text x="78" y="832" font-size="26" fill="#516475" font-weight="400" text-anchor="start">收到消息只说明交接发生；不会自动启动 Agent。</text>
+<rect x="56" y="943" width="1088" height="99" rx="12" fill="#e8eff3"/>
+<text x="78" y="982" font-size="25" fill="#516475" font-weight="400" text-anchor="start">本地显式执行：负责人 → 接入器 → Herdr → 已有 Agent。</text>
+<text x="78" y="1017" font-size="25" fill="#516475" font-weight="400" text-anchor="start">首版接入器只覆盖本地目标；远端与云端能力仍须分别验证。</text>
+</svg>

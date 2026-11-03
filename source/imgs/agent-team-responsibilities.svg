@@ -1,0 +1,39 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1200" height="1000" viewBox="0 0 1200 1000" role="img" aria-labelledby="title desc">
+<title id="title">一件事，四种职责</title><desc id="desc">使用者确定目标；总协调统筹多个项目；项目负责人拆解和安排工作；执行者完成交付。目标向下传递，结果、问题和风险向上回报。图为职责示意。</desc>
+<defs><marker id="arrow" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M0 0L10 5L0 10Z" fill="context-stroke"/></marker></defs>
+<style>text{font-family:"PingFang SC","Microsoft YaHei","Noto Sans CJK SC",sans-serif}</style>
+<rect x="0" y="0" width="1200" height="1000" rx="0" fill="#f4f7f8"/>
+<text x="56" y="56" font-size="21" fill="#166c68" font-weight="650" text-anchor="start">01 / AGENT COLLABORATION</text>
+<text x="56" y="113" font-size="43" fill="#173047" font-weight="700" text-anchor="start">一件事，四种职责</text>
+<text x="56" y="154" font-size="25" fill="#516475" font-weight="400" text-anchor="start">先分清谁定目标、谁安排工作、谁交付成果。</text>
+<rect x="80" y="200" width="850" height="120" rx="18" fill="white" stroke="#d5e0e5" stroke-width="1.5"/>
+<rect x="80" y="217" width="5" height="86" rx="2" fill="#173047"/>
+<text x="105" y="244" font-size="31" fill="#173047" font-weight="650" text-anchor="start">使用者</text>
+<text x="105" y="283" font-size="25" fill="#516475" font-weight="400" text-anchor="start">确定目标、范围、预算和验收标准</text>
+<text x="888" y="249" font-size="24" fill="#516475" font-weight="600" text-anchor="end">01</text>
+<path d="M 505 325 V 366" fill="none" stroke="#166c68" stroke-width="3" stroke-linejoin="round" stroke-linecap="round" marker-end="url(#arrow)"/>
+<rect x="80" y="375" width="850" height="120" rx="18" fill="white" stroke="#d5e0e5" stroke-width="1.5"/>
+<rect x="80" y="392" width="5" height="86" rx="2" fill="#166c68"/>
+<text x="105" y="419" font-size="31" fill="#166c68" font-weight="650" text-anchor="start">总协调</text>
+<text x="105" y="458" font-size="25" fill="#516475" font-weight="400" text-anchor="start">统筹各项目的优先级、依赖与整体进度</text>
+<text x="888" y="424" font-size="24" fill="#516475" font-weight="600" text-anchor="end">02</text>
+<path d="M 505 500 V 541" fill="none" stroke="#166c68" stroke-width="3" stroke-linejoin="round" stroke-linecap="round" marker-end="url(#arrow)"/>
+<rect x="80" y="550" width="850" height="120" rx="18" fill="white" stroke="#d5e0e5" stroke-width="1.5"/>
+<rect x="80" y="567" width="5" height="86" rx="2" fill="#166c68"/>
+<text x="105" y="594" font-size="31" fill="#166c68" font-weight="650" text-anchor="start">项目负责人</text>
+<text x="105" y="633" font-size="25" fill="#516475" font-weight="400" text-anchor="start">拆任务、选环境、安排执行与复核</text>
+<text x="888" y="599" font-size="24" fill="#516475" font-weight="600" text-anchor="end">03</text>
+<path d="M 505 675 V 716" fill="none" stroke="#166c68" stroke-width="3" stroke-linejoin="round" stroke-linecap="round" marker-end="url(#arrow)"/>
+<rect x="80" y="725" width="850" height="120" rx="18" fill="white" stroke="#d5e0e5" stroke-width="1.5"/>
+<rect x="80" y="742" width="5" height="86" rx="2" fill="#365cad"/>
+<text x="105" y="769" font-size="31" fill="#365cad" font-weight="650" text-anchor="start">执行者</text>
+<text x="105" y="808" font-size="25" fill="#516475" font-weight="400" text-anchor="start">在合适的环境里工作，带着成果与自检回报</text>
+<text x="888" y="774" font-size="24" fill="#516475" font-weight="600" text-anchor="end">04</text>
+<path d="M 935 785 H 1130 V 260 H 940" fill="none" stroke="#365cad" stroke-width="3" stroke-linejoin="round" stroke-linecap="round" marker-end="url(#arrow)" stroke-dasharray="8 7"/>
+<text x="1025" y="470" font-size="28" fill="#365cad" font-weight="600" text-anchor="middle">结果</text>
+<text x="1025" y="515" font-size="28" fill="#365cad" font-weight="600" text-anchor="middle">问题</text>
+<text x="1025" y="560" font-size="28" fill="#365cad" font-weight="600" text-anchor="middle">风险</text>
+<text x="1025" y="622" font-size="24" fill="#516475" font-weight="400" text-anchor="middle">向上回报</text>
+<rect x="56" y="910" width="1088" height="64" rx="12" fill="#e8eff3"/>
+<text x="78" y="949" font-size="25" fill="#516475" font-weight="400" text-anchor="start">这些是任务职责；一个 Agent 可以兼任，小任务可以直接完成。</text>
+</svg>
