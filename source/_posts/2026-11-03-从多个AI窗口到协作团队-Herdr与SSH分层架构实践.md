@@ -17,11 +17,19 @@ tags:
 
 <!-- more -->
 
+## Super-agent：一个助手，怎样同时跟进几件事？
+
+在 DeepSeek 的 [Super-agent 设计](https://zhuanlan.zhihu.com/p/2099987320443237060)里，用户可以一直找同一个助手办事。背后有两层分工：**Router（协调层）**判断该不该接新任务、该派给谁；**Worker（执行层）**各自在自己的会话里做一件事。一个 Worker 忙着写脚本，另一个仍能回答报名页的问题。[公开研究原型与执行设计](https://github.com/deepseek-ai/dsh-superagent-prototype/blob/main/docs/003-execution.md)
+
+[![双层 Agent 示意：Router 把报名页和脚本分给不同 Worker；原页面讨论里的追问回到页面任务，两个任务的结果各自回到原讨论。](/imgs/super-agent-router-workers.svg)](/imgs/super-agent-router-workers.svg)
+
+关键在第二句话。最初说“准备报名页和脚本”，需要分工；后来在页面讨论里问“现在能录屏了吗？”，就让原任务查定稿记录。追问能带来新信息，但不会自动授予录制或发布权限。[原型中的任务与订阅](https://github.com/deepseek-ai/dsh-superagent-prototype/blob/main/docs/001-domain.md)
+
 ## 一张图看懂谁做决定
 
 [![职责总览：云端Dot 对接用户，Mac 协调员登记并跟进请求，项目负责人安排执行和验收，Worker 使用获准的环境与资料。](/imgs/super-agent-architecture-20261103.svg)](/imgs/super-agent-architecture-20261103.svg)
 
-这点受 DeepSeek [Super-agent 设计文章](https://zhuanlan.zhihu.com/p/2099987320443237060)启发。结合作者的[公开原型](https://github.com/deepseek-ai/dsh-superagent-prototype)，我借鉴的是：新任务要有人分派，后续消息要能找到原来接手的人。能在一个窗口做完的小事，仍然直接做。
+在我们的项目里，“双层”说的是职责，不要求恰好运行两个模型。云端Dot 选择项目，项目负责人决定怎么做；Mac 协调员记下请求，找到现任负责人，再把答复带回来。Herdr 和 SSH 提供执行通道。
 
 ## 协调员怎么找到对的人？
 
@@ -63,6 +71,6 @@ tags:
 
 这张表引用项目维护与部署记录。一次 Mac 合成任务走通，不等于最后一行也通过。
 
-**20 分钟分享顺序：** 3 分钟看职责总览 → 5 分钟对照两条路径 → 7 分钟用录屏案例区分联络、解阻和交付 → 5 分钟看验证表，讨论“还差哪份证据”。
+**20 分钟分享顺序：** 4 分钟讲双层分工与项目角色 → 4 分钟对照两条路径 → 7 分钟用录屏案例区分联络、解阻和交付 → 5 分钟看验证表，讨论“还差哪份证据”。
 
 *资料说明：知乎原文直读受限，设计细节以作者公开原型核对。云环境用法见 [OpenAI 官方文档](https://learn.chatgpt.com/docs/environments/cloud-environments)。*
