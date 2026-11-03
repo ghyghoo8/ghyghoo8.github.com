@@ -1,0 +1,38 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1080" height="690" viewBox="0 0 1080 690" role="img" aria-labelledby="title desc"><title id="title">接手、失联、交还：谁负责下一步？</title><desc id="desc">生命周期设计：宿主开通和恢复协调入口，台账记住未完请求；现任负责人须有任命并接清原有任务与写权；Worker 按任务授权创建或复用，派工和验收分别留证，结束后交还写权。失联应查原记录，不自动换人或重派。</desc><style>text{font-family:"PingFang SC","Microsoft YaHei","Noto Sans CJK SC",sans-serif}</style><defs><marker id="a0" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse"><path d="M0 0 L10 5 L0 10Z" fill="#14665f"/></marker><marker id="a1" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse"><path d="M0 0 L10 5 L0 10Z" fill="#305d9d"/></marker><marker id="a2" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse"><path d="M0 0 L10 5 L0 10Z" fill="#506474"/></marker><marker id="a3" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse"><path d="M0 0 L10 5 L0 10Z" fill="#855921"/></marker></defs>
+<rect x="0" y="0" width="1080" height="690" rx="0" fill="#f4f7f8" stroke="none" stroke-width="1.7"/>
+<text x="42" y="50" font-size="20" font-weight="650" fill="#14665f" text-anchor="start">协作手册  /  01</text>
+<text x="42" y="105" font-size="40" font-weight="710" fill="#173047" text-anchor="start">接手、失联、交还：谁负责下一步？</text>
+<text x="42" y="149" font-size="24" font-weight="430" fill="#506474" text-anchor="start">读图方向：每行是一种角色，从进入岗位读到退出或恢复。</text>
+<rect x="42" y="198" width="996" height="110" rx="12" fill="white" stroke="#cddbdc" stroke-width="1.7"/>
+<text x="65" y="262" font-size="31" font-weight="660" fill="#14665f" text-anchor="start">协调员</text>
+<rect x="211" y="222" width="214" height="62" rx="12" fill="#e9f3f1" stroke="none" stroke-width="1.7"/>
+<text x="318" y="263" font-size="24" font-weight="520" fill="#173047" text-anchor="middle">宿主开通入口</text>
+<path d="M 434 253 H 475" stroke="#14665f" stroke-width="3" fill="none" stroke-linecap="round" stroke-linejoin="round" marker-end="url(#a0)"/>
+<rect x="485" y="222" width="214" height="62" rx="12" fill="#e9f3f1" stroke="none" stroke-width="1.7"/>
+<text x="592" y="263" font-size="24" font-weight="520" fill="#173047" text-anchor="middle">台账记录待办</text>
+<path d="M 708 253 H 749" stroke="#14665f" stroke-width="3" fill="none" stroke-linecap="round" stroke-linejoin="round" marker-end="url(#a0)"/>
+<rect x="759" y="222" width="214" height="62" rx="12" fill="#e9f3f1" stroke="none" stroke-width="1.7"/>
+<text x="866" y="263" font-size="24" font-weight="520" fill="#173047" text-anchor="middle">恢复原请求</text>
+<rect x="42" y="332" width="996" height="110" rx="12" fill="white" stroke="#cddbdc" stroke-width="1.7"/>
+<text x="65" y="396" font-size="31" font-weight="660" fill="#305d9d" text-anchor="start">负责人</text>
+<rect x="211" y="356" width="214" height="62" rx="12" fill="#f0f4f9" stroke="none" stroke-width="1.7"/>
+<text x="318" y="397" font-size="24" font-weight="520" fill="#173047" text-anchor="middle">核实有效任命</text>
+<path d="M 434 387 H 475" stroke="#305d9d" stroke-width="3" fill="none" stroke-linecap="round" stroke-linejoin="round" marker-end="url(#a1)"/>
+<rect x="485" y="356" width="214" height="62" rx="12" fill="#f0f4f9" stroke="none" stroke-width="1.7"/>
+<text x="592" y="397" font-size="24" font-weight="520" fill="#173047" text-anchor="middle">接清在途与写权</text>
+<path d="M 708 387 H 749" stroke="#305d9d" stroke-width="3" fill="none" stroke-linecap="round" stroke-linejoin="round" marker-end="url(#a1)"/>
+<rect x="759" y="356" width="214" height="62" rx="12" fill="#f0f4f9" stroke="none" stroke-width="1.7"/>
+<text x="866" y="397" font-size="24" font-weight="520" fill="#173047" text-anchor="middle">交还或换任</text>
+<rect x="42" y="466" width="996" height="110" rx="12" fill="white" stroke="#cddbdc" stroke-width="1.7"/>
+<text x="65" y="530" font-size="31" font-weight="660" fill="#305d9d" text-anchor="start">Worker</text>
+<rect x="211" y="490" width="214" height="62" rx="12" fill="#f0f4f9" stroke="none" stroke-width="1.7"/>
+<text x="318" y="531" font-size="24" font-weight="520" fill="#173047" text-anchor="middle">按任务选用</text>
+<path d="M 434 521 H 475" stroke="#305d9d" stroke-width="3" fill="none" stroke-linecap="round" stroke-linejoin="round" marker-end="url(#a1)"/>
+<rect x="485" y="490" width="214" height="62" rx="12" fill="#f0f4f9" stroke="none" stroke-width="1.7"/>
+<text x="592" y="531" font-size="24" font-weight="520" fill="#173047" text-anchor="middle">执行并交产物</text>
+<path d="M 708 521 H 749" stroke="#305d9d" stroke-width="3" fill="none" stroke-linecap="round" stroke-linejoin="round" marker-end="url(#a1)"/>
+<rect x="759" y="490" width="214" height="62" rx="12" fill="#f0f4f9" stroke="none" stroke-width="1.7"/>
+<text x="866" y="531" font-size="24" font-weight="520" fill="#173047" text-anchor="middle">交还写权</text>
+<rect x="42" y="608" width="996" height="56" rx="12" fill="#f9efdc" stroke="none" stroke-width="1.7"/>
+<text x="63" y="645" font-size="24" font-weight="430" fill="#855921" text-anchor="start">联系不上 ≠ 岗位空缺。先查原记录；换人须有任命、交接和写权依据。</text>
+</svg>

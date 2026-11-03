@@ -1,0 +1,43 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1080" height="860" viewBox="0 0 1080 860" role="img" aria-labelledby="title desc"><title id="title">问一个问题，还是让机器执行？</title><desc id="desc">上半图是同一只读请求的目标往返：云端Dot 通过信箱和 Mac 桥交付，协调员核实来源并联系现任负责人，负责人答复按原请求返回，云端Dot 读准确版本。消息路径的完整业务验证与单段收发分开。下半图是 Herdr 经 SSH 直连远端执行机的控制路径。</desc><style>text{font-family:"PingFang SC","Microsoft YaHei","Noto Sans CJK SC",sans-serif}</style><defs><marker id="a0" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse"><path d="M0 0 L10 5 L0 10Z" fill="#14665f"/></marker><marker id="a1" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse"><path d="M0 0 L10 5 L0 10Z" fill="#305d9d"/></marker><marker id="a2" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse"><path d="M0 0 L10 5 L0 10Z" fill="#506474"/></marker><marker id="a3" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse"><path d="M0 0 L10 5 L0 10Z" fill="#855921"/></marker></defs>
+<rect x="0" y="0" width="1080" height="860" rx="0" fill="#f4f7f8" stroke="none" stroke-width="1.7"/>
+<text x="42" y="50" font-size="20" font-weight="650" fill="#14665f" text-anchor="start">协作手册  /  02</text>
+<text x="42" y="105" font-size="40" font-weight="710" fill="#173047" text-anchor="start">问一个问题，还是让机器执行？</text>
+<rect x="42" y="145" width="996" height="470" rx="12" fill="white" stroke="#cddbdc" stroke-width="1.7"/>
+<text x="67" y="192" font-size="29" font-weight="680" fill="#14665f" text-anchor="start">A  只读联络：同一请求去，同一请求回</text>
+<text x="67" y="225" font-size="22" font-weight="430" fill="#506474" text-anchor="start">下图为目标顺序，真实负责人往返尚待验证。</text>
+<rect x="57" y="254" width="196" height="55" rx="12" fill="#e9f3f1" stroke="none" stroke-width="1.7"/>
+<text x="155" y="290" font-size="25" font-weight="620" fill="#173047" text-anchor="middle">云端Dot</text>
+<path d="M 155 316 V 576" stroke="#506474" stroke-width="2" fill="none" stroke-linecap="round" stroke-linejoin="round" stroke-dasharray="7 7"/>
+<rect x="311" y="254" width="196" height="55" rx="12" fill="#e9f3f1" stroke="none" stroke-width="1.7"/>
+<text x="409" y="290" font-size="25" font-weight="620" fill="#173047" text-anchor="middle">信箱＋Mac 桥</text>
+<path d="M 409 316 V 576" stroke="#506474" stroke-width="2" fill="none" stroke-linecap="round" stroke-linejoin="round" stroke-dasharray="7 7"/>
+<rect x="569" y="254" width="196" height="55" rx="12" fill="#e9f3f1" stroke="none" stroke-width="1.7"/>
+<text x="667" y="290" font-size="25" font-weight="620" fill="#173047" text-anchor="middle">Mac 协调员</text>
+<path d="M 667 316 V 576" stroke="#506474" stroke-width="2" fill="none" stroke-linecap="round" stroke-linejoin="round" stroke-dasharray="7 7"/>
+<rect x="821" y="254" width="196" height="55" rx="12" fill="#e9f3f1" stroke="none" stroke-width="1.7"/>
+<text x="919" y="290" font-size="25" font-weight="620" fill="#173047" text-anchor="middle">现任负责人</text>
+<path d="M 919 316 V 576" stroke="#506474" stroke-width="2" fill="none" stroke-linecap="round" stroke-linejoin="round" stroke-dasharray="7 7"/>
+<text x="282" y="341" font-size="21" font-weight="520" fill="#14665f" text-anchor="middle">提交原请求</text>
+<path d="M 157 351 H 405" stroke="#14665f" stroke-width="3" fill="none" stroke-linecap="round" stroke-linejoin="round" marker-end="url(#a0)"/>
+<text x="538" y="386" font-size="21" font-weight="520" fill="#14665f" text-anchor="middle">交付完整请求</text>
+<path d="M 411 396 H 663" stroke="#14665f" stroke-width="3" fill="none" stroke-linecap="round" stroke-linejoin="round" marker-end="url(#a0)"/>
+<text x="793" y="431" font-size="21" font-weight="520" fill="#14665f" text-anchor="middle">核任职后联系</text>
+<path d="M 669 441 H 915" stroke="#14665f" stroke-width="3" fill="none" stroke-linecap="round" stroke-linejoin="round" marker-end="url(#a0)"/>
+<text x="793" y="476" font-size="21" font-weight="520" fill="#305d9d" text-anchor="middle">给出可核对的答复</text>
+<path d="M 917 486 H 671" stroke="#305d9d" stroke-width="3" fill="none" stroke-linecap="round" stroke-linejoin="round" marker-end="url(#a1)"/>
+<text x="538" y="521" font-size="21" font-weight="520" fill="#305d9d" text-anchor="middle">沿原请求回传</text>
+<path d="M 665 531 H 413" stroke="#305d9d" stroke-width="3" fill="none" stroke-linecap="round" stroke-linejoin="round" marker-end="url(#a1)"/>
+<text x="282" y="566" font-size="21" font-weight="520" fill="#305d9d" text-anchor="middle">读回指定结果</text>
+<path d="M 407 576 H 159" stroke="#305d9d" stroke-width="3" fill="none" stroke-linecap="round" stroke-linejoin="round" marker-end="url(#a1)"/>
+<rect x="42" y="642" width="996" height="174" rx="12" fill="white" stroke="#cddbdc" stroke-width="1.7"/>
+<text x="67" y="686" font-size="29" font-weight="660" fill="#305d9d" text-anchor="start">B  机器控制：负责人选择一个明确的执行目标</text>
+<rect x="68" y="716" width="212" height="70" rx="12" fill="#f0f4f9" stroke="none" stroke-width="1.7"/>
+<text x="174" y="760" font-size="27" font-weight="600" fill="#173047" text-anchor="middle">项目负责人</text>
+<rect x="378" y="716" width="212" height="70" rx="12" fill="#f0f4f9" stroke="none" stroke-width="1.7"/>
+<text x="484" y="760" font-size="27" font-weight="600" fill="#173047" text-anchor="middle">Herdr</text>
+<rect x="797" y="716" width="212" height="70" rx="12" fill="#f0f4f9" stroke="none" stroke-width="1.7"/>
+<text x="903" y="760" font-size="27" font-weight="600" fill="#173047" text-anchor="middle">远端 Worker</text>
+<path d="M 291 752 H 367" stroke="#305d9d" stroke-width="3" fill="none" stroke-linecap="round" stroke-linejoin="round" marker-end="url(#a1)"/>
+<path d="M 604 752 H 786" stroke="#305d9d" stroke-width="3" fill="none" stroke-linecap="round" stroke-linejoin="round" marker-end="url(#a1)"/>
+<text x="689" y="739" font-size="21" font-weight="590" fill="#305d9d" text-anchor="middle">SSH 直连</text>
+</svg>

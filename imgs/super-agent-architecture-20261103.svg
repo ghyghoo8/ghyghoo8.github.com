@@ -1,0 +1,36 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1080" height="695" viewBox="0 0 1080 695" role="img" aria-labelledby="title desc"><title id="title">一条请求，三种责任</title><desc id="desc">云端Dot 对接用户和项目目标；Mac 协调员登记原请求、查任职、跟进答复；现任项目负责人按标准验收，可授权合适的 Worker 执行。云端任务从原生入口启动，远端采用 Herdr 加 SSH。角色示意不代表全链路已验收。</desc><style>text{font-family:"PingFang SC","Microsoft YaHei","Noto Sans CJK SC",sans-serif}</style><defs><marker id="a0" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse"><path d="M0 0 L10 5 L0 10Z" fill="#14665f"/></marker><marker id="a1" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse"><path d="M0 0 L10 5 L0 10Z" fill="#305d9d"/></marker><marker id="a2" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse"><path d="M0 0 L10 5 L0 10Z" fill="#506474"/></marker><marker id="a3" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse"><path d="M0 0 L10 5 L0 10Z" fill="#855921"/></marker></defs>
+<rect x="0" y="0" width="1080" height="695" rx="0" fill="#f4f7f8" stroke="none" stroke-width="1.7"/>
+<text x="42" y="50" font-size="20" font-weight="650" fill="#14665f" text-anchor="start">协作手册  /  总览</text>
+<text x="42" y="105" font-size="40" font-weight="710" fill="#173047" text-anchor="start">一条请求，三种责任</text>
+<text x="42" y="149" font-size="24" font-weight="430" fill="#506474" text-anchor="start">谁来回复「视频能录了吗」？先按职责找人，再按资源选执行环境。</text>
+<rect x="42" y="206" width="246" height="142" rx="12" fill="white" stroke="#cddbdc" stroke-width="1.7"/>
+<text x="60" y="242" font-size="21" font-weight="430" fill="#506474" text-anchor="start">对接使用者</text>
+<text x="60" y="284" font-size="32" font-weight="680" fill="#305d9d" text-anchor="start">云端Dot</text>
+<text x="60" y="321" font-size="23" font-weight="430" fill="#173047" text-anchor="start">给目标，收答复</text>
+<rect x="397" y="206" width="270" height="142" rx="12" fill="white" stroke="#cddbdc" stroke-width="1.7"/>
+<text x="415" y="242" font-size="21" font-weight="430" fill="#506474" text-anchor="start">持续跟进</text>
+<text x="415" y="284" font-size="32" font-weight="680" fill="#14665f" text-anchor="start">Mac 协调员</text>
+<text x="415" y="321" font-size="23" font-weight="430" fill="#173047" text-anchor="start">登记请求，找到现任</text>
+<rect x="774" y="206" width="264" height="142" rx="12" fill="white" stroke="#cddbdc" stroke-width="1.7"/>
+<text x="792" y="242" font-size="21" font-weight="430" fill="#506474" text-anchor="start">作业务判断</text>
+<text x="792" y="284" font-size="32" font-weight="680" fill="#173047" text-anchor="start">项目负责人</text>
+<text x="792" y="321" font-size="23" font-weight="430" fill="#173047" text-anchor="start">答复、派工与验收</text>
+<path d="M 295 282 H 388" stroke="#305d9d" stroke-width="3" fill="none" stroke-linecap="round" stroke-linejoin="round" marker-end="url(#a1)"/>
+<text x="341" y="261" font-size="20" font-weight="570" fill="#305d9d" text-anchor="middle">交办</text>
+<path d="M 674 282 H 765" stroke="#14665f" stroke-width="3" fill="none" stroke-linecap="round" stroke-linejoin="round" marker-end="url(#a0)"/>
+<text x="719" y="261" font-size="20" font-weight="570" fill="#14665f" text-anchor="middle">联系</text>
+<path d="M 908 354 V 402" stroke="#506474" stroke-width="3" fill="none" stroke-linecap="round" stroke-linejoin="round" marker-end="url(#a2)"/>
+<text x="885" y="390" font-size="20" font-weight="450" fill="#506474" text-anchor="end">需要制作时</text>
+<rect x="42" y="414" width="996" height="160" rx="12" fill="white" stroke="#cddbdc" stroke-width="1.7"/>
+<text x="65" y="458" font-size="30" font-weight="670" fill="#173047" text-anchor="start">执行者</text>
+<text x="65" y="496" font-size="23" font-weight="430" fill="#506474" text-anchor="start">Worker</text>
+<path d="M 215 437 V 549" stroke="#506474" stroke-width="2" fill="none" stroke-linecap="round" stroke-linejoin="round"/>
+<text x="246" y="477" font-size="30" font-weight="650" fill="#305d9d" text-anchor="start">本机</text>
+<text x="246" y="522" font-size="24" font-weight="430" fill="#506474" text-anchor="start">使用本地工具</text>
+<text x="500" y="477" font-size="30" font-weight="650" fill="#305d9d" text-anchor="start">远端</text>
+<text x="500" y="522" font-size="24" font-weight="430" fill="#506474" text-anchor="start">Herdr 经 SSH 直连</text>
+<text x="773" y="477" font-size="30" font-weight="650" fill="#305d9d" text-anchor="start">云端</text>
+<text x="773" y="522" font-size="24" font-weight="430" fill="#506474" text-anchor="start">原生云任务入口</text>
+<rect x="42" y="604" width="996" height="56" rx="12" fill="#deebe8" stroke="none" stroke-width="1.7"/>
+<text x="63" y="642" font-size="24" font-weight="430" fill="#14665f" text-anchor="start">共享资料：任务记录查责任与进度，Git 查版本，原件留在保管端。</text>
+</svg>

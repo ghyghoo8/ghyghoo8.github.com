@@ -1,0 +1,39 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1080" height="710" viewBox="0 0 1080 710" role="img" aria-labelledby="title desc">
+<title id="title">双层 Agent：新任务分派，后续问题回到原任务</title>
+<desc id="desc">Router 将获准的新工作分为报名页和脚本任务，交给各自的 Worker。原页面讨论中的追问可以直接回到页面 Worker；检查已有定稿记录不触发录制。任务把结果交回各自的原讨论。此图为设计示例。</desc>
+<defs>
+<marker id="forward" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="6" markerHeight="6" orient="auto"><path d="M0 0 L10 5 L0 10Z" fill="#17695f"/></marker>
+<marker id="follow" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="6" markerHeight="6" orient="auto"><path d="M0 0 L10 5 L0 10Z" fill="#9a632b"/></marker>
+</defs>
+<style>
+text{font-family:"PingFang SC","Microsoft YaHei","Noto Sans CJK SC",sans-serif;fill:#173047}
+.k{font-size:20px;font-weight:650;fill:#17695f}.title{font-size:40px;font-weight:700}.body{font-size:24px;fill:#435e6c}.box{font-size:29px;font-weight:650}
+.rule{fill:none;stroke:#17695f;stroke-width:3;stroke-linecap:round;stroke-linejoin:round}
+</style>
+<rect width="1080" height="710" fill="#f4f7f8"/>
+<text x="42" y="51" class="k">协作手册　/　双层 Agent</text>
+<text x="42" y="110" class="title">新任务分派，追问回到原任务</text>
+<text x="42" y="154" class="body">示例：一场分享会，同时要准备报名页和演示脚本。</text>
+<rect x="42" y="190" width="275" height="121" rx="12" fill="#faf1e4" stroke="#deceb5"/>
+<text x="62" y="232" style="font-size:21px;fill:#855921">稍后 · 原页面讨论</text>
+<text x="62" y="278" style="font-size:26px;font-weight:620">“现在能录屏了吗？”</text>
+<rect x="366" y="190" width="670" height="121" rx="12" fill="#e7f2ef" stroke="#c0d8d1"/>
+<text x="389" y="232" class="k">协调层　/　Router</text>
+<text x="389" y="278" class="box">识别获准的新工作，分成两项任务</text>
+<path d="M 701 312 V 350 H 413 V 402" class="rule" marker-end="url(#forward)"/>
+<path d="M 701 350 H 785 V 402" class="rule" marker-end="url(#forward)"/>
+<path d="M 120 312 V 402" fill="none" stroke="#9a632b" stroke-width="3" stroke-dasharray="7 6" marker-end="url(#follow)"/>
+<text x="141" y="370" style="font-size:21px;fill:#855921">补充到已有任务</text>
+<rect x="42" y="415" width="482" height="153" rx="12" fill="white" stroke="#cddbdc"/>
+<text x="65" y="455" style="font-size:20px;fill:#305d9d;font-weight:640">执行层　/　Worker A</text>
+<text x="65" y="504" class="box">报名页</text>
+<text x="65" y="544" class="body">查页面版本和定稿记录</text>
+<rect x="554" y="415" width="482" height="153" rx="12" fill="white" stroke="#cddbdc"/>
+<text x="577" y="455" style="font-size:20px;fill:#305d9d;font-weight:640">执行层　/　Worker B</text>
+<text x="577" y="504" class="box">演示脚本</text>
+<text x="577" y="544" class="body">继续整理镜头与讲解词</text>
+<path d="M 282 570 V 609" class="rule" marker-end="url(#forward)"/>
+<path d="M 795 570 V 609" class="rule" marker-end="url(#forward)"/>
+<rect x="42" y="620" width="994" height="59" rx="10" fill="#e3ecef"/>
+<text x="539" y="659" text-anchor="middle" style="font-size:24px">各自回到原讨论：一边回复页面状态，另一边交付脚本。</text>
+</svg>
